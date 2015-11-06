@@ -397,7 +397,10 @@ class GenomeWidePlot():
         elif select:
             plt.title(plot_no)
             data = data[select[0]:select[1]]
+            data['zero'] = np.nan
+            data['zero'] = data['zero'].fillna(0)
             plt.plot(data.index, data["sum"], color="black")
+            plt.fill_between(data.index, data["sum"], data['zero'], color="grey", alpha=0.5)
         plt.axvline(self.five_prime_flank, color=line_color)
         plt.grid()
         return True
@@ -409,7 +412,6 @@ class GenomeWidePlot():
         ranges = [int(i) for i in ranges]
         print "Plotting in ranges: "+str(ranges)
         return ranges
-
 
     def ratio(self, to_divide, divisor, exp_to_use=str(), select=None):
         new_exp_list = self.group_experiments(to_divide, divisor, exp_to_use=exp_to_use) #exp_to_use allows for normalizations
