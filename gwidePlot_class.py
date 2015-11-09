@@ -413,7 +413,7 @@ class GenomeWidePlot():
         print "Plotting in ranges: "+str(ranges)
         return ranges
 
-    def ratio(self, to_divide, divisor, exp_to_use=str(), select=None):
+    def ratio(self, to_divide, divisor, filter, exp_to_use=str(), select=None):
         new_exp_list = self.group_experiments(to_divide, divisor, exp_to_use=exp_to_use) #exp_to_use allows for normalizations
         if select:
             select = self.checkSelect(select)
@@ -432,19 +432,20 @@ class GenomeWidePlot():
             for gene_name in self.genes_name_list:
                 gene_length = self.genes[gene_name]['gene_length']
 
-                a_5data[gene_name] = self.data[gene_name][e[0]]
-                temp_data_a = self.data[gene_name][e[0]][gene_length:].reset_index()
-                a_3data[gene_name] = temp_data_a[e[0]]
+                if self.filter_out(gene_name=gene_name, filter=filter, experiment_to_filter=e[1].strip('_ntotal'), current_exp=e[0]) == True:
+                    a_5data[gene_name] = self.data[gene_name][e[0]]
+                    temp_data_a = self.data[gene_name][e[0]][gene_length:].reset_index()
+                    a_3data[gene_name] = temp_data_a[e[0]]
 
-                b_5data[gene_name] = self.data[gene_name][e[1]]
-                temp_data_b = self.data[gene_name][e[1]][gene_length:].reset_index()
-                b_3data[gene_name] = temp_data_b[e[1]]
+                    b_5data[gene_name] = self.data[gene_name][e[1]]
+                    temp_data_b = self.data[gene_name][e[1]][gene_length:].reset_index()
+                    b_3data[gene_name] = temp_data_b[e[1]]
 
-                ratio_5data[gene_name] = self.data[gene_name][e[0]]/self.data[gene_name][e[1]]
-                ratio_3data[gene_name] = temp_data_a[e[0]]/temp_data_b[e[1]]
+                    ratio_5data[gene_name] = self.data[gene_name][e[0]]/self.data[gene_name][e[1]]
+                    ratio_3data[gene_name] = temp_data_a[e[0]]/temp_data_b[e[1]]
 
-                log2_5data[gene_name] = np.log2(self.data[gene_name][e[0]]/self.data[gene_name][e[1]])
-                log2_3data[gene_name] = np.log2(temp_data_a[e[0]]/temp_data_b[e[1]])
+                    log2_5data[gene_name] = np.log2(self.data[gene_name][e[0]]/self.data[gene_name][e[1]])
+                    log2_3data[gene_name] = np.log2(temp_data_a[e[0]]/temp_data_b[e[1]])
             # sum
             a_5data['sum'] = a_5data.sum(axis=1)
             a_3data['sum'] = a_3data.sum(axis=1)
@@ -469,10 +470,12 @@ class GenomeWidePlot():
             self.plotSubplot(fig=fig, layout=layout, plot_no=7, title=five+'log2 '+e[0]+"/"+e[1]+" ratio", data=log2_5data, line_color="green", select=select)
             self.plotSubplot(fig=fig, layout=layout, plot_no=8, title=three+'log2 '+e[0]+"/"+e[1]+" ratio", data=log2_3data, line_color="#7f0f0f", select=select)
             fig.tight_layout()
-            name = exp_to_use+self.prefix
+            name = self.prefix+exp_to_use+to_divide+'_'+divisor
+            if filter:
+                name = name+'_'+filter
             if select:
                 name = 'selected_'+name
-            plt.savefig(name+'ratio.png', dpi=200)
+            plt.savefig(name+'_ratio.png', dpi=200)
             plt.clf()
         return True
 
