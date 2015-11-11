@@ -49,8 +49,8 @@ for path in sys.stdin:
 
 data = pd.DataFrame(columns=[['gene_name', 'gene_id', 'type']+experiments]) # initialize Pandas DataFrame
 
-print "Currently reading GTF file: "+os.environ['GTF_PATH']
-for line in open(os.environ['GTF_PATH'], 'r'):
+print "Currently reading GTF file: "+gtf_file
+for line in open(gtf_file, 'r'):
 # for line in open('/home/tturowski/seq_references/Saccharomyces_cerevisiae.EF4.74.shortChNames_with_PolIII_transcripts_extended_slop_intergenic_sort.gtf', 'r'):
     if not line.startswith('#'):
         line_elements = line.strip().split('\t')
