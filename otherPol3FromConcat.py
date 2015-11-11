@@ -485,7 +485,7 @@ class OtherPol3FromConcat():
             exit()
 
         for i_gene_id in self.genes_id_list:
-            fig = plt.figure(figsize=(12, 9), dpi=200, facecolor='w', edgecolor='k')
+            fig = plt.figure(figsize=(12, 9), dpi=300, facecolor='w', edgecolor='k')
             gene_name = self.id_to_names[i_gene_id]
             plot_no = 0
             for e in self.experiments:
@@ -512,7 +512,7 @@ class OtherPol3FromConcat():
 
                 if plot_no == len(self.experiments):
                     plot_no = 0
-                    plt.savefig(self.prefix+i_gene_id+'_l'+str(self.lookahead)+'_t'+str(self.hits_threshold)+'.png', dpi=200)
+                    plt.savefig(self.prefix+i_gene_id+'_l'+str(self.lookahead)+'_t'+str(self.hits_threshold)+'.png', dpi=300)
                     plt.clf()
         return True
 ###function to plot ratio between sample with -a parameter and -b parameter
