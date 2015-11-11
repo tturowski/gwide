@@ -485,7 +485,7 @@ class OtherPol3FromConcat():
             exit()
 
         for i_gene_id in self.genes_id_list:
-            fig = plt.figure(figsize=(12, 9), dpi=100, facecolor='w', edgecolor='k')
+            fig = plt.figure(figsize=(12, 9), dpi=200, facecolor='w', edgecolor='k')
             gene_name = self.id_to_names[i_gene_id]
             plot_no = 0
             for e in self.experiments:
