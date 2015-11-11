@@ -1,16 +1,36 @@
 #!/usr/bin/env python
 import numpy as np
-import sys, select, os, re, math
+import sys, select, os, re, math, argparse, yaml
+from argparse import RawTextHelpFormatter
 import pandas as pd
 
 # usage: create hittables using pyReadCounter then
 # i.e. find *hittable* | countHittable.py
 
-"""Creates one large output.tab from all input hittables."""
+#sorting out GTF file
+def getGTF(gtf_from_options):
+    if gtf_from_options:
+        return gtf_from_options
+    elif 'default.aml' in os.listdir(os.getenv("HOME")+'/bin/'):
+        default = yaml.load(open(os.getenv("HOME")+'/bin/default.aml'))
+        # print "# Using GTF file from ~/bin/default.aml"
+        return default['GTF_PATH']
+    else:
+        if os.environ['GTF_PATH']:
+            # print "# Using GTF file from $GTF_PATH variable"
+            return os.environ['GTF_PATH']
+        else:
+            exit('Provide GTF file path using -g or setup default.aml in your bin folder')
 
-if not select.select([sys.stdin,],[],[],0.0)[0]: #expression from stackoverflow to check if there are data in standard input
-    print '# usage: create *hittable_reads.txt using pyReadCounter then i.e. find *hittable* | countHittables.py'
-    exit()
+#setup option parser
+usage = "Usage: prints genom wide plot, for genes 'as you wish' and aligned 'as you wish'"
+parser = argparse.ArgumentParser(usage=usage, formatter_class=RawTextHelpFormatter)
+files = parser.add_argument_group('Options for input files')
+files.add_argument("-g", "--gtf_file", dest="gtf_file", help="Provide the path to your gtf file.",
+                 type=str, default=None)
+options = parser.parse_args()
+
+gtf_file = getGTF(options.gtf_file)
 
 paths = list()
 experiments = list()
