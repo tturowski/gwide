@@ -8,7 +8,9 @@ import pandas.tools.rplot as rplot
 # usage: create hittables using pyReadCounter then
 # i.e. find *hittable* | countHittable.py
 
-usage = "Calculates correlation cooeficient between two different datasets. Usage: create hittables using pyReadCounter then run script in the folder containing hittables"
+
+
+usage = "Calculates correlation cooeficient between two or more datasets. Usage: create hittables using pyReadCounter then run script in the folder containing hittables"
 parser = argparse.ArgumentParser(usage=usage, formatter_class=RawTextHelpFormatter)
 files = parser.add_argument_group('Options')
 files.add_argument("-g", dest="gtf_file", help="Provide the path to your gtf file.",
