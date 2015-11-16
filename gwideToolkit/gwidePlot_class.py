@@ -682,8 +682,8 @@ class GenomeWidePlot():
 
     def genome_wide_plots_3end_normalizations(self, set_up=None, factor=None, lower_than=False):
         """examples of use:
-        analyse_tRNA_from_concatv2.py -c glu_wt_C2.concat -o gwide -f RT -s 0.15
-        analyse_tRNA_from_concatv2.py -c glu_wt_C2.concat -o gwide -f RT -s 0.15 --lower_than"""
+        analyse_tRNA_from_concatv2.py -c glu_wt_C2.concat -o gwideToolkit -f RT -s 0.15
+        analyse_tRNA_from_concatv2.py -c glu_wt_C2.concat -o gwideToolkit -f RT -s 0.15 --lower_than"""
 
         print "# Plotting genom wide plots..."
         #initiating dataframes

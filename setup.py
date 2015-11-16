@@ -7,7 +7,7 @@ from setuptools import setup
 setup(
     name='gwide_toolkit',
     version='0.1',
-    py_modules=['gwide'],
+    py_modules=['gwideToolkit'],
     install_requires=[
         'pandas',
         'ruffus',
@@ -15,7 +15,7 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        gwide=gwide:main
+        gwideToolkit=gwideToolkit:main
     ''',
     author="Tomasz Turowski",
     description='Set of downstream tools for pyCRAC',
