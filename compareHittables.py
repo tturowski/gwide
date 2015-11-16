@@ -4,21 +4,16 @@ import sys, select, os, re, math, argparse
 from argparse import RawTextHelpFormatter
 import pandas as pd
 import pandas.tools.rplot as rplot
+import gwideToolkit.methods as gtk
 
 # usage: create hittables using pyReadCounter then
 # i.e. find *hittable* | countHittable.py
-
-
 
 usage = "Calculates correlation cooeficient between two or more datasets. Usage: create hittables using pyReadCounter then run script in the folder containing hittables"
 parser = argparse.ArgumentParser(usage=usage, formatter_class=RawTextHelpFormatter)
 files = parser.add_argument_group('Options')
 files.add_argument("-g", dest="gtf_file", help="Provide the path to your gtf file.",
                  type=str, default=None)
-# files.add_argument("-t", dest="gtf_tab", help="Provide the path to your gtf file as tab (*_empty.tab).",
-#                  type=str, default=None)
-# files.add_argument("-d", dest="data_tab", help="Provide the path to your data.tab file.",
-#                  type=str, default=None)
 universal = parser.add_argument_group('Universal options')
 universal.add_argument("-n", dest="normalized", action="store_true", help="Use when you want to work on data normalized 'reads per Milion'. Not working if you reading data.tab Default: False", default=False)
 universal.add_argument("-w", dest="whole_name", action="store_true", help="As defauls scripts takes 'a_b_c' from a_b_c_hittable_reads.txt as experiment name. Use this option if your file names do not suit to this pattern. Default: False", default=False)
@@ -26,14 +21,7 @@ universal.add_argument("-c", dest="gene_class", action="store_true", help="Calcu
 universal.add_argument("-o", dest="output", choices=["p", "s", "k", "a"], help="Select from following options: p - Pearson (standard correlation coefficient); s - Spearman rank correlation; k - Kendall Tau correlation coefficient; a - all at once", default="p")
 options = parser.parse_args()
 
-if not options.gtf_file:
-    if not os.environ['GTF_PATH']:
-        print "# Provide GTF file."
-        exit()
-    else:
-        gtf = os.environ['GTF_PATH']
-else:
-    gtf = options.gtf_file
+gtf = gtk.getGTF(options.gtf_file)
 
 print "# compareHittables.py is running..."
 
