@@ -4,9 +4,6 @@ import sys, select, os, re, math, argparse, yaml
 from argparse import RawTextHelpFormatter
 import pandas as pd
 
-# usage: create hittables using pyReadCounter then
-# i.e. find *hittable* | countHittable.py
-
 #sorting out GTF file
 def getGTF(gtf_from_options):
     if gtf_from_options:
@@ -23,11 +20,11 @@ def getGTF(gtf_from_options):
             exit('Provide GTF file path using -g or setup default.aml in your bin folder')
 
 #setup option parser
-usage = "Usage: prints genom wide plot, for genes 'as you wish' and aligned 'as you wish'"
+usage = "Creates *.tab file having no. of normalized (reads per Milion) reads for all experiments (files). Usage: create hittables using pyReadCounter then i.e. find *hittable* | countHittable.py"
 parser = argparse.ArgumentParser(usage=usage, formatter_class=RawTextHelpFormatter)
 files = parser.add_argument_group('Options for input files')
-files.add_argument("-g", "--gtf_file", dest="gtf_file", help="Provide the path to your gtf file.",
-                 type=str, default=None)
+files.add_argument("-g", "--gtf_file", dest="gtf_file", help="Provide the path to your gtf file.", type=str, default=None)
+files.add_argument("-p", dest="out_prefix", type=str, help="Prefix for output files.", default=None)
 options = parser.parse_args()
 
 gtf_file = getGTF(options.gtf_file)
@@ -59,6 +56,7 @@ for line in open(gtf_file, 'r'):
             gene_name = re.search("gene_name\s\"(.*?)\"", str(line_elements[8])).group(1)
         except:
             gene_name = re.search("gene_id\s\"(.*?)\"", str(line_elements[8])).group(1) # when there is no gene name
+            print "No gene name in GTF file! Used gene id: "+gene_name+" as gene name."
         gene_id = re.search("gene_id\s\"(.*?)\"", str(line_elements[8])).group(1)
         if gene_name not in genes_name:
             genes_name.append(gene_name)
@@ -89,4 +87,6 @@ for path in paths:
                 # print gene_name
                 data.loc[gene_name, name] = int(math.ceil(float(hits*normalizator)))
 print "Creating output.tab file..."
-data.to_csv('output.tab', sep='\t')
+
+name = options.out_prefix + 'output.tab'
+data.to_csv(name, sep='\t')
