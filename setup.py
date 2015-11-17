@@ -1,29 +1,24 @@
-__author__ = 'tturowski'
 #!/usr/bin/env python
-""" Setup script for the gwide_toolkit package."""
+# -*- coding: utf-8 -*-
+"""
+    Setup file for gwide.
 
+    This file was generated with PyScaffold 2.4.4, a tool that easily
+    puts up a scaffold for your new Python project. Learn more under:
+    http://pyscaffold.readthedocs.org/
+"""
+
+import sys
 from setuptools import setup
 
-setup(
-    name='gwide_toolkit',
-    version='0.1',
-    py_modules=['gwideToolkit'],
-    install_requires=[
-        'pandas',
-        'ruffus',
-        'PyYAML'
-    ],
-    entry_points='''
-        [console_scripts]
-        gwideToolkit=gwideToolkit:main
-    ''',
-    author="Tomasz Turowski",
-    description='Set of downstream tools for pyCRAC',
-    long_description='Automated analysis pipeline for CRAC data, along with additional utilities',
-    author_email="twturowski@gmail.com",
-    classifiers=[
-            'Development Status :: 2 - Pre-Alpha',
-            'Intended Audience :: Science/Research',
-            'License :: OSI Approved :: Apache License 2.0',
-            'Topic :: Scientific/Engineering :: Bio-Informatics']
-)
+
+def setup_package():
+    needs_sphinx = {'build_sphinx', 'upload_docs'}.intersection(sys.argv)
+    sphinx = ['sphinx'] if needs_sphinx else []
+    setup(setup_requires=['six', 'pyscaffold>=2.4rc1,<2.5a0'] + sphinx,
+          tests_require=['pytest_cov', 'pytest'],
+          use_pyscaffold=True)
+
+
+if __name__ == "__main__":
+    setup_package()

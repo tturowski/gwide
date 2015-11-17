@@ -1,10 +1,14 @@
 #!/usr/bin/env python
-import numpy as np
-import sys, select, os, re, math, argparse
+import os
+import re
+import math
+import argparse
 from argparse import RawTextHelpFormatter
+
 import pandas as pd
-import pandas.tools.rplot as rplot
-import gwideToolkit.methods as gtk
+
+from gwide import gwideToolkit as gtk
+
 
 # usage: create hittables using pyReadCounter then
 # i.e. find *hittable* | countHittable.py

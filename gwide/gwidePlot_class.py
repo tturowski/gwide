@@ -601,6 +601,8 @@ class GenomeWidePlot():
             plt.clf()
         return True
 
+
+
     def RT_aligner(self, filter, experiment_to_align):
         print "# Plotting genom wide plots with chosen aligner..."
         #initiating dataframes
