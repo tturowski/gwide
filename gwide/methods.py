@@ -1,6 +1,8 @@
 __author__ = 'tturowski'
 
 import os, yaml
+import numpy as np
+import pandas as pd
 
 def getGTF(gtf_from_options):
     if gtf_from_options:

@@ -12,6 +12,9 @@ from pypeaks import Data
 from pyCRAC.Parsers import GTF2
 import matplotlib.pyplot as plt
 import pandas as pd
+import matplotlib as mpl
+import scipy.stats.morestats as ss
+import scipy.stats.stats as sss
 
 class GenomeWidePlot():
     def __init__(self, gtf_file, five_prime_flank, three_prime_flank, hits_threshold, lookahead, prefix, readthrough_start, normalized):
@@ -628,6 +631,83 @@ class GenomeWidePlot():
                    +'"; gene_name "'+gene_name+'"; gene_biotype "tRNAextension"; transcript_name "'+gene_name+'";'
             if highest_RT != 0: new_GTF_file.write(line+'\n')
         new_GTF_file.close()
+
+    def Tdensity(self):
+        print "# Calculating genome-wide T-density among peaks and valleys"
+        peaks_T = list()
+        valleys_T = list()
+        for e in self.experiments:
+            for gene_name in self.genes_name_list:
+                # if self.filter_out(gene_name=gene_name, filter='RT_a_0.0001', experiment_to_filter=e, current_exp=e) == True:
+                if not self.list_of_peaks[gene_name][e]['valleys'] or not self.list_of_peaks[gene_name][e]['peaks']: continue
+                self.list_of_peaks[gene_name][e]['RT_peaks'] = list()
+                self.list_of_peaks[gene_name][e]['RT_valleys'] = list()
+                gene_length = self.genes[gene_name]['gene_length']
+                for peak in self.list_of_peaks[gene_name][e]['peaks']:
+                    if peak > gene_length+self.five_prime_flank:
+                        next_valley = min([v for v in self.list_of_peaks[gene_name][e]['valleys'] if v > peak])
+                        peak_T_content = self.data[gene_name][peak-5:peak+5][self.data[gene_name].nucleotide == 'T']
+                        next_valley_T_content = self.data[gene_name][next_valley-5:next_valley+5][self.data[gene_name].nucleotide == 'T']
+                        if peak_T_content.mean()[e] > 400:
+                            peaks_T.append(float(peak_T_content.count()['nucleotide']))
+                            valleys_T.append(float(next_valley_T_content.count()['nucleotide']))
+        print 'No. of peaks: '+str(len(peaks_T))
+        print 'No. of valleys: '+str(len(valleys_T))
+        df = pd.DataFrame({'peaks_T' : peaks_T, 'valleys_T' : valleys_T})
+        print 'Mean:'
+        print df.mean()
+        print 'Madian:'
+        print df.median()
+        print 'SD:'
+        print df.std()
+        print 'Wilcoxon:'
+        print ss.wilcoxon(peaks_T, valleys_T)
+        print 'T-test:'
+        print sss.ttest_ind(peaks_T, valleys_T, equal_var=True)
+        print sss.ttest_ind(peaks_T, valleys_T, equal_var=False)
+        print sss.ttest_rel(peaks_T, valleys_T)
+
+        # Create a figure instance
+        fig = plt.figure(1, figsize=(9, 6))
+                # Create an axes instance
+        ax = fig.add_subplot(111)
+                # Create the boxplot
+        ax.set_xticklabels(['peaks', 'valleys'])
+        ax.get_xaxis().tick_bottom()
+        bp = ax.boxplot([peaks_T, valleys_T], notch=True, sym=None, vert=True, whis=[15,85],
+                positions=None, widths=None, patch_artist=True,
+                bootstrap=None, usermedians=None, conf_intervals=None,
+                meanline=True, showmeans=False, showcaps=True,
+                showbox=True, showfliers=True, boxprops=None, labels=None,
+                flierprops=None, medianprops=None, meanprops=None,
+                capprops=None, whiskerprops=None, manage_xticks=True)
+
+        ## change outline color, fill color and linewidth of the boxes
+        for box in bp['boxes']:
+            # change outline color
+            box.set( color='black', linewidth=2)
+            # change fill color
+            box.set( facecolor ='grey')
+
+        ## change color and linewidth of the whiskers
+        for whisker in bp['whiskers']:
+            whisker.set(color='grey', linewidth=2)
+
+        ## change color and linewidth of the caps
+        for cap in bp['caps']:
+            cap.set(color='grey', linewidth=2)
+
+        ## change color and linewidth of the medians
+        for median in bp['medians']:
+            median.set(color='black', linewidth=1)
+
+        ## change the style of fliers and their fill
+        for flier in bp['fliers']:
+            flier.set(marker='o', color='grey', alpha=0.5)
+
+        # Save the figure
+        name = self.prefix+'boxplot.png'
+        fig.savefig(name, bbox_inches='tight')
 
     def RT_aligner(self, filter, experiment_to_align):
         print "# Plotting genom wide plots with chosen aligner..."
