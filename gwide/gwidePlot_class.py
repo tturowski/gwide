@@ -604,6 +604,8 @@ class GenomeWidePlot():
 
     def makeRTGTF(self):
         print "# Making GTF with RT coordinates"
+        name = self.prefix+"RTextension.gtf"
+        new_GTF_file = open(name, "w")
         for gene_name in self.genes_name_list:
             highest_RT = 0
             for e in self.experiments:
@@ -611,11 +613,11 @@ class GenomeWidePlot():
                 RT_length = max(self.list_of_peaks[gene_name][e]['valleys'])-self.five_prime_flank
                 # print "RT for "+gene_name+" in "+e+": "+str(RT_length)
                 if RT_length > highest_RT: highest_RT = RT_length
-            print gene_name +' '+ str(highest_RT)
-            print self.gtf.chromosomeCoordinates(gene_name)
+            # print gene_name +' '+ str(highest_RT)
+            # print self.gtf.chromosomeCoordinates(gene_name)
             # print self.gtf.genes[gene_name]['strand']
             if self.gtf.genes[gene_name]['strand'] == '+': start, stop = self.gtf.chromosomeCoordinates(gene_name)[1]+1, self.gtf.chromosomeCoordinates(gene_name)[0]+1+highest_RT
-            elif self.gtf.genes[gene_name]['strand'] == '-': start, stop = self.gtf.chromosomeCoordinates(gene_name)[1]-highest_RT, self.gtf.chromosomeCoordinates(gene_name)[0]-1
+            elif self.gtf.genes[gene_name]['strand'] == '-': start, stop = self.gtf.chromosomeCoordinates(gene_name)[1]-highest_RT, self.gtf.chromosomeCoordinates(gene_name)[0]
             line = self.gtf.genes[gene_name]['chromosome']+'\t'\
                    +'tRNAextension'+"\t"\
                    +'exon'+'\t'\
@@ -624,7 +626,8 @@ class GenomeWidePlot():
                    +self.gtf.genes[gene_name]['strand']+"\t.\t"\
                    +'gene_id "'+self.gtf.genes[gene_name]['gene_id']+'"; transcript_id "'+self.gtf.genes[gene_name]['gene_id']\
                    +'"; gene_name "'+gene_name+'"; gene_biotype "tRNAextension"; transcript_name "'+gene_name+'";'
-            print line
+            if highest_RT != 0: new_GTF_file.write(line+'\n')
+        new_GTF_file.close()
 
     def RT_aligner(self, filter, experiment_to_align):
         print "# Plotting genom wide plots with chosen aligner..."
