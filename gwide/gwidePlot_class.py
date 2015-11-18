@@ -127,6 +127,7 @@ class GenomeWidePlot():
     def find_peaks(self):
         print '# Finding peaks...'
         for i in self.data:
+
             self.list_of_peaks[i] = dict()
             for e in self.experiments:
                 self.list_of_peaks[i][e] = dict()
@@ -601,7 +602,29 @@ class GenomeWidePlot():
             plt.clf()
         return True
 
-
+    def makeRTGTF(self):
+        print "# Making GTF with RT coordinates"
+        for gene_name in self.genes_name_list:
+            highest_RT = 0
+            for e in self.experiments:
+                if not self.list_of_peaks[gene_name][e]['valleys']: continue
+                RT_length = max(self.list_of_peaks[gene_name][e]['valleys'])-self.five_prime_flank
+                # print "RT for "+gene_name+" in "+e+": "+str(RT_length)
+                if RT_length > highest_RT: highest_RT = RT_length
+            print gene_name +' '+ str(highest_RT)
+            print self.gtf.chromosomeCoordinates(gene_name)
+            # print self.gtf.genes[gene_name]['strand']
+            if self.gtf.genes[gene_name]['strand'] == '+': start, stop = self.gtf.chromosomeCoordinates(gene_name)[1]+1, self.gtf.chromosomeCoordinates(gene_name)[0]+1+highest_RT
+            elif self.gtf.genes[gene_name]['strand'] == '-': start, stop = self.gtf.chromosomeCoordinates(gene_name)[1]-highest_RT, self.gtf.chromosomeCoordinates(gene_name)[0]-1
+            line = self.gtf.genes[gene_name]['chromosome']+'\t'\
+                   +'tRNAextension'+"\t"\
+                   +'exon'+'\t'\
+                   +str(start)+'\t'\
+                   +str(stop)+"\t.\t"\
+                   +self.gtf.genes[gene_name]['strand']+"\t.\t"\
+                   +'gene_id "'+self.gtf.genes[gene_name]['gene_id']+'"; transcript_id "'+self.gtf.genes[gene_name]['gene_id']\
+                   +'"; gene_name "'+gene_name+'"; gene_biotype "tRNAextension"; transcript_name "'+gene_name+'";'
+            print line
 
     def RT_aligner(self, filter, experiment_to_align):
         print "# Plotting genom wide plots with chosen aligner..."
