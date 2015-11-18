@@ -37,7 +37,7 @@ universal.add_argument("-r", "--readthrough", dest="readthrough", type=int, help
 universal.add_argument("-n", "--normalized", dest="normalized", action="store_true", help="to work on data normalized 'reads per Milion'. Default: False", default=False)
 output = parser.add_argument_group('Options for output files')
 output.add_argument("-p", "--prefix", dest="out_prefix", type=str, help="Prefix for output files. Default to standard output. Not supported for -o ratio.", default=None)
-output.add_argument("-o", "--output", dest="output", choices=["std", "aligner", "RTend", "ratio", "makeRTGTF"], help="Select from following options:"+'\n\n'
+output.add_argument("-o", "--output", dest="output", choices=["std", "aligner", "RTend", "ratio", "makeRTGTF", "Tdensity"], help="Select from following options:"+'\n\n'
                    "std - 5` and 3` end aligned only"+'\n'
                     "aligner - std plus chosen aligner (-l option)"+'\n'
                     "ratio - plot gwideToolkit ratio a exp / b exp"+'\n'
@@ -109,9 +109,12 @@ if options.output == "ratio":
 
 if options.output == "makeRTGTF":
     data.find_peaks()
-    # data.calculate(details=False, ntotal=True, nmax=True)
     data.makeRTGTF()
 
+if options.output == "Tdensity":
+    data.find_peaks()
+    # data.calculate()
+    data.Tdensity()
 
 print '# Done.'
 
