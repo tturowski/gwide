@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 __author__ = 'Tomasz Turowski'
-__copyright__	= "Copyright 2015"
+__copyright__	= "Copyright 20110"
 __version__		= "1.0"
 __credits__		= ["Tomasz Turowski"]
 __email__		= "twturowski@gmail.com"
@@ -29,7 +29,7 @@ class GenomeWidePlot():
         self.genes_id_list      =   list()
         self.five_prime_flank   =   five_prime_flank
         self.three_prime_flank  =   three_prime_flank
-        self.five_prime_to_print=   50
+        self.five_prime_to_print=   100
         self.longest_gene       =   0
         self.hits_threshold     =   hits_threshold
         self.lookahead          =   lookahead
@@ -137,7 +137,7 @@ class GenomeWidePlot():
                 hist = Data(list(self.data[i].index), list(self.data[i][e]), smoothness=1, default_smooth=False)
                 hist.normalize()
                 try:
-                    hist.get_peaks(method="slope", peak_amp_thresh=0.00005, valley_thresh=0.00003, intervals=None,
+                    hist.get_peaks(method="slope", peak_amp_thresh=0.000010, valley_thresh=0.00003, intervals=None,
                                    lookahead=self.lookahead, avg_interval=100)
                     self.list_of_peaks[i][e]['peaks'] = sorted(np.array(hist.peaks['peaks'][0]).tolist())
                     self.list_of_peaks[i][e]['valleys'] = sorted(np.array(hist.peaks['valleys'][0]).tolist())
@@ -188,7 +188,7 @@ class GenomeWidePlot():
                             exp = exp_old+'_ntotal'
                             self.data[gene_name][exp] = self.data[gene_name][exp_old]/self.data[gene_name][exp_old].sum()
                             self.data[gene_name][exp] = self.data[gene_name][exp].add(0.000001) #adding pseudocounts
-                        self.data[gene_name][exp_old] = self.data[gene_name][exp_old].add(5) #adding pseudocounts
+                        self.data[gene_name][exp_old] = self.data[gene_name][exp_old].add(10) #adding pseudocounts
 
                 #slicing dataframes
                         total       =   self.data[gene_name][transcription_start:].sum()[exp]
@@ -358,7 +358,7 @@ class GenomeWidePlot():
         ### function identifiying 'to_divide' and 'divisor' for ratio results plotting.
         ### Please use nomenclature gene_variant
         ### IMPORTANT: only two experiments may contain the same root(gene) added to 'a' or 'b'
-        ### i.e. list_of_experiments = ['A190_MD', 'A190_total', 'A135_MD', 'A135_total'] additional A190 or A135 is forbidden
+        ### i.e. list_of_experiments = ['A190_MD', 'A190_total', 'A1310_MD', 'A1310_total'] additional A190 or A1310 is forbidden
         a_experiments = list()
         b_experiments = list()
         for e in self.experiments: ##making list with experiments containing -a or -b
@@ -404,7 +404,7 @@ class GenomeWidePlot():
             data['zero'] = np.nan
             data['zero'] = data['zero'].fillna(0)
             plt.plot(data.index, data["sum"], color="black")
-            plt.fill_between(data.index, data["sum"], data['zero'], color="grey", alpha=0.5)
+            plt.fill_between(data.index, data["sum"], data['zero'], color="grey", alpha=0.10)
         plt.axvline(self.five_prime_flank, color=line_color)
         plt.grid()
         return True
@@ -425,53 +425,53 @@ class GenomeWidePlot():
         #copying data
         for e in new_exp_list:
             #initiating dataframes (a for a exp, b for b exp and ratio)
-            a_5data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
+            a_10data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
             a_3data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
-            b_5data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
+            b_10data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
             b_3data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
-            ratio_5data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
+            ratio_10data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
             ratio_3data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
-            log2_5data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
+            log2_10data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
             log2_3data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
             for gene_name in self.genes_name_list:
                 gene_length = self.genes[gene_name]['gene_length']
 
                 if self.filter_out(gene_name=gene_name, filter=filter, experiment_to_filter=e[1].strip('_ntotal'), current_exp=e[0]) == True:
-                    a_5data[gene_name] = self.data[gene_name][e[0]]
+                    a_10data[gene_name] = self.data[gene_name][e[0]]
                     temp_data_a = self.data[gene_name][e[0]][gene_length:].reset_index()
                     a_3data[gene_name] = temp_data_a[e[0]]
 
-                    b_5data[gene_name] = self.data[gene_name][e[1]]
+                    b_10data[gene_name] = self.data[gene_name][e[1]]
                     temp_data_b = self.data[gene_name][e[1]][gene_length:].reset_index()
                     b_3data[gene_name] = temp_data_b[e[1]]
 
-                    ratio_5data[gene_name] = self.data[gene_name][e[0]]/self.data[gene_name][e[1]]
+                    ratio_10data[gene_name] = self.data[gene_name][e[0]]/self.data[gene_name][e[1]]
                     ratio_3data[gene_name] = temp_data_a[e[0]]/temp_data_b[e[1]]
 
-                    log2_5data[gene_name] = np.log2(self.data[gene_name][e[0]]/self.data[gene_name][e[1]])
+                    log2_10data[gene_name] = np.log2(self.data[gene_name][e[0]]/self.data[gene_name][e[1]])
                     log2_3data[gene_name] = np.log2(temp_data_a[e[0]]/temp_data_b[e[1]])
             # sum
-            a_5data['sum'] = a_5data.sum(axis=1)
+            a_10data['sum'] = a_10data.sum(axis=1)
             a_3data['sum'] = a_3data.sum(axis=1)
-            b_5data['sum'] = b_5data.sum(axis=1)
+            b_10data['sum'] = b_10data.sum(axis=1)
             b_3data['sum'] = b_3data.sum(axis=1)
-            ratio_5data['sum'] = ratio_5data.sum(axis=1)
+            ratio_10data['sum'] = ratio_10data.sum(axis=1)
             ratio_3data['sum'] = ratio_3data.sum(axis=1)
-            log2_5data['sum'] = log2_5data.sum(axis=1)
+            log2_10data['sum'] = log2_10data.sum(axis=1)
             log2_3data['sum'] = log2_3data.sum(axis=1)
 
             # plotting
             fig = plt.figure(figsize=(12, 9), facecolor='w', edgecolor='k')
-            five = '5` aligned raw reads for '
+            five = '10` aligned raw reads for '
             three = '3` aligned raw reads for '
             layout = [4,2]
-            self.plotSubplot(fig=fig, layout=layout, plot_no=1, title=five+e[0], data=a_5data, line_color="green", select=select)
+            self.plotSubplot(fig=fig, layout=layout, plot_no=1, title=five+e[0], data=a_10data, line_color="green", select=select)
             self.plotSubplot(fig=fig, layout=layout, plot_no=2, title=three+e[0], data=a_3data, line_color="#7f0f0f", select=select)
-            self.plotSubplot(fig=fig, layout=layout, plot_no=3, title=five+e[1], data=b_5data, line_color="green", select=select)
+            self.plotSubplot(fig=fig, layout=layout, plot_no=3, title=five+e[1], data=b_10data, line_color="green", select=select)
             self.plotSubplot(fig=fig, layout=layout, plot_no=4, title=three+e[1], data=b_3data, line_color="#7f0f0f", select=select)
-            self.plotSubplot(fig=fig, layout=layout, plot_no=5, title=five+e[0]+"/"+e[1]+" ratio", data=ratio_5data, line_color="green", select=select)
+            self.plotSubplot(fig=fig, layout=layout, plot_no=10, title=five+e[0]+"/"+e[1]+" ratio", data=ratio_10data, line_color="green", select=select)
             self.plotSubplot(fig=fig, layout=layout, plot_no=6, title=three+e[0]+"/"+e[1]+" ratio", data=ratio_3data, line_color="#7f0f0f", select=select)
-            self.plotSubplot(fig=fig, layout=layout, plot_no=7, title=five+'log2 '+e[0]+"/"+e[1]+" ratio", data=log2_5data, line_color="green", select=select)
+            self.plotSubplot(fig=fig, layout=layout, plot_no=7, title=five+'log2 '+e[0]+"/"+e[1]+" ratio", data=log2_10data, line_color="green", select=select)
             self.plotSubplot(fig=fig, layout=layout, plot_no=8, title=three+'log2 '+e[0]+"/"+e[1]+" ratio", data=log2_3data, line_color="#7f0f0f", select=select)
             fig.tight_layout()
             name = self.prefix+exp_to_use+to_divide+'_'+divisor
@@ -486,7 +486,7 @@ class GenomeWidePlot():
     def std(self, filter, experiment_to_filter):
         print "# Plotting genom wide plots..."
         #initiating dataframes
-        raw_5data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
+        raw_10data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
         raw_3data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
 
         #copying data
@@ -497,15 +497,15 @@ class GenomeWidePlot():
                 if self.filter_out(gene_name=gene_name, filter=filter, experiment_to_filter=experiment_to_filter, current_exp=e) == True:
                     no_of_genes += 1
                     list_of_genes.append(gene_name)
-                # 5` aligned
-                    raw_5data[gene_name] = self.data[gene_name][e]
+                # 10` aligned
+                    raw_10data[gene_name] = self.data[gene_name][e]
                 # 3` aligned
                     gene_length =   self.genes[gene_name]['gene_length']
                     temp_data = self.data[gene_name][e][gene_length:].reset_index()
                     raw_3data[gene_name] = temp_data[e]
 
             # sum
-            raw_5data['sum'] = raw_5data.sum(axis=1)
+            raw_10data['sum'] = raw_10data.sum(axis=1)
             raw_3data['sum'] = raw_3data.sum(axis=1)
 
             text_file = open(self.prefix+"std"+e+".list", "w")
@@ -513,13 +513,13 @@ class GenomeWidePlot():
                 text_file.write(i + "\t" + self.genes[i]['gene_id'] + "\n")
             text_file.close()
 
-            # plotting 5` aligned
+            # plotting 10` aligned
             print "# Printing plot for "+str(no_of_genes)+" genes "+self.categorize_tRNA(list_of_genes,output='text')+"..."
             fig = plt.figure(figsize=(12, 9), facecolor='w', edgecolor='k')
-            five = '5` aligned raw reads for '
+            five = '10` aligned raw reads for '
             three = '3` aligned raw reads for '
             layout = [3,2]
-            self.plotSubplot(fig=fig, layout=layout, plot_no=1, title=five+e, data=raw_5data, line_color="green")
+            self.plotSubplot(fig=fig, layout=layout, plot_no=1, title=five+e, data=raw_10data, line_color="green")
             self.plotSubplot(fig=fig, layout=layout, plot_no=2, title=three+e, data=raw_3data, line_color="#7f0f0f")
             fig.tight_layout()
 
@@ -539,7 +539,7 @@ class GenomeWidePlot():
     def aligner(self, file, filter, experiment_to_filter):
         print "# Plotting genom wide plots with chosen aligner..."
         #initiating dataframes
-        raw_5data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
+        raw_10data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
         raw_3data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
         raw_chosen_data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
 
@@ -552,8 +552,8 @@ class GenomeWidePlot():
                     if self.filter_out(gene_name=gene_name, filter=filter, experiment_to_filter=experiment_to_filter, current_exp=e) == True:
                         no_of_genes += 1
                         list_of_genes.append(gene_name)
-                    # 5` aligned
-                        raw_5data[gene_name] = self.data[gene_name][e]
+                    # 10` aligned
+                        raw_10data[gene_name] = self.data[gene_name][e]
                     # 3` aligned
                         gene_length =   self.genes[gene_name]['gene_length']
                         temp_data = self.data[gene_name][e][gene_length:].reset_index()
@@ -564,7 +564,7 @@ class GenomeWidePlot():
                         raw_chosen_data[gene_name] = temp_data[e]
 
             # sum
-            raw_5data['sum'] = raw_5data.sum(axis=1)
+            raw_10data['sum'] = raw_10data.sum(axis=1)
             raw_3data['sum'] = raw_3data.sum(axis=1)
             raw_chosen_data['sum'] = raw_chosen_data.sum(axis=1)
 
@@ -575,8 +575,8 @@ class GenomeWidePlot():
             #           +self.categorize_tRNA(list_of_genes,output='text'),y=1.04)
 
             fig.add_subplot(3,1,1)
-            plt.title('5` aligned raw reads')
-            plt.plot(raw_5data.index, raw_5data['sum'], color="black")
+            plt.title('10` aligned raw reads')
+            plt.plot(raw_10data.index, raw_10data['sum'], color="black")
             plt.axvline(self.five_prime_flank, color="green")
             plt.grid()
 
@@ -632,6 +632,32 @@ class GenomeWidePlot():
             if highest_RT != 0: new_GTF_file.write(line+'\n')
         new_GTF_file.close()
 
+    def maketranscriptGTF(self):
+        print "# Making GTF with transcript coordinates"
+        print "# TSS is setup to -11"
+        name = self.prefix+"transcript.gtf"
+        new_GTF_file = open(name, "w")
+        for gene_name in self.genes_name_list:
+            highest_RT = 0
+            for e in self.experiments:
+                if not self.list_of_peaks[gene_name][e]['valleys']:
+                    RT_length = 0
+                else:
+                    RT_length = max(self.list_of_peaks[gene_name][e]['valleys'])-self.five_prime_flank
+                    if RT_length > highest_RT: highest_RT = RT_length
+            if self.gtf.genes[gene_name]['strand'] == '+': start, stop = self.gtf.chromosomeCoordinates(gene_name)[0]-10, self.gtf.chromosomeCoordinates(gene_name)[0]+1+highest_RT
+            elif self.gtf.genes[gene_name]['strand'] == '-': start, stop = self.gtf.chromosomeCoordinates(gene_name)[1]-highest_RT, self.gtf.chromosomeCoordinates(gene_name)[1]+11
+            line = self.gtf.genes[gene_name]['chromosome']+'\t'\
+                   +'tRNA'+"\t"\
+                   +'exon'+'\t'\
+                   +str(start)+'\t'\
+                   +str(stop)+"\t.\t"\
+                   +self.gtf.genes[gene_name]['strand']+"\t.\t"\
+                   +'gene_id "'+self.gtf.genes[gene_name]['gene_id']+'"; transcript_id "'+self.gtf.genes[gene_name]['gene_id']\
+                   +'"; gene_name "'+gene_name+'"; gene_biotype "tRNA"; transcript_name "'+gene_name+'";'
+            new_GTF_file.write(line+'\n')
+        new_GTF_file.close()
+
     def Tdensity(self):
         print "# Calculating genome-wide T-density among peaks and valleys"
         peaks_T = list()
@@ -646,73 +672,76 @@ class GenomeWidePlot():
                 for peak in self.list_of_peaks[gene_name][e]['peaks']:
                     if peak > gene_length+self.five_prime_flank:
                         next_valley = min([v for v in self.list_of_peaks[gene_name][e]['valleys'] if v > peak])
-                        peak_T_content = self.data[gene_name][peak-5:peak+5][self.data[gene_name].nucleotide == 'T']
-                        next_valley_T_content = self.data[gene_name][next_valley-5:next_valley+5][self.data[gene_name].nucleotide == 'T']
-                        if peak_T_content.mean()[e] > 400:
-                            peaks_T.append(float(peak_T_content.count()['nucleotide']))
-                            valleys_T.append(float(next_valley_T_content.count()['nucleotide']))
+                        peak_T_content = self.data[gene_name][peak-10:peak+10][self.data[gene_name].nucleotide == 'T']
+                        next_valley_T_content = self.data[gene_name][next_valley-10:next_valley+10][self.data[gene_name].nucleotide == 'T']
+                        if peak_T_content.mean()[e] > 300:
+                            peaks_T.append(float(peak_T_content.count()['nucleotide'])/20)
+                            valleys_T.append(float(next_valley_T_content.count()['nucleotide'])/20)
         print 'No. of peaks: '+str(len(peaks_T))
         print 'No. of valleys: '+str(len(valleys_T))
         df = pd.DataFrame({'peaks_T' : peaks_T, 'valleys_T' : valleys_T})
         print 'Mean:'
         print df.mean()
-        print 'Madian:'
-        print df.median()
-        print 'SD:'
-        print df.std()
+        # print 'Madian:'
+        # print df.median()
+        # print 'SD:'
+        # print df.std()
         print 'Wilcoxon:'
-        print ss.wilcoxon(peaks_T, valleys_T)
+        wilcoxon = ss.wilcoxon(peaks_T, valleys_T)
+        print wilcoxon
         print 'T-test:'
         print sss.ttest_ind(peaks_T, valleys_T, equal_var=True)
         print sss.ttest_ind(peaks_T, valleys_T, equal_var=False)
         print sss.ttest_rel(peaks_T, valleys_T)
+        print 'To_copy: '+str(df.mean()['peaks_T'])+'\t'+str(df.mean()['valleys_T'])+'\t'+str(wilcoxon[1])
 
-        # Create a figure instance
-        fig = plt.figure(1, figsize=(9, 6))
-                # Create an axes instance
-        ax = fig.add_subplot(111)
-                # Create the boxplot
-        ax.set_xticklabels(['peaks', 'valleys'])
-        ax.get_xaxis().tick_bottom()
-        bp = ax.boxplot([peaks_T, valleys_T], notch=True, sym=None, vert=True, whis=[15,85],
-                positions=None, widths=None, patch_artist=True,
-                bootstrap=None, usermedians=None, conf_intervals=None,
-                meanline=True, showmeans=False, showcaps=True,
-                showbox=True, showfliers=True, boxprops=None, labels=None,
-                flierprops=None, medianprops=None, meanprops=None,
-                capprops=None, whiskerprops=None, manage_xticks=True)
-
-        ## change outline color, fill color and linewidth of the boxes
-        for box in bp['boxes']:
-            # change outline color
-            box.set( color='black', linewidth=2)
-            # change fill color
-            box.set( facecolor ='grey')
-
-        ## change color and linewidth of the whiskers
-        for whisker in bp['whiskers']:
-            whisker.set(color='grey', linewidth=2)
-
-        ## change color and linewidth of the caps
-        for cap in bp['caps']:
-            cap.set(color='grey', linewidth=2)
-
-        ## change color and linewidth of the medians
-        for median in bp['medians']:
-            median.set(color='black', linewidth=1)
-
-        ## change the style of fliers and their fill
-        for flier in bp['fliers']:
-            flier.set(marker='o', color='grey', alpha=0.5)
-
-        # Save the figure
-        name = self.prefix+'boxplot.png'
-        fig.savefig(name, bbox_inches='tight')
+        df.to_csv('T_in_peaks_valleys.txt', sep='\t')
+        # # Create a figure instance
+        # fig = plt.figure(1, figsize=(9, 6))
+        #         # Create an axes instance
+        # ax = fig.add_subplot(111)
+        #         # Create the boxplot
+        # ax.set_xticklabels(['peaks', 'valleys'])
+        # ax.get_xaxis().tick_bottom()
+        # bp = ax.boxplot([peaks_T, valleys_T], notch=True, sym=None, vert=True, whis=[110,810],
+        #         positions=None, widths=None, patch_artist=True,
+        #         bootstrap=None, usermedians=None, conf_intervals=None,
+        #         meanline=True, showmeans=False, showcaps=True,
+        #         showbox=True, showfliers=True, boxprops=None, labels=None,
+        #         flierprops=None, medianprops=None, meanprops=None,
+        #         capprops=None, whiskerprops=None, manage_xticks=True)
+        #
+        # ## change outline color, fill color and linewidth of the boxes
+        # for box in bp['boxes']:
+        #     # change outline color
+        #     box.set( color='black', linewidth=2)
+        #     # change fill color
+        #     box.set( facecolor ='grey')
+        #
+        # ## change color and linewidth of the whiskers
+        # for whisker in bp['whiskers']:
+        #     whisker.set(color='grey', linewidth=2)
+        #
+        # ## change color and linewidth of the caps
+        # for cap in bp['caps']:
+        #     cap.set(color='grey', linewidth=2)
+        #
+        # ## change color and linewidth of the medians
+        # for median in bp['medians']:
+        #     median.set(color='black', linewidth=1)
+        #
+        # ## change the style of fliers and their fill
+        # for flier in bp['fliers']:
+        #     flier.set(marker='o', color='grey', alpha=0.10)
+        #
+        # # Save the figure
+        # name = self.prefix+'boxplot.png'
+        # fig.savefig(name, bbox_inches='tight')
 
     def RT_aligner(self, filter, experiment_to_align):
         print "# Plotting genom wide plots with chosen aligner..."
         #initiating dataframes
-        raw_5data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
+        raw_10data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
         raw_3data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
         raw_RT3_data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
 
@@ -733,8 +762,8 @@ class GenomeWidePlot():
                 if self.filter_out(gene_name=gene_name, filter=filter, experiment_to_filter=experiment_to_align, current_exp=e) == True:
                     no_of_genes += 1
                     list_of_genes.append(gene_name)
-                # 5` aligned
-                    raw_5data[gene_name] = self.data[gene_name][e]
+                # 10` aligned
+                    raw_10data[gene_name] = self.data[gene_name][e]
                 # 3` aligned
                     gene_length =   self.genes[gene_name]['gene_length']
                     temp_data = self.data[gene_name][e][gene_length:].reset_index()
@@ -755,7 +784,7 @@ class GenomeWidePlot():
             text_file.close()
 
             # sum
-            raw_5data['sum'] = raw_5data.sum(axis=1)
+            raw_10data['sum'] = raw_10data.sum(axis=1)
             raw_3data['sum'] = raw_3data.sum(axis=1)
             raw_RT3_data['sum'] = raw_RT3_data.sum(axis=1)
 
@@ -766,8 +795,8 @@ class GenomeWidePlot():
                       +self.categorize_tRNA(list_of_genes,output='text'),y=1.04)
 
             fig.add_subplot(3,1,1)
-            plt.title('5` aligned raw reads')
-            plt.plot(raw_5data.index, raw_5data['sum'])
+            plt.title('10` aligned raw reads')
+            plt.plot(raw_10data.index, raw_10data['sum'])
             plt.axvline(self.five_prime_flank, color="green")
 
             fig.add_subplot(3,1,2)
@@ -790,14 +819,14 @@ class GenomeWidePlot():
 
     def genome_wide_plots_3end_normalizations(self, set_up=None, factor=None, lower_than=False):
         """examples of use:
-        analyse_tRNA_from_concatv2.py -c glu_wt_C2.concat -o gwideToolkit -f RT -s 0.15
-        analyse_tRNA_from_concatv2.py -c glu_wt_C2.concat -o gwideToolkit -f RT -s 0.15 --lower_than"""
+        analyse_tRNA_from_concatv2.py -c glu_wt_C2.concat -o gwideToolkit -f RT -s 0.110
+        analyse_tRNA_from_concatv2.py -c glu_wt_C2.concat -o gwideToolkit -f RT -s 0.110 --lower_than"""
 
         print "# Plotting genom wide plots..."
         #initiating dataframes
-        raw_5data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
-        nmax_5data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
-        ntotal_5data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
+        raw_10data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
+        nmax_10data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
+        ntotal_10data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
         raw_3data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
         nmax_3data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
         ntotal_3data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
@@ -813,10 +842,10 @@ class GenomeWidePlot():
                 if self.list_of_peaks[gene_name][e]['valleys']:
                     no_of_genes += 1
                     list_of_genes.append(gene_name)
-                # 5` aligned
-                    raw_5data[gene_name] = self.data[gene_name][e]
-                    nmax_5data[gene_name] = self.data[gene_name][e+'_nmax']
-                    ntotal_5data[gene_name] = self.data[gene_name][e+'_ntotal']
+                # 10` aligned
+                    raw_10data[gene_name] = self.data[gene_name][e]
+                    nmax_10data[gene_name] = self.data[gene_name][e+'_nmax']
+                    ntotal_10data[gene_name] = self.data[gene_name][e+'_ntotal']
                 # 3` aligned
                     gene_length =   self.genes[gene_name]['gene_length']
                     temp_data = self.data[gene_name][e][gene_length:].reset_index()
@@ -835,9 +864,9 @@ class GenomeWidePlot():
                     ntotal_3RTdata[gene_name] = temp_data[e+'_ntotal']
 
             # sum
-            raw_5data['sum'] = raw_5data.sum(axis=1)
-            nmax_5data['sum'] = nmax_5data.sum(axis=1)
-            ntotal_5data['sum'] = ntotal_5data.sum(axis=1)
+            raw_10data['sum'] = raw_10data.sum(axis=1)
+            nmax_10data['sum'] = nmax_10data.sum(axis=1)
+            ntotal_10data['sum'] = ntotal_10data.sum(axis=1)
             raw_3data['sum'] = raw_3data.sum(axis=1)
             nmax_3data['sum'] = nmax_3data.sum(axis=1)
             ntotal_3data['sum'] = ntotal_3data.sum(axis=1)
@@ -850,34 +879,34 @@ class GenomeWidePlot():
                 text_file.write(i + "\t" + self.genes[i]['gene_id'] + "t" + str(max(self.list_of_peaks[i][e]['valleys'])-self.five_prime_flank) + "\n")
             text_file.close()
 
-            # plotting 5` aligned
+            # plotting 10` aligned
             print "# Printing plot for "+str(no_of_genes)+" genes..."
             fig = plt.figure(figsize=(12, 9), dpi=100, facecolor='w', edgecolor='k')
             plt.title(str(no_of_genes)+" tRNA genes with in "+e+" dataset",y=1.04)
             fig.add_subplot(3,3,1)
-            plt.title('5` aligned raw reads')
-            plt.plot(raw_5data.index, raw_5data['sum'])
-            plt.axvline(250, color="green")
+            plt.title('10` aligned raw reads')
+            plt.plot(raw_10data.index, raw_10data['sum'])
+            plt.axvline(2100, color="green")
             fig.add_subplot(3,3,2)
             plt.title('3` aligned raw reads')
             plt.plot(raw_3data.index, raw_3data['sum'])
-            plt.axvline(250, color="green")
+            plt.axvline(2100, color="green")
             fig.add_subplot(3,3,3)
             plt.title('3` of RT aligned raw reads')
             plt.plot(raw_3data.index, raw_3RTdata['sum'])
-            plt.axvline(250, color="green")
+            plt.axvline(2100, color="green")
             fig.add_subplot(3,3,4)
-            plt.title('5` aligned normalized (nmax)')
-            plt.plot(nmax_5data.index, nmax_5data['sum'])
-            fig.add_subplot(3,3,5)
+            plt.title('10` aligned normalized (nmax)')
+            plt.plot(nmax_10data.index, nmax_10data['sum'])
+            fig.add_subplot(3,3,10)
             plt.title('3` aligned normalized (nmax)')
             plt.plot(nmax_3data.index, nmax_3data['sum'])
             fig.add_subplot(3,3,6)
             plt.title('3` of RT aligned normalized (nmax)')
             plt.plot(nmax_3data.index, nmax_3RTdata['sum'])
             fig.add_subplot(3,3,7)
-            plt.title('5` aligned normalized (ntotal)')
-            plt.plot(ntotal_5data.index, ntotal_5data['sum'])
+            plt.title('10` aligned normalized (ntotal)')
+            plt.plot(ntotal_10data.index, ntotal_10data['sum'])
             fig.add_subplot(3,3,8)
             plt.title('3` aligned normalized (ntotal)')
             plt.plot(ntotal_3data.index, ntotal_3data['sum'])
