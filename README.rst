@@ -9,6 +9,19 @@ Description
 
 ploting of genome-wide plots pyCRAC downstream tool
 
+gwideHittable (-h for help) - Three options:
+  - Calculate "correlations": Pearson, Spearman or Kendall Tau
+  - "count" hittables for further analysis. Ideal to work with multiple experiments
+  - Plot "piechart"s for hittable classes (plots are not ideal...)
+
+gwidePlot
+
+
+
+Old description
+===========
+
+
 pyPiecharts_from_hittables.py, compareHittables.py and countHittables.py working with pyReadCounter.py output files *hittable_reads.txt
 
 compareHittables.py - to calculate Pearson, Spearman and Kendall corelation coefficients between hittables - as many as you want.
