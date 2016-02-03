@@ -2,6 +2,11 @@
 gwide
 =====
 
+Instalation
+===========
+for users
+
+for developers: pip install --editable .
 
 
 Description
