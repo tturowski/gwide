@@ -421,6 +421,22 @@ class GenomeWidePlot():
         print "Plotting in ranges: "+str(ranges)
         return ranges
 
+    def table(self, filter, experiment_to_filter):
+        for e in self.experiments:
+            #initiating dataframes
+            raw_10data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
+            no_of_genes = 0
+            list_of_genes = list()
+            for gene_name in self.genes_name_list:
+                if self.filter_out(gene_name=gene_name, filter=filter, experiment_to_filter=experiment_to_filter, current_exp=e) == True:
+                    no_of_genes += 1
+                    list_of_genes.append(gene_name)
+                # 5` aligned
+                    raw_10data[gene_name] = self.data[gene_name][e]
+        transposed = raw_10data.transpose()
+        transposed = transposed.fillna(0)
+        transposed.to_csv("heatmap.csv")
+
     def ratio(self, to_divide, divisor, filter, exp_to_use=str(), select=None):
         new_exp_list = self.group_experiments(to_divide, divisor, exp_to_use=exp_to_use) #exp_to_use allows for normalizations
         if select:
