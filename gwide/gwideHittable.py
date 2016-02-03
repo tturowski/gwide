@@ -22,8 +22,7 @@ def hittable():
                                                                                                                          'Plot "piechart"s for hittable classes')
     # parser for input files options
     files = parser.add_argument_group('Input file options')
-    files.add_argument("-g", dest="gtf_file", help="Provide the path to your gtf file.",
-                     type=str, default=None)
+    files.add_argument("-g", dest="gtf_file", help="Provide the path to your gtf file.", type=str, default=None)
     files.add_argument("--stdin", dest="stdin", action="store_true", help="Use standard input instead ./*hittable* Default: False", default=False)
     # universal options
     universal = parser.add_argument_group('universal options')
