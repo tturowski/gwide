@@ -19,7 +19,6 @@ def plot():
     ***    pip install --editable .
     """
 
-
     #setup option parser
     usage = "Usage: gwide function -i input -o output [options]"
     parser = argparse.ArgumentParser(usage=usage, formatter_class=RawTextHelpFormatter)

@@ -1,24 +1,36 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-    Setup file for gwide.
+""" Setup script for the gwide package."""
 
-    This file was generated with PyScaffold 2.4.4, a tool that easily
-    puts up a scaffold for your new Python project. Learn more under:
-    http://pyscaffold.readthedocs.org/
-"""
+__author__ = 'Tomasz W. Turowski'
 
-import sys
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
-def setup_package():
-    needs_sphinx = {'build_sphinx', 'upload_docs'}.intersection(sys.argv)
-    sphinx = ['sphinx'] if needs_sphinx else []
-    setup(setup_requires=['six', 'pyscaffold>=2.4rc1,<2.5a0'] + sphinx,
-          tests_require=['pytest_cov', 'pytest'],
-          use_pyscaffold=True)
-
-
-if __name__ == "__main__":
-    setup_package()
+setup(
+    name='gwide',
+    version='0.3',
+    # py_modules=['gwide'],
+    packages=find_packages(),
+    install_requires=[
+        'pypeaks',
+        'pandas',
+        'ruffus',
+        'PyYAML',
+        'matplotlib',
+        'numpy'
+    ],
+    entry_points='''
+        [console_scripts]
+        gwideHittable=gwide.gwideHittable:hittable
+        gwidePlot=gwide.gwidePlot:plot
+    ''',
+    author="Tomasz W. Turowski",
+    description='Set of tools to downstream analysis of pyCRAC data',
+    long_description='',
+    author_email="twturowski@gmail.com",
+    classifiers=[
+            'Development Status :: 2 - Pre-Alpha',
+            'Intended Audience :: Science/Research',
+            'License :: OSI Approved :: Apache',
+            'Topic :: Scientific/Engineering :: Bio-Informatics']
+)
