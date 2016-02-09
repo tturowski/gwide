@@ -4,9 +4,25 @@ gwide
 
 Instalation
 ===========
-for users
+for users: pip install --user mercurial git+git://github.com/tturowski/gwide.git (or skip --user mercurial to install globally)
+add to your .profile or .bash_profile or .bash_login
+PATH="$HOME/.local/bin:$PATH"
+
 
 for developers: pip install --editable .
+
+
+Setup
+===========
+It's possible to create ~/bin/default.aml file with paths to follwing files:
+#default paths to genome files
+GTF_PATH : *.gtf
+FASTA_PATH : *.fasta
+TAB_PATH : *.tab
+
+
+
+
 
 
 Description

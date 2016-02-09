@@ -421,10 +421,15 @@ class GenomeWidePlot():
         print "Plotting in ranges: "+str(ranges)
         return ranges
 
+    def isEven(self, number):
+        return number % 2 == 0
+
     def table(self, filter, experiment_to_filter):
+        """saving *csv file with flans 50 nt 5' and 250 nt 3' """
+
         for e in self.experiments:
             #initiating dataframes
-            raw_10data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
+            raw_5data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
             no_of_genes = 0
             list_of_genes = list()
             for gene_name in self.genes_name_list:
@@ -432,10 +437,10 @@ class GenomeWidePlot():
                     no_of_genes += 1
                     list_of_genes.append(gene_name)
                 # 5` aligned
-                    raw_10data[gene_name] = self.data[gene_name][e]
-        transposed = raw_10data.transpose()
-        transposed = transposed.fillna(0)
-        transposed.to_csv("heatmap.csv")
+                    raw_5data[gene_name] = self.data[gene_name][e]
+            transposed = raw_5data.transpose()
+            transposed = transposed.fillna(0)
+            transposed.to_csv(str(e)+"_heatmap.csv")
 
     def ratio(self, to_divide, divisor, filter, exp_to_use=str(), select=None):
         new_exp_list = self.group_experiments(to_divide, divisor, exp_to_use=exp_to_use) #exp_to_use allows for normalizations
@@ -488,7 +493,7 @@ class GenomeWidePlot():
             self.plotSubplot(fig=fig, layout=layout, plot_no=2, title=three+e[0], data=a_3data, line_color="#7f0f0f", select=select)
             self.plotSubplot(fig=fig, layout=layout, plot_no=3, title=five+e[1], data=b_10data, line_color="green", select=select)
             self.plotSubplot(fig=fig, layout=layout, plot_no=4, title=three+e[1], data=b_3data, line_color="#7f0f0f", select=select)
-            self.plotSubplot(fig=fig, layout=layout, plot_no=10, title=five+e[0]+"/"+e[1]+" ratio", data=ratio_10data, line_color="green", select=select)
+            self.plotSubplot(fig=fig, layout=layout, plot_no=5, title=five+e[0]+"/"+e[1]+" ratio", data=ratio_10data, line_color="green", select=select)
             self.plotSubplot(fig=fig, layout=layout, plot_no=6, title=three+e[0]+"/"+e[1]+" ratio", data=ratio_3data, line_color="#7f0f0f", select=select)
             self.plotSubplot(fig=fig, layout=layout, plot_no=7, title=five+'log2 '+e[0]+"/"+e[1]+" ratio", data=log2_10data, line_color="green", select=select)
             self.plotSubplot(fig=fig, layout=layout, plot_no=8, title=three+'log2 '+e[0]+"/"+e[1]+" ratio", data=log2_3data, line_color="#7f0f0f", select=select)
@@ -676,7 +681,9 @@ class GenomeWidePlot():
             new_GTF_file.write(line+'\n')
         new_GTF_file.close()
 
-    def Tdensity(self):
+    def Tdensity(self, peak_min, size):
+        if not self.isEven(size):
+            exit("Size should be even number.")
         print "# Calculating genome-wide T-density among peaks and valleys"
         peaks_T = list()
         valleys_T = list()
@@ -690,11 +697,13 @@ class GenomeWidePlot():
                 for peak in self.list_of_peaks[gene_name][e]['peaks']:
                     if peak > gene_length+self.five_prime_flank:
                         next_valley = min([v for v in self.list_of_peaks[gene_name][e]['valleys'] if v > peak])
-                        peak_T_content = self.data[gene_name][peak-10:peak+10][self.data[gene_name].nucleotide == 'T']
-                        next_valley_T_content = self.data[gene_name][next_valley-10:next_valley+10][self.data[gene_name].nucleotide == 'T']
-                        if peak_T_content.mean()[e] > 300:
-                            peaks_T.append(float(peak_T_content.count()['nucleotide'])/20)
-                            valleys_T.append(float(next_valley_T_content.count()['nucleotide'])/20)
+                        peak_T_content = self.data[gene_name][peak-(size/2):peak+(size/2)][self.data[gene_name].nucleotide == 'T']
+                        next_valley_T_content = self.data[gene_name][next_valley-(size/2):next_valley+(size/2)][self.data[gene_name].nucleotide == 'T']
+                        if peak_T_content.mean()[e] > peak_min:
+                            peaks_T.append(float(peak_T_content.count()['nucleotide'])/size)
+                            valleys_T.append(float(next_valley_T_content.count()['nucleotide'])/size)
+        print 'Minimum peak average setup to '+str(peak_min)
+        print 'Calculating for '+str(size)+" nt surrounding each peak and through(valley)"
         print 'No. of peaks: '+str(len(peaks_T))
         print 'No. of valleys: '+str(len(valleys_T))
         df = pd.DataFrame({'peaks_T' : peaks_T, 'valleys_T' : valleys_T})
@@ -707,9 +716,9 @@ class GenomeWidePlot():
         print 'Wilcoxon:'
         wilcoxon = ss.wilcoxon(peaks_T, valleys_T)
         print wilcoxon
-        print 'T-test:'
-        print sss.ttest_ind(peaks_T, valleys_T, equal_var=True)
-        print sss.ttest_ind(peaks_T, valleys_T, equal_var=False)
+        print 'T-test (related samples):'
+        # print sss.ttest_ind(peaks_T, valleys_T, equal_var=True)
+        # print sss.ttest_ind(peaks_T, valleys_T, equal_var=False)
         print sss.ttest_rel(peaks_T, valleys_T)
         print 'To_copy: '+str(df.mean()['peaks_T'])+'\t'+str(df.mean()['valleys_T'])+'\t'+str(wilcoxon[1])
 
