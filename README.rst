@@ -4,17 +4,18 @@ gwide
 
 Instalation
 ===========
-for users: pip install --user mercurial git+git://github.com/tturowski/gwide.git (or skip --user mercurial to install globally)
+for users: 
+pip install --user mercurial git+git://github.com/tturowski/gwide.git (or skip --user mercurial to install globally)
 add to your .profile or .bash_profile or .bash_login
 PATH="$HOME/.local/bin:$PATH"
 
-
-for developers: pip install --editable .
-
+for developers:
+clone folder
+pip install --editable .
 
 Setup
 ===========
-It's possible to create ~/bin/default.aml file with paths to follwing files:
+It's possible to create $HOME/bin/default.aml file with paths to follwing files:
 #default paths to genome files
 GTF_PATH : *.gtf
 FASTA_PATH : *.fasta
@@ -36,8 +37,12 @@ gwideHittable (-h for help) - Three options:
   - Plot "piechart"s for hittable classes (plots are not ideal...)
 
 gwidePlot
-
-
+  - plot genome wide plots, 5' and 3' end aligned or aligned to choosen aligner (-o aligner) or aligneg to 3' end of read-through
+  - plot genome wide ratio between different experiment
+  - possibility to filter genes using -f option
+  - printing *.csv tables to generate heatmaps using other software (i.e. GENE-E)
+  - calculate p-value for a non-canonical termination sites 
+  - making GTF files (for whole transcripts or only for extensions
 
 Old description
 ===========

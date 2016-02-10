@@ -24,6 +24,26 @@ def getGTF(gtf_from_options):
         else:
             exit('Provide GTF file path using -g or setup default.aml in your bin folder')
 
+def getFASTA(fasta_from_options):
+    """
+    Sorting out source of fasta path, in order (1) from options parser, (2) from ~/bin/default.aml
+     or (3) from environmental variable $FASTA_PATH
+    :param fasta_from_options: fasta path from options parser, can be an empty string
+    :return: path to fasta file
+    """
+    if fasta_from_options:
+        return fasta_from_options
+    elif 'default.aml' in os.listdir(os.getenv("HOME")+'/bin/'):
+        default = yaml.load(open(os.getenv("HOME")+'/bin/default.aml'))
+        # print "# Using FASTA file from ~/bin/default.aml"
+        return default['FASTA_PATH']
+    else:
+        if os.environ['FASTA_PATH']:
+            # print "# Using FASTA file from $FASTA_PATH variable"
+            return os.environ['FASTA_PATH']
+        else:
+            exit('Provide FASTA file path using -g or setup default.aml in your bin folder')
+
 def list_paths_in_current_dir(suffix=str(), stdin=False):
     """
     :param: suffix  -   lists paths in current directory ending with suffix only

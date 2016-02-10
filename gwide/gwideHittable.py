@@ -8,7 +8,7 @@ __status__		= "Production"
 
 import os, argparse
 from argparse import RawTextHelpFormatter
-import gwide.methods as gtk
+import gwide.methods as gtm
 import gwide.Classes.HittableClass as ghc
 
 def hittable():
@@ -40,7 +40,7 @@ def hittable():
     options = parser.parse_args()
 
     ## Creating HittableClass object
-    data = ghc.HittableClass(gtf=gtk.getGTF(options.gtf_file), whole_name=options.whole_name, n_rpM=options.normalized, out_prefix=options.out_prefix, read_stdin=options.stdin)
+    data = ghc.HittableClass(gtf=gtm.getGTF(options.gtf_file), whole_name=options.whole_name, n_rpM=options.normalized, out_prefix=options.out_prefix, read_stdin=options.stdin)
 
     #running chosen function
     if options.function == 'correlation':

@@ -23,6 +23,11 @@ setup(
         [console_scripts]
         gwideHittable=gwide.gwideHittable:hittable
         gwidePlot=gwide.gwidePlot:plot
+        getFastaSeqs=gwide.parserTools:getFastaSeqs
+        getGeneLength=gwide.parserTools:getGeneLength
+        getIdFromName=gwide.parserTools:getIdFromName
+        getNameFromId=gwide.parserTools:getNameFromId
+        getGeneNamesFromGTF=gwide.parserTools:getGeneNamesFromGTF
     ''',
     author="Tomasz W. Turowski",
     description='Set of tools to downstream analysis of pyCRAC data',
