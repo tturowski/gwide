@@ -18,7 +18,7 @@ def getGTF(gtf_from_options):
         # print "# Using GTF file from ~/bin/default.aml"
         return default['GTF_PATH']
     else:
-        if os.environ['GTF_PATH']:
+        if 'GTF_PATH' in os.environ:
             # print "# Using GTF file from $GTF_PATH variable"
             return os.environ['GTF_PATH']
         else:
@@ -38,7 +38,7 @@ def getFASTA(fasta_from_options):
         # print "# Using FASTA file from ~/bin/default.aml"
         return default['FASTA_PATH']
     else:
-        if os.environ['FASTA_PATH']:
+        if 'FASTA_PATH' in os.environ:
             # print "# Using FASTA file from $FASTA_PATH variable"
             return os.environ['FASTA_PATH']
         else:
