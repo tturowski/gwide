@@ -15,7 +15,7 @@ import gwide.methods as gtm
 
 def novo2concat():
     #seting up option parser
-    parser = argparse.ArgumentParser(description='Usage: ruffus scirpts are designed to make plots directly from *.novo files. Make new folder, cp or ln into all novofiles and run ruffus script. IMPORTANT: name of novo file should be name of experiment')
+    parser = argparse.ArgumentParser(description='Usage: ruffus scirpt designed to make concat file from *.novo files. Make new folder, cp or ln into all novofiles and run novo2concat. IMPORTANT: name of novo file should be name of experiment')
     parser.add_argument("-g", "--gtf_file", dest="gtf_file", help="Provide the path to your gtf file.",
                          type=str, default=None)
     parser.add_argument("-t", "--tab_file", dest="tab_file", help="Provide the path to your tab genome file.",
