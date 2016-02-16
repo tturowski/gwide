@@ -22,6 +22,7 @@ setup(
     entry_points='''
         [console_scripts]
         novo2concat.py=gwide.scripts.novo2concat:novo2concat
+        gwidetRNA=gwide.gwidetRNA:tRNA
         gwideHittable=gwide.gwideHittable:hittable
         gwidePlot=gwide.gwidePlot:plot
         getFastaSeqs=gwide.parserTools:getFastaSeqs

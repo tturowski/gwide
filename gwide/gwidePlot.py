@@ -9,7 +9,7 @@ __status__		= "Production"
 import argparse
 from argparse import RawTextHelpFormatter
 import os
-import gwide.methods as gtk
+import gwide.methods as gtm
 from gwide.Classes.gwidePlot_class import GenomeWidePlot
 
 
@@ -68,7 +68,7 @@ def plot():
 
     options = parser.parse_args()
 
-    gtf_file = gtk.getGTF(options.gtf_file)
+    gtf_file = gtm.getGTF(options.gtf_file)
     list_file = options.list_file
 
     #preparing naming of output files
@@ -91,7 +91,6 @@ def plot():
 
     #reading csv file
     data.read_csv(options.input_file, skip_nucleotide=False)
-    # data.read_csv(options.input_file, skip_nucleotide=True)
 
     #plotting
     if options.output == 'std':

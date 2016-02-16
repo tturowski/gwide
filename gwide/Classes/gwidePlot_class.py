@@ -426,7 +426,6 @@ class GenomeWidePlot():
 
     def table(self, filter, experiment_to_filter):
         """saving *csv file with flans 50 nt 5' and 250 nt 3' """
-
         for e in self.experiments:
             #initiating dataframes
             raw_5data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])

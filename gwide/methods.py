@@ -4,69 +4,40 @@ import os, yaml, sys
 import numpy as np
 import pandas as pd
 
-def getGTF(gtf_from_options):
+def getRefFile(file_from_options, file_type):
     """
-    Sorting out source of gtf path, in order (1) from options parser, (2) from ~/bin/default.aml
-     or (3) from environmental variable $GTF_PATH
-    :param gtf_from_options: gtf path from options parser, can be an empty string
-    :return: path to gtf file
+    Sorting out source of gtf, fasta or tab path, in order (1) from options parser, (2) from ~/bin/default.aml
+     or (3) from environmental variable $xxx_PATH
+    :param file_from_options: file path from options parser, can be an empty string
+                file_type: 'GTF', 'FASTA', 'TAB'
+    :return: path to the file
     """
-    if gtf_from_options:
-        return gtf_from_options
+    file_types = {'GTF' : 'GTF_PATH', 'FASTA' : 'FASTA_PATH', 'TAB' : 'TAB_PATH'}
+    if file_from_options:
+        return file_from_options
     elif 'default.aml' in os.listdir(os.getenv("HOME")+'/bin/'):
         default = yaml.load(open(os.getenv("HOME")+'/bin/default.aml'))
-        # print "# Using GTF file from ~/bin/default.aml"
-        return default['GTF_PATH']
+        # print "# Using "+file_type+" file from ~/bin/default.aml"
+        return default[file_types[file_type]]
     else:
-        if 'GTF_PATH' in os.environ:
-            # print "# Using GTF file from $GTF_PATH variable"
-            return os.environ['GTF_PATH']
+        if file_types[file_type] in os.environ:
+            # print "# Using "+file_type+" file from $GTF_PATH variable"
+            return os.environ[file_types[file_type]]
         else:
-            exit('Provide GTF file path using -g or setup default.aml in your bin folder')
+            exit('Provide '+file_type+' file path using -g or setup default.aml in your bin folder')
+
+def getGTF(gtf_from_options):
+    return getRefFile(gtf_from_options, 'GTF')
 
 def getFASTA(fasta_from_options):
-    """
-    Sorting out source of fasta path, in order (1) from options parser, (2) from ~/bin/default.aml
-     or (3) from environmental variable $FASTA_PATH
-    :param fasta_from_options: fasta path from options parser, can be an empty string
-    :return: path to fasta file
-    """
-    if fasta_from_options:
-        return fasta_from_options
-    elif 'default.aml' in os.listdir(os.getenv("HOME")+'/bin/'):
-        default = yaml.load(open(os.getenv("HOME")+'/bin/default.aml'))
-        # print "# Using FASTA file from ~/bin/default.aml"
-        return default['FASTA_PATH']
-    else:
-        if 'FASTA_PATH' in os.environ:
-            # print "# Using FASTA file from $FASTA_PATH variable"
-            return os.environ['FASTA_PATH']
-        else:
-            exit('Provide FASTA file path using -g or setup default.aml in your bin folder')
+    return getRefFile(fasta_from_options, 'FASTA')
 
 def getTAB(tab_from_options):
-    """
-    Sorting out source of tab path, in order (1) from options parser, (2) from ~/bin/default.aml
-     or (3) from environmental variable $TAB_PATH
-    :param tab_from_options: tab path from options parser, can be an empty string
-    :return: path to tab file
-    """
-    if tab_from_options:
-        return tab_from_options
-    elif 'default.aml' in os.listdir(os.getenv("HOME")+'/bin/'):
-        default = yaml.load(open(os.getenv("HOME")+'/bin/default.aml'))
-        # print "# Using TAB file from ~/bin/default.aml"
-        return default['TAB_PATH']
-    else:
-        if 'TAB_PATH' in os.environ:
-            # print "# Using TAB file from $TAB_PATH variable"
-            return os.environ['TAB_PATH']
-        else:
-            exit('Provide TAB file path using -g or setup default.aml in your bin folder')
+    return getRefFile(tab_from_options, 'TAB')
 
 def list_paths_in_current_dir(suffix=str(), stdin=False):
     """
-    :param: suffix  -   lists paths in current directory ending with suffix only
+    :param: suffix  -   lists paths in current directory ending with an indicated suffix only
             stdin   -   read from standard input instead current directory
     :return: list of paths in current dir ending with suffix
     """

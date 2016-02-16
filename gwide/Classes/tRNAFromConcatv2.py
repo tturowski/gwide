@@ -167,7 +167,7 @@ class tRNAFromConcatv2():
         # print self.list_of_peaks
         return True
 
-    def calculate(self, details=False, ntotal=False, nmax=False):
+    def calculate(self, details=False, ntotal=False, nmax=False, pscounts=False):
         if details == True or nmax == True or ntotal == True:
             print '# Calculating readthrough and others...'
         elif details == True and len(self.experiments) > 1:
@@ -200,15 +200,21 @@ class tRNAFromConcatv2():
         # !! changes in exp name !!
                 exp_old = exp
                 try:
-                    histogram   =   list(self.data[gene_name][exp])
-                    if max(histogram) >= self.hits_threshold:
+                    if max(list(self.data[gene_name][exp])) >= self.hits_threshold:
                 #normalization options
                         if nmax == True:
                             exp = exp_old+'_nmax'
                             self.data[gene_name][exp] = self.data[gene_name][exp_old]/self.data[gene_name][exp_old].max()
+                            if pscounts == True:
+                                self.data[gene_name][exp] = self.data[gene_name][exp].add(0.000001) #adding pseudocounts
                         if ntotal == True:
                             exp = exp_old+'_ntotal'
                             self.data[gene_name][exp] = self.data[gene_name][exp_old]/self.data[gene_name][exp_old].sum()
+                            if pscounts == True:
+                                self.data[gene_name][exp] = self.data[gene_name][exp].add(0.000001) #adding pseudocounts
+                        if pscounts == True:
+                            self.data[gene_name][exp_old] = self.data[gene_name][exp_old].add(10) #adding pseudocounts
+
                 #slicing dataframes
                         total       =   self.data[gene_name][transcription_start:].sum()[exp]
                         total_av    =   self.data[gene_name][transcription_start:].mean()[exp]
