@@ -10,24 +10,8 @@ __status__		= "Production"
 then run pileupsToConcat.py and run script with plotting parameters: analyse_tRNA_from_concat.py"""
 
 from ruffus import *
-import pandas as pd
 import subprocess, re, os, argparse, time, yaml, math, shutil
-
-def get_file(path_from_options, type):
-    #sorting out GTF/FASTA file
-    types = {'gtf' : 'GTF_PATH', 'tab' : 'TAB_PATH'}
-    if path_from_options:
-        return path_from_options
-    elif 'default.aml' in os.listdir(os.getenv("HOME")+'/bin/'):
-        default = yaml.load(open(os.getenv("HOME")+'/bin/default.aml'))
-        # print "# Using "+type+" file from ~/bin/default.aml"
-        return default[types[type]]
-    else:
-        if os.environ[types[type]]:
-            # print "# Using "+type+" file from $"+types[type]+" variable"
-            return os.environ[types[type]]
-        else:
-            exit('Provide '+type+' file path using -g/-t or setup default.aml in your bin folder')
+import gwide.methods as gtm
 
 #seting up option parser
 parser = argparse.ArgumentParser(description='Usage: ruffus scirpts are designed to make plots directly from *.novo files. Make new folder, cp or ln into all novofiles and run ruffus script. IMPORTANT: name of novo file should be name of experiment')
@@ -42,7 +26,7 @@ parser.add_argument("--tree", dest="tree", help="If you want to leave tree of ca
 parser.add_argument("-p", dest="prefix", help="Prefix for concat file name", type=str, default="")
 args = parser.parse_args()
 
-gtf, tab, ranges = get_file(args.gtf_file, 'gtf'), get_file(args.tab_file, 'tab'), str(args.ranges)
+gtf, tab, ranges = gtm.getGTF(args.gtf_file), gtm.getTAB(args.tab_file), str(args.ranges)
 print "Using GTF file: " + gtf
 print "Using TAB genome file: " + tab
 

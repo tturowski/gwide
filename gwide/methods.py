@@ -44,6 +44,26 @@ def getFASTA(fasta_from_options):
         else:
             exit('Provide FASTA file path using -g or setup default.aml in your bin folder')
 
+def getTAB(tab_from_options):
+    """
+    Sorting out source of tab path, in order (1) from options parser, (2) from ~/bin/default.aml
+     or (3) from environmental variable $TAB_PATH
+    :param tab_from_options: tab path from options parser, can be an empty string
+    :return: path to tab file
+    """
+    if tab_from_options:
+        return tab_from_options
+    elif 'default.aml' in os.listdir(os.getenv("HOME")+'/bin/'):
+        default = yaml.load(open(os.getenv("HOME")+'/bin/default.aml'))
+        # print "# Using TAB file from ~/bin/default.aml"
+        return default['TAB_PATH']
+    else:
+        if 'TAB_PATH' in os.environ:
+            # print "# Using TAB file from $TAB_PATH variable"
+            return os.environ['TAB_PATH']
+        else:
+            exit('Provide TAB file path using -g or setup default.aml in your bin folder')
+
 def list_paths_in_current_dir(suffix=str(), stdin=False):
     """
     :param: suffix  -   lists paths in current directory ending with suffix only
