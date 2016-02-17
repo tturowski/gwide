@@ -34,7 +34,7 @@ setup(
         'gwide/scripts/novo2concat.py',
         'gwide/scripts/defineTerminator.py',
         'gwide/scripts/geneUsage.py'
-    ]
+    ],
     author="Tomasz W. Turowski",
     description='Set of tools to downstream analysis of pyCRAC data',
     long_description='',
