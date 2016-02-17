@@ -12,7 +12,7 @@ import argparse
 from argparse import RawTextHelpFormatter
 import select, os, re
 import pandas as pd
-main():
+def main():
     usage = "Usage: calculate gene usage for tRNA genes"
 
     parser = argparse.ArgumentParser(usage=usage, formatter_class=RawTextHelpFormatter)
