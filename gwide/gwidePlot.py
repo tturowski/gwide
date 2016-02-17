@@ -62,8 +62,8 @@ def plot():
                       default=None)
     special.add_argument("-b", dest="divisor", type=str, help="experiment being divisor for -a (-o ratio)", default=None)
     special.add_argument("--select", dest="select", type=str, help="To print additional plot with selecter area and no titles keep form 200_300 (range from 200 to 300)", default=None)
-    special.add_argument("--peak_min", dest="peak_min for -o Tdensity", type=int, help="", default=300)
-    special.add_argument("--peak_size", dest="peak_size for -o Tdensity", type=int, help="", default=20)
+    special.add_argument("--peak_min", dest="peak_min", type=int, help="minimum of peak average for -o Tdensity", default=300)
+    special.add_argument("--peak_size", dest="peak_size", type=int, help="peak size for -o Tdensity", default=20)
 
 
     options = parser.parse_args()
