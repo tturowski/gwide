@@ -54,9 +54,9 @@ def tRNA():
                       default=5)
     special.add_argument("--ntotal", dest="ntotal", action="store_true", help="Normalize data to sum of all reads (sum = 1). Default: False", default=False)
     special.add_argument("--nmax", dest="nmax", action="store_true", help="Normalize data to maximal value (max = 1). Default: False", default=False)
-    special.add_argument("-a", dest="to_divide", type=str, help="experiment to divide by -b (-o ratio)",
+    special.add_argument("-a", dest="to_divide", type=str, help="experiment to divide by -b (-o fig_ratio)",
                       default=None)
-    special.add_argument("-b", dest="divisor", type=str, help="experiment being divisor for -a (-o ratio)",
+    special.add_argument("-b", dest="divisor", type=str, help="experiment being divisor for -a (-o fig_ratio)",
                       default=None)
     special.add_argument("--abox", dest="abox_file", help="Provide the path to your tab file with A box start.",
                      metavar="FILE", default=None)
@@ -86,7 +86,7 @@ def tRNA():
         prefix = 'normalized_'+prefix
 
     #setting up dependencies
-    if options.output_files == "ratio":
+    if options.output_files == "fig_ratio":
         options.normalized = True
     if options.output_files == 'termination_valleys':
         options.print_peaks = True
@@ -96,23 +96,23 @@ def tRNA():
                              three_prime_flank=options.three_prime_flank, hits_threshold=options.hits_threshold, lookahead=options.lookahead, prefix=prefix, normalized=options.normalized)
 
     #reading csv file
-    if options.output_files != "ratio":
+    if options.output_files != "fig_ratio":
         data.read_csv(input_file, null_substitution=False)
-    # elif options.output_files == "ratio":
+    # elif options.output_files == "fig_ratio":
     #     data.read_csv(input_file, null_substitution=True) ## makes all 0 as 1 in hittable
 
     #finding peaks
-    if (options.print_peaks == True or options.print_valleys == True ) and options.output_files != "ratio":
+    if (options.print_peaks == True or options.print_valleys == True ) and options.output_files != "fig_ratio":
         data.find_peaks()
 
     #calculating readthrough, details, normalize
-    if options.output_files != "ratio":
+    if options.output_files != "fig_ratio":
         data.calculate(details=options.details, ntotal=options.ntotal, nmax=options.nmax)
-    elif options.output_files == "ratio":
+    elif options.output_files == "fig_ratio":
         data.calculate(details=options.details, ntotal=options.ntotal, nmax=options.nmax, pscounts=True)
 
     #making text files
-    if options.output_files == "text" or options.output_files == "both":
+    if options.output_files == "stat_text" or options.output_files == "both":
         text_file = open(filename, "w")
         data.make_text_file(text_file, details=options.details, ntotal=options.ntotal, nmax=options.nmax)
 
@@ -120,7 +120,7 @@ def tRNA():
         data.slice_dataframe()
         data.fig_gene_pp()
 
-    if options.output_files == "tight":
+    if options.output_files == "fig_tight":
         data.slice_dataframe()
         data.fig_gene_pp_tight()
 
@@ -134,7 +134,7 @@ def tRNA():
         data.slice_dataframe()
         data.mark_T(anti_plot=True)
 
-    if options.output_files == "ratio":
+    if options.output_files == "fig_ratio":
         data.slice_dataframe()
         data.fig_ratio(options.to_divide, options.divisor)
 
@@ -146,14 +146,14 @@ def tRNA():
         print 'Needs update. Talk to Tomasz.'
     #     data.fig_nucleotide_gene()
 
-    # if options.output_files == "energy":
+    # if options.output_files == "nuc_energy":
     #     data.fig_energy(options.window)
 
-    if options.output_files == "figstd":
+    if options.output_files == "fig_std":
         data.slice_dataframe()
         data.fig_gene_after_gene()
 
-    if options.output_files == "boxes":
+    if options.output_files == "fig_boxes":
         print 'Needs update. Talk to Tomasz.'
         data.slice_dataframe()
     #     data.fig_boxes(open(options.abox_file), open(options.bbox_file))
