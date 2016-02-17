@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='gwide',
-    version='0.3.3',
+    version='0.3.4',
     # py_modules=['gwide'],
     packages=find_packages(),
     install_requires=[
@@ -22,6 +22,8 @@ setup(
     entry_points='''
         [console_scripts]
         novo2concat.py=gwide.scripts.novo2concat:novo2concat
+        defineTerminator.py=gwide.scripts.defineTerminator:main
+        geneUsage.py=gwide.scripts.geneUsage:main
         gwidetRNA=gwide.gwidetRNA:tRNA
         gwideHittable=gwide.gwideHittable:hittable
         gwidePlot=gwide.gwidePlot:plot
