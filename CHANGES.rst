@@ -5,4 +5,8 @@ Changelog
 Version 0.3
 ===========
 
-- open acces package created
+- open access package created
+
+Version 0.3.2
+===========
+- gwidetRNA.py function updated
