@@ -683,6 +683,21 @@ class GenomeWidePlot():
             new_GTF_file.write(line+'\n')
         new_GTF_file.close()
 
+    def printTrancriptLength(self):
+        print "# Making GTF with transcript coordinates"
+        print "# TSS is setup to -11"
+        name = self.prefix+"transcript_len.txt"
+        data = pd.DataFrame()
+        for gene_name in self.genes_name_list:
+            for e in self.experiments:
+                if not self.list_of_peaks[gene_name][e]['valleys']:
+                    transcript_len = self.genes[gene_name]['gene_length']
+                else:
+                    transcript_len = self.genes[gene_name]['gene_length'] + max(self.list_of_peaks[gene_name][e]['valleys']) - self.five_prime_flank + 11
+                data.loc[gene_name, 'gene_id'] = self.gtf.genes[gene_name]['gene_id']
+                data.loc[gene_name, e] = transcript_len
+        data.to_csv(name, sep='\t')
+
     def Tdensity(self, peak_min, size):
         if not self.isEven(size):
             exit("Size should be even number.")

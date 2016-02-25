@@ -45,12 +45,13 @@ def plot():
 
     output = parser.add_argument_group('Options for output files')
     output.add_argument("-p", "--prefix", dest="out_prefix", type=str, help="Prefix for output files. Default to standard output. Not supported for -o ratio.", default=None)
-    output.add_argument("-o", "--output", dest="output", choices=["std", "ratio", "aligner", "RTendalign", "table", "Tdensity", "makeGTF", "makeRTGTF"], help="Select from following options:"+'\n'
+    output.add_argument("-o", "--output", dest="output", choices=["std", "ratio", "aligner", "RTendalign", "table", "Tdensity", "makeGTF", "transcript_length", "makeRTGTF"], help="Select from following options:"+'\n'
                        "(1) std - 5` and 3` end aligned only; (2) ratio - plot gwide ratio a exp / b exp"+'\n'
                         "(3) aligner - std plus chosen aligner from file (-l option)"+'\n'
                         "(4) RTendalign - std and aligned to 3` end of read-through (-l option). -e works to choose experiment to align and filter"+'\n'
                         "(5) table - make *.csv file to plot heatmaps; (6) Tdensity - calculate p-value for non-canonical termination"+'\n'
-                        "(7) makeGTF - make GTF file with transcripts length ; (8) makeRTGTF - make GTF with tRNA extensions only", default="std")
+                        "(7) makeGTF - make GTF file with transcripts length ; (8) transcript_length - save file.csv with trancripts length for all experiment; "
+                        "(9) makeRTGTF - make GTF with tRNA extensions only", default="std")
     special = parser.add_argument_group('Special options for some -o choices')
     special.add_argument("--ntotal", dest="ntotal", action="store_true", help="Normalize to sum of all reads (sum = 1). Default: False", default=False)
     special.add_argument("--nmax", dest="nmax", action="store_true", help="Normalize to maximal value (max = 1). Default: False", default=False)
@@ -134,4 +135,9 @@ def plot():
     if options.output == "makeGTF":
         data.find_peaks()
         data.maketranscriptGTF()
+
+    if options.output == "transcript_length":
+        data.find_peaks()
+        data.printTrancriptLength()
+
     print '# Done.'
