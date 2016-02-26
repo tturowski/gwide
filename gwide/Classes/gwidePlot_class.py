@@ -9,15 +9,17 @@ __status__		= "Production"
 import numpy as np
 import sys, collections, re
 from pypeaks import Data
+import pandas as pd
 from pyCRAC.Parsers import GTF2
 import matplotlib.pyplot as plt
-import pandas as pd
 import matplotlib
+import plotly.plotly as py
+import plotly.graph_objs as go
 import scipy.stats.morestats as ss
 import scipy.stats.stats as sss
 
 class GenomeWidePlot():
-    def __init__(self, gtf_file, five_prime_flank, three_prime_flank, hits_threshold, lookahead, prefix, readthrough_start, normalized):
+    def __init__(self, gtf_file, five_prime_flank, three_prime_flank, hits_threshold, lookahead, prefix, readthrough_start, normalized, publish):
         self.gtf_file           =   str(gtf_file)
         self.gtf                =   GTF2.Parse_GTF()
         self.gtf.read_GTF(self.gtf_file)
@@ -38,6 +40,7 @@ class GenomeWidePlot():
         self.experiments        =   list()
         self.normalized         =   normalized  # -n option allows for using normalized dataset (reads p[er Million)
         self.list_of_peaks = dict()
+        self.publish            =   publish
 
     def read_csv(self, concat_file, skip_nucleotide=False):
         print "# Reading CSV file..."
@@ -291,14 +294,12 @@ class GenomeWidePlot():
         filter_elements = filter.strip().split('_')
         factor, compare, value = filter_elements[0], filter_elements[1], float(filter_elements[2])
         if factor not in ['RT', 'a', 'b', 'i', 'e', 'f', 'intron', 'introns']:
-            print "I can not recognize factor: "+str(factor)
-            exit()
+            exit("I can not recognize factor: "+str(factor))
         if compare not in ['a', 'b', 'above', 'below', '>', '<']:
-            print "I can not recognize comparator: "+str(factor)
-            exit()
+            exit("I can not recognize comparator: "+str(factor))
 
         #for introns
-        if factor == 'intron' or factor == 'introns':
+        if factor == 'intron' or factor == 'introns' or factor == 'i':
             if len(self.genes[gene_name]['introns'][0]) > value:
                 if compare in ['above', 'a', '>']:
                     return True
@@ -413,6 +414,25 @@ class GenomeWidePlot():
         plt.axvline(self.five_prime_flank, color=line_color)
         plt.grid()
         return True
+
+    def plotSinglePlot(self, title, data, line_color, online=False):
+        print "Printing single plot in publication quality..."
+        fig = plt.figure(figsize=(3, 2), facecolor='w', edgecolor='k')
+        fig.add_subplot(1,1,1)
+        plt.plot(data.index, data["sum"], color="black")
+        plt.xlabel('position (nt)', fontsize=7)
+        # plt.xticks(xxx)
+        plt.ylabel('no. of reads', fontsize=7)
+        plt.title(title, fontsize=9)
+        plt.axvline(self.five_prime_flank, color=line_color)
+        plt.tight_layout()
+        plt.savefig(title+'.png', dpi=300)
+        if online == True:
+            py.iplot_mpl(fig, filename='plotly_')
+        plt.clf()
+        return True
+
+
 
     def checkSelect(self,select):
         ranges = select.strip().split('_')
@@ -559,7 +579,54 @@ class GenomeWidePlot():
             #save .png file
             plt.savefig(name+'.png', dpi=200)
             plt.clf()
-        return True
+
+        #     if self.publish == True:
+        #         # raw_5data.to_csv(self.prefix+"raw_5data.txt", sep="\t")
+        #         # raw_3data.to_csv(self.prefix+"raw_3data.txt", sep="\t")
+        #         # self.plotSinglePlot(title=five+e, data=raw_5data, line_color="green")
+        #         # self.plotSinglePlot(title=three+e, data=raw_3data, line_color="#7f0f0f")
+        #         trace1 = go.Scatter(x=raw_3data.index, y=raw_3data['sum'], name = 'name', connectgaps=True)
+        #
+        #         py.image.save_as({'data': [trace1]}, 'layout': {'autosize':False,
+        #                 'yaxis':{
+        #                 'tickfont':{
+        #                 'color':"rgb(67, 67, 67)",
+        #                 'size':18
+        #                 },
+        #                 'title':"no. of reads",
+        #                 'range':[
+        #                 -1040.1666666666667,
+        #                 19763.166666666668
+        #                 ],
+        #                'titlefont':{
+        #                 'color':"rgb(67, 67, 67)"
+        #                 },
+        #                 'type':"linear",
+        #                 'autorange':True,
+        #                 'exponentformat':"power"
+        #                 },
+        #                 'title':"raw 3' aligned reads",
+        #                 'height':400,
+        #                 'width':400,
+        #                 'xaxis':{
+        #                 'tickfont':{
+        #                 'color':"rgb(67, 67, 67)",
+        #                 'size':18
+        #                 },
+        #                 'title':"position (nt)",
+        #                 'range':[
+        #                 0.5996784565916364,
+        #                 498.5996784565917
+        #                 ],
+        #                 'titlefont':{
+        #                 'color':"rgb(67, 67, 67)"
+        #                 },
+        #                 'type':"linear",
+        #                 'autorange':False,
+        #                 'exponentformat':"power"
+        #                 }
+        #                 }, 'your_image_filename.png')
+        # return True
 
     def aligner(self, file, filter, experiment_to_filter):
         print "# Plotting genom wide plots with chosen aligner..."
