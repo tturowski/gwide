@@ -432,12 +432,71 @@ class GenomeWidePlot():
         plt.clf()
         return True
 
+    def plotlyFigure(self, trace, title, annotation_text=""):
+        '''
+        :param trace: pyplot trace object
+        :param title: plot title
+        :return: pyplot figure object
+        '''
+        if annotation_text=="5' end":
+            line_color="rgb(166, 28, 0)"
+        elif annotation_text=="3' end":
+            line_color="rgb(53, 118, 20)"
+        else:
+            line_color="rgb(0, 0, 0)"
+        return {'data': [trace], 'layout': {'autosize':False,
+                        'yaxis':{
+                            'tickfont':{'color':"rgb(67, 67, 67)",'size':18},
+                            'title':"no. of reads",
+                            'range':[0,],
+                           'titlefont':{'color':"rgb(67, 67, 67)"},
+                            'type':"linear",
+                            'autorange':True,
+                            'exponentformat':"power"
+                                },
+                        'title':title,
+                        'height':400,
+                        'width':400,
+                        'xaxis':{
+                            'tickfont':{'color':"rgb(67, 67, 67)",'size':18},
+                            'title':"position (nt)",
+                            'range':[0,],
+                            'titlefont':{'color':"rgb(67, 67, 67)"},
+                            'type':"linear",
+                            'autorange':True,
+                            'exponentformat':"power"
+                                },
+                        'hidesources':False, 'annotations':[{
+                            'text':annotation_text,
+                            'x':250,
+                            'y':0,
+                            'arrowhead':0,
+                            'arrowsize':3,
+                            'arrowwidth':2,
+                            'ax':0,
+                            'ay':-200,
+                            'arrowcolor':line_color,
+                            'font':{'size':16}
+                            }]
+                        }}
 
+    def plotlyDataToFigure(self, data, title, annotation_text=""):
+        '''
+        :param data: pandas dataframe object with data
+        :param title: plot title
+        :return: pyplot figure object
+        '''
+        trace = go.Scatter(x=data.index, y=data['sum'], name = 'name', connectgaps=True)
+        return self.plotlyFigure(trace=trace, title=title, annotation_text=annotation_text)
 
     def checkSelect(self,select):
+        '''
+        :param select: select parameter from option parser
+        :return: ranges or syntax error
+        '''
         ranges = select.strip().split('_')
         if len(ranges) > 2 or len(ranges) < 2:
-            exit("--select - inapropriate no of elements, accepts onyl number1_number2")
+            exit("--select - inapropriate no of elements, accepts only number1_number2")
         ranges = [int(i) for i in ranges]
         print "Plotting in ranges: "+str(ranges)
         return ranges
@@ -446,7 +505,7 @@ class GenomeWidePlot():
         return number % 2 == 0
 
     def table(self, filter, experiment_to_filter):
-        """saving *csv file with flans 50 nt 5' and 250 nt 3' """
+        """saving *csv file with flanks 50 nt 5' and 250 nt 3' """
         for e in self.experiments:
             #initiating dataframes
             raw_5data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
@@ -580,53 +639,14 @@ class GenomeWidePlot():
             plt.savefig(name+'.png', dpi=200)
             plt.clf()
 
-        #     if self.publish == True:
-        #         # raw_5data.to_csv(self.prefix+"raw_5data.txt", sep="\t")
-        #         # raw_3data.to_csv(self.prefix+"raw_3data.txt", sep="\t")
-        #         # self.plotSinglePlot(title=five+e, data=raw_5data, line_color="green")
-        #         # self.plotSinglePlot(title=three+e, data=raw_3data, line_color="#7f0f0f")
-        #         trace1 = go.Scatter(x=raw_3data.index, y=raw_3data['sum'], name = 'name', connectgaps=True)
-        #
-        #         py.image.save_as({'data': [trace1]}, 'layout': {'autosize':False,
-        #                 'yaxis':{
-        #                 'tickfont':{
-        #                 'color':"rgb(67, 67, 67)",
-        #                 'size':18
-        #                 },
-        #                 'title':"no. of reads",
-        #                 'range':[
-        #                 -1040.1666666666667,
-        #                 19763.166666666668
-        #                 ],
-        #                'titlefont':{
-        #                 'color':"rgb(67, 67, 67)"
-        #                 },
-        #                 'type':"linear",
-        #                 'autorange':True,
-        #                 'exponentformat':"power"
-        #                 },
-        #                 'title':"raw 3' aligned reads",
-        #                 'height':400,
-        #                 'width':400,
-        #                 'xaxis':{
-        #                 'tickfont':{
-        #                 'color':"rgb(67, 67, 67)",
-        #                 'size':18
-        #                 },
-        #                 'title':"position (nt)",
-        #                 'range':[
-        #                 0.5996784565916364,
-        #                 498.5996784565917
-        #                 ],
-        #                 'titlefont':{
-        #                 'color':"rgb(67, 67, 67)"
-        #                 },
-        #                 'type':"linear",
-        #                 'autorange':False,
-        #                 'exponentformat':"power"
-        #                 }
-        #                 }, 'your_image_filename.png')
-        # return True
+            if self.publish == True:
+                raw_5data.to_csv(self.prefix+"raw_5data.txt", sep="\t")
+                raw_3data.to_csv(self.prefix+"raw_3data.txt", sep="\t")
+                # self.plotSinglePlot(title=five+e, data=raw_5data, line_color="green")
+                # self.plotSinglePlot(title=three+e, data=raw_3data, line_color="#7f0f0f")
+                py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=raw_5data, title=five+e, annotation_text="5' end"), filename=name+'_5.png')
+                py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=raw_3data, title=three+e, annotation_text="3' end"), filename=name+'_3.png')
+        return True
 
     def aligner(self, file, filter, experiment_to_filter):
         print "# Plotting genom wide plots with chosen aligner..."
