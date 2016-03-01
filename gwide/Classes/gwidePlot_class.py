@@ -432,15 +432,16 @@ class GenomeWidePlot():
         plt.clf()
         return True
 
-    def plotlyFigure(self, trace, title, annotation_text=""):
+    def plotlyFigure(self, trace, title, data_min, data_max, annotation_text=""):
         '''
         :param trace: pyplot trace object
         :param title: plot title
+        :param annotation_text: text annotating line to align
         :return: pyplot figure object
         '''
-        if annotation_text=="5' end":
+        if annotation_text=="3' end":
             line_color="rgb(166, 28, 0)"
-        elif annotation_text=="3' end":
+        elif annotation_text=="5' end":
             line_color="rgb(53, 118, 20)"
         else:
             line_color="rgb(0, 0, 0)"
@@ -457,6 +458,15 @@ class GenomeWidePlot():
                         'title':title,
                         'height':400,
                         'width':400,
+                        'shapes': [{
+                        # Line Vertical
+                            'type': 'line',
+                            'x0': 250,
+                            'y0': data_min,
+                            'x1': 250,
+                            'y1': data_max,
+                            'line': {'color': line_color,'width': 2}
+                                }],
                         'xaxis':{
                             'tickfont':{'color':"rgb(67, 67, 67)",'size':18},
                             'title':"position (nt)",
@@ -466,28 +476,17 @@ class GenomeWidePlot():
                             'autorange':True,
                             'exponentformat':"power"
                                 },
-                        'hidesources':False, 'annotations':[{
-                            'text':annotation_text,
-                            'x':250,
-                            'y':0,
-                            'arrowhead':0,
-                            'arrowsize':3,
-                            'arrowwidth':2,
-                            'ax':0,
-                            'ay':-200,
-                            'arrowcolor':line_color,
-                            'font':{'size':16}
-                            }]
                         }}
 
     def plotlyDataToFigure(self, data, title, annotation_text=""):
         '''
         :param data: pandas dataframe object with data
         :param title: plot title
+        :param annotation_text: text annotating line to align
         :return: pyplot figure object
         '''
         trace = go.Scatter(x=data.index, y=data['sum'], name = 'name', connectgaps=True)
-        return self.plotlyFigure(trace=trace, title=title, annotation_text=annotation_text)
+        return self.plotlyFigure(trace=trace, title=title, annotation_text=annotation_text, data_min=min(data['sum']), data_max=max(data['sum']))
 
     def checkSelect(self,select):
         '''
@@ -586,6 +585,24 @@ class GenomeWidePlot():
                 name = 'selected_'+name
             plt.savefig(name+'_ratio.png', dpi=300)
             plt.clf()
+            
+            if self.publish == True:
+                a_5data.to_csv(self.prefix+"a_5data.txt", sep="\t")
+                py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=a_5data, title=five+e[0], annotation_text="5' end"), filename=name+'_a5.png')
+                a_3data.to_csv(self.prefix+"a_3data.txt", sep="\t")
+                py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=a_3data, title=three+e[0], annotation_text="3' end"), filename=name+'_a3.png')
+                b_5data.to_csv(self.prefix+"b_5data.txt", sep="\t")
+                py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=b_5data, title=five+e[1], annotation_text="5' end"), filename=name+'_b5.png')
+                b_3data.to_csv(self.prefix+"b_3data.txt", sep="\t")
+                py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=b_3data, title=three+e[1], annotation_text="3' end"), filename=name+'_b3.png')
+                ratio_5data.to_csv(self.prefix+"ratio_5data.txt", sep="\t")
+                py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=ratio_5data, title=five+e[0]+"/"+e[1]+" ratio", annotation_text="5' end"), filename=name+'_ratio5.png')
+                ratio_3data.to_csv(self.prefix+"ratio_3data.txt", sep="\t")
+                py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=ratio_3data, title=three+e[0]+"/"+e[1]+" ratio", annotation_text="3' end"), filename=name+'_ratio3.png')
+                log2_5data.to_csv(self.prefix+"log2_5data.txt", sep="\t")
+                py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=log2_5data, title=five+'log2 '+e[0]+"/"+e[1]+" ratio", annotation_text="5' end"), filename=name+'_log2ratio5.png')
+                log2_3data.to_csv(self.prefix+"log2_3data.txt", sep="\t")
+                py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=log2_3data, title=three+'log2 '+e[0]+"/"+e[1]+" ratio", annotation_text="3' end"), filename=name+'_log2ratio3.png')
         return True
 
     def std(self, filter, experiment_to_filter):

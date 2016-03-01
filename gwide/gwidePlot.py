@@ -55,7 +55,7 @@ def plot():
     special = parser.add_argument_group('Special options for some -o choices')
     special.add_argument("--ntotal", dest="ntotal", action="store_true", help="Normalize to sum of all reads (sum = 1). Default: False", default=False)
     special.add_argument("--nmax", dest="nmax", action="store_true", help="Normalize to maximal value (max = 1). Default: False", default=False)
-    special.add_argument("--publish", dest="publish", action="store_true", help="Print plots as separate figures in publication quality", default=False)
+    special.add_argument("--publish", dest="publish", action="store_true", help="Print plots as separate figures in publication quality. Works with -o ratio and std", default=False)
     special.add_argument("-f", dest="filter", type=str, help="Filter in results factor_above_value; type i.e. RT_above_0.25 or a_below_1.5. To chose: RT, a, b, i, e, f, intron", default=None)
     special.add_argument("-e", dest="experiment", type=str, help="Filter according to values from one experiment only", default=None)
     special.add_argument("-a", dest="to_divide", type=str, help="experiment to divide by -b (-o ratio)",
