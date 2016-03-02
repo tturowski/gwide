@@ -587,21 +587,21 @@ class GenomeWidePlot():
             plt.clf()
             
             if self.publish == True:
-                a_5data.to_csv(self.prefix+"a_5data.txt", sep="\t")
+                a_5data.to_csv(self.prefix+exp_to_use+"a_5data.txt", sep="\t")
                 py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=a_5data, title=five+e[0], annotation_text="5' end"), filename=name+'_a5.png')
-                a_3data.to_csv(self.prefix+"a_3data.txt", sep="\t")
+                a_3data.to_csv(self.prefix+exp_to_use+"a_3data.txt", sep="\t")
                 py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=a_3data, title=three+e[0], annotation_text="3' end"), filename=name+'_a3.png')
-                b_5data.to_csv(self.prefix+"b_5data.txt", sep="\t")
+                b_5data.to_csv(self.prefix+exp_to_use+"b_5data.txt", sep="\t")
                 py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=b_5data, title=five+e[1], annotation_text="5' end"), filename=name+'_b5.png')
-                b_3data.to_csv(self.prefix+"b_3data.txt", sep="\t")
+                b_3data.to_csv(self.prefix+exp_to_use+"b_3data.txt", sep="\t")
                 py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=b_3data, title=three+e[1], annotation_text="3' end"), filename=name+'_b3.png')
-                ratio_5data.to_csv(self.prefix+"ratio_5data.txt", sep="\t")
+                ratio_5data.to_csv(self.prefix+exp_to_use+"ratio_5data.txt", sep="\t")
                 py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=ratio_5data, title=five+e[0]+"/"+e[1]+" ratio", annotation_text="5' end"), filename=name+'_ratio5.png')
-                ratio_3data.to_csv(self.prefix+"ratio_3data.txt", sep="\t")
+                ratio_3data.to_csv(self.prefix+exp_to_use+"ratio_3data.txt", sep="\t")
                 py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=ratio_3data, title=three+e[0]+"/"+e[1]+" ratio", annotation_text="3' end"), filename=name+'_ratio3.png')
-                log2_5data.to_csv(self.prefix+"log2_5data.txt", sep="\t")
+                log2_5data.to_csv(self.prefix+exp_to_use+"log2_5data.txt", sep="\t")
                 py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=log2_5data, title=five+'log2 '+e[0]+"/"+e[1]+" ratio", annotation_text="5' end"), filename=name+'_log2ratio5.png')
-                log2_3data.to_csv(self.prefix+"log2_3data.txt", sep="\t")
+                log2_3data.to_csv(self.prefix+exp_to_use+"log2_3data.txt", sep="\t")
                 py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=log2_3data, title=three+'log2 '+e[0]+"/"+e[1]+" ratio", annotation_text="3' end"), filename=name+'_log2ratio3.png')
         return True
 
@@ -663,6 +663,10 @@ class GenomeWidePlot():
                 # self.plotSinglePlot(title=three+e, data=raw_3data, line_color="#7f0f0f")
                 py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=raw_5data, title=five+e, annotation_text="5' end"), filename=name+'_5.png')
                 py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=raw_3data, title=three+e, annotation_text="3' end"), filename=name+'_3.png')
+
+                # #plot online
+                # py.iplot(figure_or_data=self.plotlyDataToFigure(data=raw_5data, title=five+e, annotation_text="5' end"), filename=name+'_5.png')
+                # py.iplot(figure_or_data=self.plotlyDataToFigure(data=raw_3data, title=three+e, annotation_text="3' end"), filename=name+'_3.png')
         return True
 
     def aligner(self, file, filter, experiment_to_filter):
