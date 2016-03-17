@@ -60,7 +60,7 @@ number_of_processors_to_use = len(files)
 def create_pileup_files(input_file, output_files):
     os.chdir(os.path.dirname(input_file))
     subprocess.call(r'pyPileup.py --gtf='+gtf+' --tab='+tab+' -g '+args.list_file+' -f ' + input_file + ' -r '+ranges, shell=True)
-    subprocess.call(r'rm anti*', shell=True)
+    # subprocess.call(r'rm anti*', shell=True)
     os.chdir(root_dir)
 
 #creating concat file
@@ -81,25 +81,26 @@ def merge_files(infiles, concat):
 
     for file_path in infiles:
         exp_name = extract_names(file_path)
-        pileup_file = open(file_path)
-        for line in pileup_file:
-            if line.startswith('# total number of mapped reads:'):
-                line_elem_1 = line.strip().split('\t')
-                total_mapped_reads = float(line_elem_1[1])
-                normalizator = 1000000.0/total_mapped_reads
-            if not line.startswith('#'):
-                line_elements = line.strip().split('\t')
-                if len(line_elements) > 1:
-                    line_number = line_number + 1
-                    line_number_list.append(line_number)
-                    line_list = list()
-                    for i in line_elements:
-                        line_list.append(str(i))
-                    line_list.append(exp_name)
-                    line_list.append(str(int(math.ceil(float(line_elements[3])*normalizator))))
-                    line_list.append(str(int(math.ceil(float(line_elements[4])*normalizator))))
-                    line_list.append(str(int(math.ceil(float(line_elements[5])*normalizator))))
-                    output_dict[str(line_number)] = line_list
+        if "sense-reads" in file_path:
+            pileup_file = open(file_path)
+            for line in pileup_file:
+                if line.startswith('# total number of mapped reads:'):
+                    line_elem_1 = line.strip().split('\t')
+                    total_mapped_reads = float(line_elem_1[1])
+                    normalizator = 1000000.0/total_mapped_reads
+                if not line.startswith('#'):
+                    line_elements = line.strip().split('\t')
+                    if len(line_elements) > 1:
+                        line_number = line_number + 1
+                        line_number_list.append(line_number)
+                        line_list = list()
+                        for i in line_elements:
+                            line_list.append(str(i))
+                        line_list.append(exp_name)
+                        line_list.append(str(int(math.ceil(float(line_elements[3])*normalizator))))
+                        line_list.append(str(int(math.ceil(float(line_elements[4])*normalizator))))
+                        line_list.append(str(int(math.ceil(float(line_elements[5])*normalizator))))
+                        output_dict[str(line_number)] = line_list
 
     line_number_list.sort()
     output = open(concat, 'w')
