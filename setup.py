@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='gwide',
-    version='0.3.5',
+    version='0.3.8',
     # py_modules=['gwide'],
     packages=find_packages(),
     install_requires=[
@@ -18,10 +18,13 @@ setup(
         'PyYAML',
         'matplotlib',
         'numpy'
+        'plotly'
+        'scipy'
     ],
     entry_points='''
         [console_scripts]
         gwidetRNA=gwide.gwidetRNA:tRNA
+        gwidemRNA=gwide.gwidemRNA:mRNA
         gwideHittable=gwide.gwideHittable:hittable
         gwidePlot=gwide.gwidePlot:plot
         getFastaSeqs=gwide.parserTools:getFastaSeqs

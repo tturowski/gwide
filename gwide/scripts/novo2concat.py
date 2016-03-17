@@ -21,7 +21,7 @@ parser.add_argument("-g", "--gtf_file", dest="gtf_file", help="Provide the path 
 parser.add_argument("-t", "--tab_file", dest="tab_file", help="Provide the path to your tab genome file.",
                      type=str, default=None)
 parser.add_argument("-r", dest="ranges", help="Set up ranges for pyPileups. Default = 250", default=250)
-parser.add_argument("-l", dest="list_file", help="Provide the path to your gene_names.list file.", type=str, default=None, required=True)
+parser.add_argument("-l", dest="list_file", help="Provide the FULL path to your gene_names.list file.", type=str, default=None, required=True)
 parser.add_argument("--tree", dest="tree", help="If you want to leave tree of catalogs including pilups within. Default = None.",
                      action="store_true", default=False)
 parser.add_argument("-p", dest="prefix", help="Prefix for concat file name", type=str, default="")
@@ -137,8 +137,9 @@ def merge_files(infiles, concat):
 pipeline_run(multiprocess=number_of_processors_to_use)
 
 #deleting directories
-for d in directories:
-    shutil.rmtree(d)
+if args.tree == False:
+    for d in directories:
+        shutil.rmtree(d)
 
 # printing summary
 log = open(concat_name+"_log.txt", 'w')
