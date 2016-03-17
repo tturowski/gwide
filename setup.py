@@ -16,10 +16,10 @@ setup(
         'pandas',
         'ruffus',
         'PyYAML',
-        'matplotlib',
-        'numpy'
-        'plotly'
-        'scipy'
+        # 'matplotlib',
+        # 'numpy'
+        # 'plotly'
+        # 'scipy'
     ],
     entry_points='''
         [console_scripts]
