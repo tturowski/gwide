@@ -648,6 +648,8 @@ class GenomeWidePlot():
             self.plotSubplot(fig=fig, layout=layout, plot_no=1, title=five+e, data=raw_5data, line_color="green")
             self.plotSubplot(fig=fig, layout=layout, plot_no=2, title=three+e, data=raw_3data, line_color="#7f0f0f")
             fig.tight_layout()
+            matplotlib.use('Agg')
+
 
             if filter == None:
                 filter = str()
