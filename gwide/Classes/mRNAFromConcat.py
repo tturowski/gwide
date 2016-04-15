@@ -114,6 +114,17 @@ class mRNAFromConcat():
         self.genes_id_list.sort()
         return True
 
+    def bind(self, exp_to_use,window):
+        """find binding fragment using deletions from CRAC data"""
+        for gene_name in self.genes_name_list:
+            gene_data = self.data[gene_name]
+            max_position = gene_data[exp_to_use].idxmax()
+            motif = ''.join(list(gene_data[max_position-window:max_position+window]['nucleotide']))
+            if len(motif) >= 8:
+                print '>'+gene_name
+                print motif + '\n'
+                # print gene_data[max_position-window:max_position+window]
+
     def get_introns(self, gene_name):
         gene_coord = self.gtf.chromosomeCoordinates(gene_name)
         introns_coord_raw = self.gtf.intronCoordinates(gene_name)

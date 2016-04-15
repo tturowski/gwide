@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='gwide',
-    version='0.3.10',
+    version='0.3.12',
     # py_modules=['gwide'],
     packages=find_packages(),
     install_requires=[
@@ -25,6 +25,7 @@ setup(
         [console_scripts]
         gwidetRNA=gwide.gwidetRNA:tRNA
         gwidemRNA=gwide.gwidemRNA:mRNA
+        gwiderRNA=gwide.gwiderRNA:rRNA
         gwideHittable=gwide.gwideHittable:hittable
         gwidePlot=gwide.gwidePlot:plot
         getFastaSeqs=gwide.parserTools:getFastaSeqs

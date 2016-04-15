@@ -7,7 +7,7 @@ __email__		= "twturowski@gmail.com"
 __status__		= "Production"
 
 """script using ruffus to do for each novofile in the folder: mkdir, and run pypileup,
-then run pileupsToConcat.py and run script with plotting parameters: analyse_rRNA_from_concat.py"""
+then run pileupsToConcat.py and run script with plotting parameters: gwiderRNA.py"""
 
 from ruffus import *
 import subprocess, re, os, argparse
@@ -60,10 +60,10 @@ def merge_files(infiles, rRNA_concat):
 @transform(merge_files, suffix('.concat'), '*.png')
 def plot_raw(infile, outfile):
     print infile
-    subprocess.call('analyse_rRNA_from_concat.py -c '+infile+' -g '+gtf+' -p raw', shell=True)
+    subprocess.call('gwiderRNA.py -c '+infile+' -g '+gtf+' -p raw', shell=True)
 
 @transform(merge_files, suffix('.concat'), '*.png')
 def plot_normalized(infile, outfile):
-    subprocess.call('analyse_rRNA_from_concat.py -c '+infile+' -g '+gtf+' -n -p normalized', shell=True)
+    subprocess.call('gwiderRNA.py -c '+infile+' -g '+gtf+' -n -p normalized', shell=True)
 
 pipeline_run(multiprocess=number_of_processors_to_use)

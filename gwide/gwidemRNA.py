@@ -41,6 +41,7 @@ def mRNA():
     special.add_argument("--lookahead", dest="lookahead", type=int, help="Set up lookahead parameter for pypeaks function. Default = 20", default=20)
     special.add_argument("-w", "--window", dest="window", type=int, help="Set up size of window for bind calculation (-o bind). Default: 10",
                       default=10)
+    special.add_argument("-e", dest="experiment_to_use", type=str, help="For -o bind, which experiment to use.")
     # special.add_argument("--ntotal", dest="ntotal", action="store_true", help="Normalize data to sum of all reads (sum = 1). Default: False", default=False)
     # special.add_argument("--nmax", dest="nmax", action="store_true", help="Normalize data to maximal value (max = 1). Default: False", default=False)
     # special.add_argument("-a", dest="to_divide", type=str, help="experiment to divide by -b (-o fig_ratio)",
@@ -63,13 +64,12 @@ def mRNA():
     data = mRNAFromConcat(gtf_file=gtm.getGTF(options.gtf_file), five_prime_flank=options.five_prime_flank, three_prime_flank=options.three_prime_flank,
                           hits_threshold=options.hits_threshold, lookahead=options.lookahead, prefix=prefix, npM=options.normalized)
 
-
-
     if options.output_files == "bind":
         #reading csv file
         data.read_csv(input_file, use='deletions')
         #calculating readthrough, details, normalize
-        data.calculate(details=options.details, ntotal=options.ntotal, nmax=options.nmax)
+        # data.calculate(details=options.details, ntotal=options.ntotal, nmax=options.nmax)
+        data.bind(exp_to_use=options.experiment_to_use, window=options.window)
 
     print '# Done.'
 
