@@ -605,8 +605,11 @@ class GenomeWidePlot():
                 py.image.save_as(figure_or_data=self.plotlyDataToFigure(data=log2_3data, title=three+'log2 '+e[0]+"/"+e[1]+" ratio", annotation_text="3' end"), filename=name+'_log2ratio3.png')
         return True
 
-    def std(self, filter, experiment_to_filter):
+    def std(self, filter, experiment_to_filter, exp_to_use=str()):
         print "# Plotting genom wide plots..."
+        #inintiating DataFrame for all experiments
+        all_raw_5data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
+        all_raw_3data = pd.DataFrame(index=range(1,(self.five_prime_flank + self.longest_gene + self.three_prime_flank+1)), columns=[])
         #copying data
         for e in self.experiments:
             #initiating dataframes
@@ -615,19 +618,21 @@ class GenomeWidePlot():
             no_of_genes = 0
             list_of_genes = list()
             for gene_name in self.genes_name_list:
-                if self.filter_out(gene_name=gene_name, filter=filter, experiment_to_filter=experiment_to_filter, current_exp=e) == True:
+                if self.filter_out(gene_name=gene_name, filter=filter, experiment_to_filter=experiment_to_filter, current_exp=e+exp_to_use) == True:
                     no_of_genes += 1
                     list_of_genes.append(gene_name)
                 # 5` aligned
-                    raw_5data[gene_name] = self.data[gene_name][e]
+                    raw_5data[gene_name] = self.data[gene_name][e+exp_to_use]
                 # 3` aligned
                     gene_length =   self.genes[gene_name]['gene_length']
-                    temp_data = self.data[gene_name][e][gene_length:].reset_index()
-                    raw_3data[gene_name] = temp_data[e]
+                    temp_data = self.data[gene_name][e+exp_to_use][gene_length:].reset_index()
+                    raw_3data[gene_name] = temp_data[e+exp_to_use]
 
             # sum
             raw_5data['sum'] = raw_5data.sum(axis=1)
             raw_3data['sum'] = raw_3data.sum(axis=1)
+            all_raw_5data[e+exp_to_use] = raw_5data.sum(axis=1)
+            all_raw_3data[e+exp_to_use] = raw_3data.sum(axis=1)
 
             # text_file = open(self.prefix+"std"+e+".list", "w")
             # for i in list_of_genes:
@@ -646,7 +651,7 @@ class GenomeWidePlot():
 
             if filter == None:
                 filter = str()
-            name = self.prefix+filter+e
+            name = self.prefix+exp_to_use+filter+e
             # save text file
             # text_file = open(name+".list", "w")
             # for i in list_of_genes:
@@ -667,6 +672,8 @@ class GenomeWidePlot():
                 # #plot online
                 # py.iplot(figure_or_data=self.plotlyDataToFigure(data=raw_5data, title=five+e, annotation_text="5' end"), filename=name+'_5.png')
                 # py.iplot(figure_or_data=self.plotlyDataToFigure(data=raw_3data, title=three+e, annotation_text="3' end"), filename=name+'_3.png')
+        all_raw_5data.to_csv(self.prefix+exp_to_use+"ALL_raw_5data.txt", sep="\t")
+        all_raw_3data.to_csv(self.prefix+exp_to_use+"ALL_raw_3data.txt", sep="\t")
         return True
 
     def aligner(self, file, filter, experiment_to_filter):

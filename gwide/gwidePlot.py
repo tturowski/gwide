@@ -94,8 +94,12 @@ def plot():
 
     #plotting
     if options.output == 'std':
-        data.calculate(details=False, ntotal=False, nmax=False)
+        data.calculate(details=False, ntotal=True, nmax=True)
         data.std(filter=options.filter, experiment_to_filter=options.experiment)
+        if options.ntotal == True:
+            data.std(filter=options.filter, experiment_to_filter=options.experiment, exp_to_use='_ntotal')
+        if options.nmax == True:
+            data.std(filter=options.filter, experiment_to_filter=options.experiment, exp_to_use='_nmax')
 
     if options.output == 'aligner':
         if not list_file:
