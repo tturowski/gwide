@@ -641,7 +641,6 @@ class GenomeWidePlot():
 
             # plotting 10` aligned
             print "# Printing plot for "+str(no_of_genes)+" genes "+self.categorize_tRNA(list_of_genes,output='text')+"..."
-            matplotlib.use('Agg')
             fig = plt.figure(figsize=(12, 9), facecolor='w', edgecolor='k')
             five = '5` aligned raw reads for '
             three = '3` aligned raw reads for '
@@ -649,8 +648,6 @@ class GenomeWidePlot():
             self.plotSubplot(fig=fig, layout=layout, plot_no=1, title=five+e, data=raw_5data, line_color="green")
             self.plotSubplot(fig=fig, layout=layout, plot_no=2, title=three+e, data=raw_3data, line_color="#7f0f0f")
             fig.tight_layout()
-
-
 
             if filter == None:
                 filter = str()
@@ -661,6 +658,7 @@ class GenomeWidePlot():
             #     text_file.write(i + "\t" + self.genes[i]['gene_id'] + "\n")
             # text_file.close()
             #save .png file
+            plt.switch_backend("Agg")
             plt.savefig(name+'.png', dpi=200)
             plt.clf()
 
