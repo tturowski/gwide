@@ -658,7 +658,7 @@ class GenomeWidePlot():
             #     text_file.write(i + "\t" + self.genes[i]['gene_id'] + "\n")
             # text_file.close()
             #save .png file
-            plt.switch_backend("TkAgg")
+            # plt.switch_backend("TkAgg")
             plt.savefig(name+'.png', dpi=200)
             plt.clf()
 
