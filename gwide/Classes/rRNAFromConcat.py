@@ -279,7 +279,7 @@ class rRNAFromConcat():
 ### making output plots, one gene, different experiments per page
     def print_rRNA(self):
         print '# Plotting RDN37 (all experiments). Did you set up both flanks to 1000 bp?'
-        fig = plt.figure(figsize=(12, 9), dpi=100, facecolor='w', edgecolor='k')
+        fig = plt.figure(figsize=(12, 9), dpi=300, facecolor='w', edgecolor='k')
         fig_no = 0
         for i_gene_id in self.genes_id_list:
             gene_name = self.id_to_names[i_gene_id]
@@ -328,10 +328,10 @@ class rRNAFromConcat():
                 if plot_no == 3:
                     plot_no = 0
                     fig_no += 1
-                    plt.savefig(self.prefix+i_gene_id+'_l'+str(self.lookahead)+'_t'+str(self.hits_threshold)+'_fig_'+str(fig_no)+'.png')
+                    plt.savefig(self.prefix+i_gene_id+'_l'+str(self.lookahead)+'_t'+str(self.hits_threshold)+'_fig_'+str(fig_no)+'.png', dpi=300)
                     plt.clf()
             if plot_no > 0:
-                plt.savefig(self.prefix+i_gene_id+'_l'+str(self.lookahead)+'_t'+str(self.hits_threshold)+'_fig_'+str(fig_no+1)+'.png')
+                plt.savefig(self.prefix+i_gene_id+'_l'+str(self.lookahead)+'_t'+str(self.hits_threshold)+'_fig_'+str(fig_no+1)+'.png', dpi=300)
                 plt.clf()
         return True
 
@@ -339,7 +339,7 @@ class rRNAFromConcat():
     def fig_ratio(self, a, b):
         print '# Plotting ratio for '+a+' divided by '+b+' (all experiments).'
         new_exp_list = self.group_experiments(a,b)
-        fig = plt.figure(figsize=(12, 9), dpi=100, facecolor='w', edgecolor='k')
+        fig = plt.figure(figsize=(12, 9), dpi=300, facecolor='w', edgecolor='k')
         fig_no = 0
         for i_gene_id in self.genes_id_list:
             gene_name = self.id_to_names[i_gene_id]
@@ -386,10 +386,10 @@ class rRNAFromConcat():
                 if plot_no == 3:
                     plot_no = 0
                     fig_no += 1
-                    plt.savefig(self.prefix+i_gene_id+'_l'+str(self.lookahead)+'_t'+str(self.hits_threshold)+'_ratio_'+str(fig_no)+'.png')
+                    plt.savefig(self.prefix+i_gene_id+'_l'+str(self.lookahead)+'_t'+str(self.hits_threshold)+'_ratio_'+str(fig_no)+'.png', dpi=300)
                     plt.clf()
             if plot_no > 0:
-                plt.savefig(self.prefix+i_gene_id+'_l'+str(self.lookahead)+'_t'+str(self.hits_threshold)+'_ratio_'+str(fig_no+1)+'.png')
+                plt.savefig(self.prefix+i_gene_id+'_l'+str(self.lookahead)+'_t'+str(self.hits_threshold)+'_ratio_'+str(fig_no+1)+'.png', dpi=300)
                 plt.clf()
         return True
 

@@ -56,6 +56,7 @@ def plot():
     special.add_argument("--ntotal", dest="ntotal", action="store_true", help="Normalize to sum of all reads (sum = 1). Default: False", default=False)
     special.add_argument("--nmax", dest="nmax", action="store_true", help="Normalize to maximal value (max = 1). Default: False", default=False)
     special.add_argument("--publish", dest="publish", action="store_true", help="Print plots as separate figures in publication quality. Works with -o ratio and std", default=False)
+    special.add_argument("--LRR", dest="left_right_ratio", action="store_true", help="Print ratio between left and right part of the metaprofiles (before and after aligning line)", default=False)
     special.add_argument("-f", dest="filter", type=str, help="Filter in results factor_above_value; type i.e. RT_above_0.25 or a_below_1.5. To chose: RT, a, b, i, e, f, intron", default=None)
     special.add_argument("-e", dest="experiment", type=str, help="Filter according to values from one experiment only", default=None)
     special.add_argument("-a", dest="to_divide", type=str, help="experiment to divide by -b (-o ratio)",
@@ -83,7 +84,7 @@ def plot():
 
     data = GenomeWidePlot(gtf_file=gtf_file, five_prime_flank=options.five_prime_flank, readthrough_start=options.readthrough,
                           three_prime_flank=options.three_prime_flank, hits_threshold=options.hits_threshold, lookahead=options.lookahead,
-                          prefix=prefix, normalized=options.normalized, publish=options.publish)
+                          prefix=prefix, normalized=options.normalized, publish=options.publish, left_right_ratio=options.left_right_ratio)
 
     #setting up dependencies
     if options.output == "ratio":

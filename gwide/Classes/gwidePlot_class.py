@@ -19,7 +19,7 @@ import scipy.stats.morestats as ss
 import scipy.stats.stats as sss
 
 class GenomeWidePlot():
-    def __init__(self, gtf_file, five_prime_flank, three_prime_flank, hits_threshold, lookahead, prefix, readthrough_start, normalized, publish):
+    def __init__(self, gtf_file, five_prime_flank, three_prime_flank, hits_threshold, lookahead, prefix, readthrough_start, normalized, publish, left_right_ratio):
         self.gtf_file           =   str(gtf_file)
         self.gtf                =   GTF2.Parse_GTF()
         self.gtf.read_GTF(self.gtf_file)
@@ -41,6 +41,7 @@ class GenomeWidePlot():
         self.normalized         =   normalized  # -n option allows for using normalized dataset (reads p[er Million)
         self.list_of_peaks = dict()
         self.publish            =   publish
+        self.left_right_ratio   =   left_right_ratio
 
     def read_csv(self, concat_file, skip_nucleotide=False):
         print "# Reading CSV file..."
@@ -398,9 +399,9 @@ class GenomeWidePlot():
         print ratio_exp_list
         return ratio_exp_list
 
-    def plotSubplot(self, fig, layout, plot_no, title, data, line_color, select=None):
-        fig.add_subplot(layout[0],layout[1],plot_no)
-        fig.tight_layout()
+    def plotSubplot(self, fig, layout, plot_no, title, data, line_color, select=None, text=None):
+        ax = fig.add_subplot(layout[0],layout[1],plot_no)
+        plt.tight_layout()
         if not select:
             plt.title(title)
             plt.plot(data.index, data["sum"], color="black")
@@ -413,7 +414,9 @@ class GenomeWidePlot():
             plt.fill_between(data.index, data["sum"], data['zero'], color="grey", alpha=0.10)
         plt.axvline(self.five_prime_flank, color=line_color)
         plt.grid()
-        return True
+        if text:
+            plt.text(.7, .7, str(round(text,2)), transform=ax.transAxes)
+        return ax
 
     def plotSinglePlot(self, title, data, line_color, online=False):
         print "Printing single plot in publication quality..."
@@ -631,6 +634,18 @@ class GenomeWidePlot():
             # sum
             raw_5data['sum'] = raw_5data.sum(axis=1)
             raw_3data['sum'] = raw_3data.sum(axis=1)
+
+
+            if self.left_right_ratio == True:
+                # raw_5data.fillna(0)
+                # raw_3data.fillna(0)
+                LRR5 = raw_5data['sum'][self.five_prime_flank:].sum(axis=0) / raw_5data['sum'][:self.five_prime_flank].sum(axis=0)
+                LRR3 = raw_3data['sum'][self.five_prime_flank:].sum(axis=0) / raw_3data['sum'][:self.five_prime_flank].sum(axis=0)
+                print LRR5
+                print LRR3
+            else:
+                LRR5, LRR3 = None, None
+
             all_raw_5data[e+exp_to_use] = raw_5data.sum(axis=1)
             all_raw_3data[e+exp_to_use] = raw_3data.sum(axis=1)
 
@@ -645,8 +660,8 @@ class GenomeWidePlot():
             five = '5` aligned raw reads for '
             three = '3` aligned raw reads for '
             layout = [3,2]
-            self.plotSubplot(fig=fig, layout=layout, plot_no=1, title=five+e, data=raw_5data, line_color="green")
-            self.plotSubplot(fig=fig, layout=layout, plot_no=2, title=three+e, data=raw_3data, line_color="#7f0f0f")
+            self.plotSubplot(fig=fig, layout=layout, plot_no=1, title=five+e, data=raw_5data, line_color="green", text=LRR5)
+            self.plotSubplot(fig=fig, layout=layout, plot_no=2, title=three+e, data=raw_3data, line_color="#7f0f0f", text=LRR3)
             fig.tight_layout()
 
             if filter == None:
@@ -657,8 +672,7 @@ class GenomeWidePlot():
             # for i in list_of_genes:
             #     text_file.write(i + "\t" + self.genes[i]['gene_id'] + "\n")
             # text_file.close()
-            #save .png file
-            # plt.switch_backend("TkAgg")
+
             plt.savefig(name+'.png', dpi=200)
             plt.clf()
 
