@@ -639,10 +639,11 @@ class GenomeWidePlot():
             if self.left_right_ratio == True:
                 # raw_5data.fillna(0)
                 # raw_3data.fillna(0)
-                LRR5 = raw_5data['sum'][self.five_prime_flank:].sum(axis=0) / raw_5data['sum'][:self.five_prime_flank].sum(axis=0)
-                LRR3 = raw_3data['sum'][self.five_prime_flank:].sum(axis=0) / raw_3data['sum'][:self.five_prime_flank].sum(axis=0)
-                print LRR5
-                print LRR3
+                LRR5 = raw_5data['sum'][self.five_prime_flank:].sum(axis=0) / raw_5data['sum'].sum(axis=0)
+                LRR3 = raw_3data['sum'][self.five_prime_flank+self.readthrough_start:].sum(axis=0) / raw_3data['sum'].sum(axis=0)
+                # LRR3 = raw_3data['sum'][self.five_prime_flank+11+self.readthrough_start:].sum(axis=0) / raw_3data['sum'].sum(axis=0) #optional +11 correction if tRNA transcripts GTF was used
+                # print e+':'+'\t'+str(LRR5)
+                print e+':'+'\t'+str(LRR3)
             else:
                 LRR5, LRR3 = None, None
 
@@ -655,7 +656,7 @@ class GenomeWidePlot():
             # text_file.close()
 
             # plotting 10` aligned
-            print "# Printing plot for "+str(no_of_genes)+" genes "+self.categorize_tRNA(list_of_genes,output='text')+"..."
+            # print "# Printing plot for "+str(no_of_genes)+" genes "+self.categorize_tRNA(list_of_genes,output='text')+"..."
             fig = plt.figure(figsize=(12, 9), facecolor='w', edgecolor='k')
             five = '5` aligned raw reads for '
             three = '3` aligned raw reads for '

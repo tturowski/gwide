@@ -91,7 +91,7 @@ def plot():
         options.normalized = True
 
     #reading csv file
-    data.read_csv(options.input_file, skip_nucleotide=False)
+    data.read_csv(options.input_file, skip_nucleotide=True)
 
     #plotting
     if options.output == 'std':
