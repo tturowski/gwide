@@ -335,6 +335,57 @@ class rRNAFromConcat():
                 plt.clf()
         return True
 
+### making output plots, one gene, different experiments per page
+    def single_rRNA(self):
+        print '# Plotting RDN37 (all experiments). Did you set up both flanks to 1000 bp?'
+        fig = plt.figure(figsize=(12, 9), dpi=300, facecolor='w', edgecolor='k')
+        fig_no = 0
+        for i_gene_id in self.genes_id_list:
+            gene_name = self.id_to_names[i_gene_id]
+            for e in self.experiments:
+                fig.add_subplot(3, 1, 1)
+                plt.tight_layout()
+                plt.title(e)
+                plt.ylabel("no. of reads")
+                if self.print_peaks == True:
+                    plt.plot(self.data[gene_name][e]['peaks_to_plot'])
+
+                first_flank = 300
+                ETS = 700
+                eighteen = 1800
+                its_one = 361
+                five_dot_eight = 158
+                its_two = 232
+                twenty_five = 3396
+                ETS_end = 211
+
+                sliced = collections.OrderedDict()
+                sliced['5flank'] = self.data[gene_name][0:first_flank:]       #5` flank
+                sliced['5ETS'] = self.data[gene_name][first_flank:(first_flank+ETS):]    #5` ETS
+                sliced['18S'] = self.data[gene_name][(first_flank+ETS):(first_flank+ETS+eighteen):]   #18S
+                sliced['ITS1'] = self.data[gene_name][(first_flank+ETS+eighteen):(first_flank+ETS+eighteen+its_one):]   #ITS1
+                sliced['5.8S'] = self.data[gene_name][(first_flank+ETS+eighteen+its_one):(first_flank+ETS+eighteen+its_one+five_dot_eight):]   #5.8S
+                sliced['ITS2'] = self.data[gene_name][(first_flank+ETS+eighteen+its_one+five_dot_eight):(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two):]   #ITS2
+                sliced['25S'] = self.data[gene_name][(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two):(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two+twenty_five):]   #25S
+                sliced['3ETS`'] = self.data[gene_name][(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two+twenty_five):(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two+twenty_five+ETS_end):]   #3` ETS
+                sliced['3flank'] = self.data[gene_name][(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two+twenty_five+ETS_end)::]       #3` flank
+                for part in sliced:
+                    # print sliced[part]
+                    x_array = np.array(sliced[part]['position'])
+                    y_array = np.array(sliced[part][e])
+                    y_array[0] = 0
+                    y_array[len(y_array)-1] = 0
+                    plt.fill(x_array, y_array, label=part)
+                    if part in ['18S', '5.8S', '25S']:
+                        plt.axvspan(min(sliced[part]['position']), max(sliced[part]['position']), alpha=0.2, color='#0892d0')
+                plt.grid()
+                legend = plt.legend(loc='upper right', shadow=True, fontsize=10)
+                fig_no += 1
+                plt.xlabel('ID: '+i_gene_id+', Name: '+gene_name)
+                plt.savefig(self.prefix+i_gene_id+'_l'+str(self.lookahead)+'_t'+str(self.hits_threshold)+'_fig_'+str(fig_no)+'.png', dpi=300)
+                plt.clf()
+        return True
+
     ###function to plot ration between sample with -a parameter and -b parameter
     def fig_ratio(self, a, b):
         print '# Plotting ratio for '+a+' divided by '+b+' (all experiments).'
@@ -492,6 +543,64 @@ class rRNAFromConcat():
         print ratio_exp_list
         return ratio_exp_list
 ####################
+
+    def correlations(self, output='a', elements=True, ntotal=True):
+        print '# Calculating RDN37 plot correlations. Did you set up both flanks to 1000 bp?'
+        for i_gene_id in self.genes_id_list:
+            gene_name = self.id_to_names[i_gene_id]
+            #drop additional collumns
+            self.data[gene_name] = self.data[gene_name].fillna(0)
+            self.data[gene_name] = self.data[gene_name].drop('position', axis=1)
+            self.data[gene_name] = self.data[gene_name].drop('nucleotide', axis=1)
+
+            first_flank = 300+1
+            ETS = 700
+            eighteen = 1800
+            its_one = 361
+            five_dot_eight = 158
+            its_two = 232
+            twenty_five = 3396
+            ETS_end = 211
+
+            self.data[gene_name]['element'] = 'unknown'
+            # self.data[gene_name].update(pd.DataFrame({'element' : ['5flank']}, index=range(0,first_flank)))
+            self.data[gene_name].update(pd.DataFrame({'element' : ['5ETS']}, index=range(first_flank,first_flank+ETS)))
+            self.data[gene_name].update(pd.DataFrame({'element' : ['18S']}, index=range(first_flank+ETS,first_flank+ETS+eighteen)))
+            self.data[gene_name].update(pd.DataFrame({'element' : ['ITS1']}, index=range(first_flank+ETS+eighteen,first_flank+ETS+eighteen+its_one)))
+            self.data[gene_name].update(pd.DataFrame({'element' : ['5.8S']}, index=range(first_flank+ETS+eighteen+its_one,first_flank+ETS+eighteen+its_one+five_dot_eight)))
+            self.data[gene_name].update(pd.DataFrame({'element' : ['ITS2']}, index=range(first_flank+ETS+eighteen+its_one+five_dot_eight,first_flank+ETS+eighteen+its_one+five_dot_eight+its_two)))
+            self.data[gene_name].update(pd.DataFrame({'element' : ['25S']}, index=range(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two,first_flank+ETS+eighteen+its_one+five_dot_eight+its_two+twenty_five)))
+            self.data[gene_name].update(pd.DataFrame({'element' : ['3ETS']}, index=range(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two+twenty_five,first_flank+ETS+eighteen+its_one+five_dot_eight+its_two+twenty_five+ETS_end)))
+            # self.data[gene_name].to_csv("olo_file.txt", sep='\t')
+
+            data = self.data[gene_name]
+            RDN37_data = data[data.element != 'unknown']
+
+            # corr_dict = {"p" : "pearson" , "k" : "kendall" , "s" : "spearman"}
+            corr_dict = {"p" : "pearson" , "s" : "spearman"}
+            if output == 'a':
+                print "# Calculating all correlations..."
+                for i in corr_dict:
+                    print "# Calculating correlations("+corr_dict[i]+")..."
+                    matrix = RDN37_data.corr(method=corr_dict[i],min_periods=1)
+                    matrix.to_csv(self.prefix+"RDN37_correlation_"+corr_dict[i]+".table", sep='\t')
+
+            #calculate Pearson for different types
+                    if elements == True:
+                        for this_type in ['5ETS', '18S', 'ITS1', '5.8S', 'ITS2', '25S', '3ETS']:
+                            new_data = RDN37_data[RDN37_data.element == this_type]
+                            # #element internal ntotal normalization
+                            # ntotal_data = pd.DataFrame()
+                            # for exp_old in self.experiments:
+                            #     exp = exp_old+'_ntotal'
+                            #     ntotal_data[exp] = new_data[exp_old]/new_data[exp_old].sum()
+                            # self.data[gene_name][exp] = self.data[gene_name][exp].add(0.000001) #adding pseudocounts
+
+                            matrix = new_data.corr(method=corr_dict[i],min_periods=1)
+                            matrix.to_csv(self.prefix+this_type+"_correlation_"+corr_dict[i]+".table", sep='\t')
+                            # matrix_n = ntotal_data.corr(method=corr_dict[i],min_periods=1)
+                            # matrix_n.to_csv(self.prefix+this_type+"_correlation_ntotal_"+corr_dict[i]+".table", sep='\t')
+        return True
 
     def test_print(self, what):
         pd.set_option('display.max_rows', 5000)

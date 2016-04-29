@@ -641,8 +641,8 @@ class GenomeWidePlot():
                 # raw_3data.fillna(0)
 
                 LRR5 = raw_5data['sum'][self.five_prime_flank:].sum(axis=0) / raw_5data['sum'].sum(axis=0)
-                LRR3 = raw_3data['sum'][self.five_prime_flank+self.readthrough_start:].sum(axis=0) / raw_3data['sum'].sum(axis=0)
-                # LRR3 = raw_3data['sum'][self.five_prime_flank+11+self.readthrough_start:].sum(axis=0) / raw_3data['sum'].sum(axis=0) #optional +11 correction if tRNA transcripts GTF was used
+                # LRR3 = raw_3data['sum'][self.five_prime_flank+self.readthrough_start:].sum(axis=0) / raw_3data['sum'].sum(axis=0)
+                LRR3 = raw_3data['sum'][self.five_prime_flank+11+self.readthrough_start:].sum(axis=0) / raw_3data['sum'].sum(axis=0) #optional +11 correction if tRNA transcripts GTF was used
                 # print e+':'+'\t'+str(LRR5)
                 print e+':'+'\t'+str(LRR3)
             else:
