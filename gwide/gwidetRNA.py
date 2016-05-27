@@ -35,15 +35,15 @@ def tRNA():
     output = parser.add_argument_group('Options for output files')
     output.add_argument("-p", "--prefix", dest="out_prefix", type=str, help="Prefix for output files. Default to standard output. Not supported for -o ratio.", default=None)
     output.add_argument("-d", "--details", dest="details", action="store_true", help="Print details in text file. WARNING: works only with one experiment.", default=False)
-    output.add_argument("-o", dest="output_files", choices=["fig", "fig_std", "fig_tight", "fig_ratio", "fig_boxes", "nuc", "nuc_gene", "nuc_energy", "termination_valleys", "termination", "termination_text", "stat_text", "both"], help="Select from following options:"
+    output.add_argument("-o", dest="output_files", choices=["fig", "fig_std", "fig_tight", "fig_ratio", "fig_boxes", "nuc3", "nuc5", "nuc_gene", "nuc_energy", "termination_valleys", "termination", "termination_text", "stat_text", "both"], help="Select from following options:"
                         "(1) fig - plot tRNA genes coverage; (2) figstd - plot gene after gene; (3) fig_tight; (4) fig_ratio - log2 for -a divided by -b, uses normalized data"
                         "(5) fig_boxes - mark A and B boxes (provide path to boxes position file)"
-                        "(6) nuc - for nucleotide 3` end resolution; (7) nuc_gene - for nucleotide resolution of gene only"
-                        "(8) nuc_energy - plots 3` end under nucleotide resolution with energy plots"
+                        "(6) nuc3 - for nucleotide 3' end resolution; (7) nuc_gene - for nucleotide resolution of gene only"
+                        "(8) nuc_energy - plots 3' end under nucleotide resolution with energy plots"
                         "(9) termination_valleys - for each valley calculate termination efficiency"
                         "(10) termination - calculate termination efficiency for last 20 nt"
-                        "(11) termination_text - calculate termination efficiency for first 20 nt of 3` end and print text file"
-                        "(12) stat_text - tab-deliminated; (13) both - fig and stat_text", default="both")
+                        "(11) termination_text - calculate termination efficiency for first 20 nt of 3' end and print text file"
+                        "(12) stat_text - tab-deliminated; (13) both - fig and stat_text; (14) - nuc5 - for nucleotide 5' end resolution", default="both")
     output.add_argument("--peaks", dest="print_peaks", action="store_true", help="print peaks on plots. Default: False", default=False)
     output.add_argument("--valleys", dest="print_valleys", action="store_true", help="print valleys on plots. Default: False", default=False)
     output.add_argument("--mark", dest="mark", choices=["A","T","C","G"], help="mark nucleotide on plots. Default: None", default=None)
@@ -138,9 +138,11 @@ def tRNA():
         data.slice_dataframe()
         data.fig_ratio(options.to_divide, options.divisor)
 
-    if options.output_files == "nuc":
-        print 'Needs update. Talk to Tomasz.'
-    #     data.fig_nucleotide_resolution()
+    if options.output_files == "nuc3":
+        data.fig_3end_nucleotide_resolution()
+
+    if options.output_files == "nuc5":
+        data.fig_5end_nucleotide_resolution()
 
     if options.output_files == "nuc_gene":
         print 'Needs update. Talk to Tomasz.'

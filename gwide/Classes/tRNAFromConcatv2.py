@@ -12,6 +12,7 @@ from pypeaks import Data
 from pyCRAC.Parsers import GTF2
 import matplotlib.pyplot as plt
 import pandas as pd
+# import seaborn
 
 class tRNAFromConcatv2():
     def __init__(self, gtf_file, five_prime_flank, three_prime_flank, hits_threshold, lookahead, prefix, print_valleys, print_peaks, readthrough_start, normalized):
@@ -963,13 +964,12 @@ class tRNAFromConcatv2():
         return True
 
 # print histogram for 3` end including nucleotides
-    def fig_nucleotide_resolution(self):
-        print '# Plotting 3` end.'
+    def fig_3end_nucleotide_resolution(self):
+        print '# Plotting 3` end at nucleotide resolution.'
         fig = plt.figure(figsize=(15, 10), dpi=80, facecolor='w', edgecolor='k')
         if len(self.experiments) > 1:
-            print 'More than one experiment. Preprocess concat file to get only one experiment:' \
-                  "cat your.concat | awk '$7 == \"experiment\" {print $0}' > experiment.concat"
-            exit()
+            exit('More than one experiment. Preprocess concat file to get only one experiment:' \
+                  "cat your.concat | awk '$7 == \"experiment\" {print $0}' > experiment.concat")
         else:
             e = self.experiments[0]
         for tRNA_group in self.rt:
@@ -983,46 +983,92 @@ class tRNAFromConcatv2():
                 fig.tight_layout()
                 plt.title(tRNA_group)
                 try:
-                    # self.data[gene_name][e] = self.data[gene_name][e][(-10-self.three_prime_flank):(120-self.three_prime_flank):] # plot from last 130 nt
-                    # print self.data[gene_name][e]
-                    # bar = ax.bar(self.data[gene_name][e]['position'], self.data[gene_name][e]['hits'], width=0.5)
-                    # for i in range(0,10):
-                    #     bar[i].set_color('green')
-                    # for i in range(10,len(bar)):
-                    #     bar[i].set_color('grey')
-                    # plt.xticks(list(self.data[gene_name][e]['position']), list(self.data[gene_name][e]['nucleotides']), fontsize=8)
-                    uno_to_plot = self.data[gene_name][e][(-10-self.three_prime_flank):(120-self.three_prime_flank):] # plot from last 130 nt
-                    ax.set_ylabel("no. of reads")
-                    ax.set_xlabel('ID: '+i_gene_id+', Name: '+gene_name)
-                    bar = ax.bar(uno_to_plot['position'], uno_to_plot['hits'], width=0.5)
-                    axes = plt.gca()
-                    axes.set_ylim([0,2000])
+                    self.data[gene_name] = self.data[gene_name][(-10-self.three_prime_flank):(120-self.three_prime_flank):] # plot from last 130 nt
+                    # print self.data[gene_name]
+                    bar = ax.bar(self.data[gene_name]['position'], self.data[gene_name][e], width=0.5)
                     for i in range(0,10):
                         bar[i].set_color('green')
                     for i in range(10,len(bar)):
                         bar[i].set_color('grey')
-                    plt.xticks(list(uno_to_plot['position']), list(uno_to_plot['nucleotides']), fontsize=8)
+                    plt.xticks(list(self.data[gene_name]['position']), list(self.data[gene_name]['nucleotide']), fontsize=8)
 
-                    plot_no += 1
-                    ax = fig.add_subplot(5, 1, plot_no)
-                    ax.set_ylabel("no. of reads")
-                    ax.set_xlabel('ID: '+i_gene_id+', Name: '+gene_name)
-                    duo_to_plot = self.data[gene_name][e][(120-self.three_prime_flank)::] # plot from last 130 nt
-                    bar = ax.bar(duo_to_plot['position'], duo_to_plot['hits'], width=0.5, color='grey')
-                    axes = plt.gca()
-                    axes.set_ylim([0,2000])
-                    # axes.set_ylim([0,max(self.data[gene_name][e]['hits'])])
-                    plt.xticks(list(duo_to_plot['position']), list(duo_to_plot['nucleotides']), fontsize=8)
+                    # uno_to_plot = self.data[gene_name][(-10-self.three_prime_flank):(120-self.three_prime_flank):] # plot from last 130 nt
+                    # # print uno_to_plot
+                    # # exit()
+                    # ax.set_ylabel("no. of reads")
+                    # ax.set_xlabel('ID: '+i_gene_id+', Name: '+gene_name)
+                    # bar = ax.bar(uno_to_plot['position'], uno_to_plot[e], width=0.5)
+                    # axes = plt.gca()
+                    # axes.set_ylim([0,2000])
+                    # for i in range(0,10):
+                    #     bar[i].set_color('green')
+                    # for i in range(10,len(bar)):
+                    #     bar[i].set_color('grey')
+                    # plt.xticks(list(uno_to_plot['position']), list(uno_to_plot['nucleotide']), fontsize=8)
+                    #
+                    # # plot_no += 1
+                    # ax = fig.add_subplot(5, 1, plot_no)
+                    # ax.set_ylabel("no. of reads")
+                    # ax.set_xlabel('ID: '+i_gene_id+', Name: '+gene_name)
+                    # duo_to_plot = self.data[gene_name][(120-self.three_prime_flank)::] # plot from last 130 nt
+                    # bar = ax.bar(duo_to_plot['position'], duo_to_plot[e], width=0.5, color='grey')
+                    # axes = plt.gca()
+                    # axes.set_ylim([0,2000])
+                    # # axes.set_ylim([0,max(self.data[gene_name][e]['hits'])])
+                    # plt.xticks(list(duo_to_plot['position']), list(duo_to_plot['nucleotide']), fontsize=8)
 
                 except KeyError:
                     plt.text(0.5,0.5,"NO READS")
                 if plot_no == 5:
                     fig_no += 1
-                    plt.savefig(self.prefix+'nuc'+'_l'+str(self.lookahead)+'_t'+str(self.hits_threshold)+'_'+tRNA_group+'_fig_'+str(fig_no)+'.png')
+                    plt.savefig(self.prefix+'nuc3end'+'_l'+str(self.lookahead)+'_t'+str(self.hits_threshold)+'_'+tRNA_group+'_fig_'+str(fig_no)+'.png')
                     plt.clf()
                     plot_no = 0
             if plot_no > 0:
-                plt.savefig(self.prefix+'nuc'+'_l'+str(self.lookahead)+'_t'+str(self.hits_threshold)+'_'+tRNA_group+'_fig_'+str(fig_no+1)+'.png')
+                plt.savefig(self.prefix+'nuc3end'+'_l'+str(self.lookahead)+'_t'+str(self.hits_threshold)+'_'+tRNA_group+'_fig_'+str(fig_no+1)+'.png')
+                plt.clf()
+        return True
+
+        # print histogram for 3` end including nucleotides
+    def fig_5end_nucleotide_resolution(self):
+        print "# Plotting 5' end at nucleotide resolution."
+        fig = plt.figure(figsize=(15, 10), dpi=80, facecolor='w', edgecolor='k')
+        if len(self.experiments) > 1:
+            exit('More than one experiment. Preprocess concat file to get only one experiment:' \
+                 "cat your.concat | awk '$7 == \"experiment\" {print $0}' > experiment.concat")
+        else:
+            e = self.experiments[0]
+        for tRNA_group in self.rt:
+            fig_no = 0
+            plot_no = 0
+            rt_sorted = collections.OrderedDict(
+                sorted(self.rt[tRNA_group].items(), reverse=True, key=lambda t: t[1]))
+            for i_gene_id in rt_sorted:
+                gene_name = self.id_to_names[i_gene_id]
+                plot_no += 1
+                ax = fig.add_subplot(5, 1, plot_no)
+                fig.tight_layout()
+                plt.title(tRNA_group)
+                try:
+                    self.data[gene_name] = self.data[gene_name][self.five_prime_flank-20:self.five_prime_flank+10:]  # plot first 20 nt
+                    # print self.data[gene_name]
+                    bar = ax.bar(self.data[gene_name]['position'], self.data[gene_name][e], width=0.5)
+                    for i in range(0, 20):
+                        bar[i].set_color('green')
+                    for i in range(20, len(bar)):
+                        bar[i].set_color('grey')
+                    plt.xticks(list(self.data[gene_name]['position']), list(self.data[gene_name]['nucleotide']),fontsize=8)
+                except KeyError:
+                    plt.text(0.5, 0.5, "NO READS")
+                if plot_no == 5:
+                    fig_no += 1
+                    plt.savefig(self.prefix + 'nuc5end' + '_l' + str(self.lookahead) + '_t' + str(
+                        self.hits_threshold) + '_' + tRNA_group + '_fig_' + str(fig_no) + '.png')
+                    plt.clf()
+                    plot_no = 0
+            if plot_no > 0:
+                plt.savefig(self.prefix + 'nuc5end' + '_l' + str(self.lookahead) + '_t' + str(
+                    self.hits_threshold) + '_' + tRNA_group + '_fig_' + str(fig_no + 1) + '.png')
                 plt.clf()
         return True
 

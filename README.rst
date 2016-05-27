@@ -1,7 +1,11 @@
 =====
 gwide
 =====
-Python package for downstream analysis of CRAC data.
+Python package for downstream analysis of CRAC data. Package developed for analysis of RNA polymerase III data published in
+Global analysis of transcriptionally engaged yeast RNA polymerase III reveals extended tRNA transcripts.
+Turowski TW, Leśniewska E, Delan-Forino C, Sayou C, Boguta M, Tollervey D.
+Genome Res. 2016 May 20. pii: gr.205492.116.
+http://www.ncbi.nlm.nih.gov/pubmed/27206856
 
 Instalation
 ===========
@@ -51,9 +55,12 @@ gwidetRNA (-h for help, input *.concat):
   - calculate dG RNA_DNA/DNA_DNA for each valley or last 20 nt after tRNA gene
   - save tab-deliminated file with each plot calculations
 
-Old description
+Citation
 ===========
-ruffusCalculatePearsonCoefficient.py - runs compareHittables.py but work directly on *.novo files
+Turowski TW, Leśniewska E, Delan-Forino C, Sayou C, Boguta M, Tollervey D.
+Global analysis of transcriptionally engaged yeast RNA polymerase III reveals extended tRNA transcripts.
+Genome Res. 2016 May 20. pii: gr.205492.116.
+
 
 Note
 ====
