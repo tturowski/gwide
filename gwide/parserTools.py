@@ -12,6 +12,8 @@ def getFastaSeqs():
                      type="str", default=None)
     parser.add_option("-f", "--fasta_file", dest="fasta_file", help="Provide the path to your fasta file.",
                      type="str", default=None)
+    parser.add_option("-t", "--tab_file", dest="tab_file", help="Provide the path to your genom tab file.",
+                     type="str", default=None)
     parser.add_option("-r", "--ranges", dest="ranges",
                      help="Provide ranges(flanks) for genes.",
                      type="int", default=0)
@@ -29,6 +31,7 @@ def getFastaSeqs():
     gtf = GTF2.Parse_GTF()
     gtf.read_GTF(gtm.getGTF(options.gtf_file))
     gtf.read_FASTA(gtm.getFASTA(options.fasta_file))
+    gtf.read_TAB(gtm.getTAB(options.tab_file))
 
     for i in sys.stdin:
         gene_name = str(i.strip())
