@@ -33,8 +33,8 @@ def rRNA():
     parser.add_option("-p", "--prefix", dest="out_prefix", type="str", help="Prefix for output files. Default to standard output", default=None)
     parser.add_option("--peaks", dest="print_peaks", action="store_true", help="Add into command line if you want to print peaks on plots. Default: False",
                       default=False)
-    parser.add_option("-o", "--output", dest="output_files", choices=["std", "ratio", "single", "correlations"], help="Select from following options: (1) std - RDN37-1; experiment after experimen ;"+'\n'
-                                                                                                   "(2)ratio - ratio for -a divided by -b; (3)single - plot RDN37-1 plots 1 per page; (4) correlations - calculate correlations for different experiments", default="std")
+    parser.add_option("-o", "--output", dest="output_files", choices=["std", "ratio", "single", "correlations", "ratio_smooth"], help="Select from following options: (1) std - RDN37-1; experiment after experimen ;"+'\n'
+                                                                                                   "(2)ratio - ratio for -a divided by -b; (3)single - plot RDN37-1 plots 1 per page; (4) correlations - calculate correlations for different experiments; (5)ratio_smooth - ratio for -a divided by -b", default="std")
     parser.add_option("-a", dest="to_divide", type="str", help="experiment to divide by -b", default=None)
     parser.add_option("-b", dest="divisor", type="str", help="experiment being divisor for -a", default=None)
     parser.add_option("-n", "--normalized", dest="normalized", action="store_true", help="Use when you want to work on data normalized reads per Milion? Default: False", default=False)
@@ -63,6 +63,8 @@ def rRNA():
     if options.output_files == "ratio":
         # data.fig_ratio(options.to_divide, options.divisor)  # plots ratio to_divide/divisor
         data.fig_log2ratio(options.to_divide, options.divisor)  # plots log2 ratio to_divide/divisor
+    if options.output_files == "ratio_smooth":
+        data.fig_smoothlog2ratio(options.to_divide, options.divisor)  # plots log2 ratio to_divide/divisor using smoothed data
     if options.output_files == "correlations":
         data.correlations()
     print '# Done.'

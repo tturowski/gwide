@@ -459,9 +459,9 @@ class rRNAFromConcat():
                 plt.tight_layout()
                 plt.title(e[0]+'/'+e[1]+' log2 ratio')
                 plt.ylabel("no. of reads")
-                self.data[gene_name][e[0]]['log2'] = np.log2(self.data[gene_name][e[0]]['hits']/self.data[gene_name][e[1]]['hits']) ###getting ratio
-                self.data[gene_name][e[0]].to_csv(sep='\t', path_or_buf=(os.getcwd()+'/'+e[0]+'.tab'))
-                self.data[gene_name][e[0]].to_csv(sep=',', path_or_buf=(os.getcwd()+'/'+e[0]+'.csv'))
+                self.data[gene_name]['log2'] = np.log2(self.data[gene_name][e[0]]/self.data[gene_name][e[1]]) ###getting ratio
+                self.data[gene_name].to_csv(sep='\t', path_or_buf=(os.getcwd()+'/'+e[0]+'.tab'))
+                self.data[gene_name].to_csv(sep=',', path_or_buf=(os.getcwd()+'/'+e[0]+'.csv'))
 
                 first_flank = 300
                 ETS = 700
@@ -473,15 +473,15 @@ class rRNAFromConcat():
                 ETS_end = 211
 
                 sliced = collections.OrderedDict()
-                sliced['5flank'] = self.data[gene_name][e[0]][0:first_flank:]       #5` flank
-                sliced['5ETS'] = self.data[gene_name][e[0]][first_flank:(first_flank+ETS):]    #5` ETS
-                sliced['18S'] = self.data[gene_name][e[0]][(first_flank+ETS):(first_flank+ETS+eighteen):]   #18S
-                sliced['ITS1'] = self.data[gene_name][e[0]][(first_flank+ETS+eighteen):(first_flank+ETS+eighteen+its_one):]   #ITS1
-                sliced['5.8S'] = self.data[gene_name][e[0]][(first_flank+ETS+eighteen+its_one):(first_flank+ETS+eighteen+its_one+five_dot_eight):]   #5.8S
-                sliced['ITS2'] = self.data[gene_name][e[0]][(first_flank+ETS+eighteen+its_one+five_dot_eight):(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two):]   #ITS2
-                sliced['25S'] = self.data[gene_name][e[0]][(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two):(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two+twenty_five):]   #25S
-                sliced['3ETS`'] = self.data[gene_name][e[0]][(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two+twenty_five):(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two+twenty_five+ETS_end):]   #3` ETS
-                sliced['3flank'] = self.data[gene_name][e[0]][(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two+twenty_five+ETS_end)::]       #3` flank
+                sliced['5flank'] = self.data[gene_name][0:first_flank:]       #5` flank
+                sliced['5ETS'] = self.data[gene_name][first_flank:(first_flank+ETS):]    #5` ETS
+                sliced['18S'] = self.data[gene_name][(first_flank+ETS):(first_flank+ETS+eighteen):]   #18S
+                sliced['ITS1'] = self.data[gene_name][(first_flank+ETS+eighteen):(first_flank+ETS+eighteen+its_one):]   #ITS1
+                sliced['5.8S'] = self.data[gene_name][(first_flank+ETS+eighteen+its_one):(first_flank+ETS+eighteen+its_one+five_dot_eight):]   #5.8S
+                sliced['ITS2'] = self.data[gene_name][(first_flank+ETS+eighteen+its_one+five_dot_eight):(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two):]   #ITS2
+                sliced['25S'] = self.data[gene_name][(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two):(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two+twenty_five):]   #25S
+                sliced['3ETS`'] = self.data[gene_name][(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two+twenty_five):(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two+twenty_five+ETS_end):]   #3` ETS
+                sliced['3flank'] = self.data[gene_name][(first_flank+ETS+eighteen+its_one+five_dot_eight+its_two+twenty_five+ETS_end)::]       #3` flank
                 for part in sliced:
                     x_array = np.array(sliced[part]['position'])
                     y_array = np.array(sliced[part]['log2'])
@@ -501,6 +501,80 @@ class rRNAFromConcat():
                     plt.clf()
             if plot_no > 0:
                 plt.savefig(self.prefix+i_gene_id+'_l'+str(self.lookahead)+'_t'+str(self.hits_threshold)+'_log2ratio_'+str(fig_no+1)+'.png')
+                plt.clf()
+        return True
+
+    ###function to plot ration between sample with -a parameter and -b parameter
+    def fig_smoothlog2ratio(self, a, b):
+        print '# Plotting log2 ratio for ' + a + ' divided by ' + b + ' (all experiments).'
+        new_exp_list = self.group_experiments(a, b)
+        fig = plt.figure(figsize=(12, 9), dpi=100, facecolor='w', edgecolor='k')
+        fig_no = 0
+        for i_gene_id in self.genes_id_list:
+            gene_name = self.id_to_names[i_gene_id]
+            plot_no = 0
+            for e in new_exp_list:
+                plot_no += 1
+                fig.add_subplot(3, 1, plot_no)
+                plt.tight_layout()
+                plt.title(e[0] + '/' + e[1] + ' log2 ratio')
+                plt.ylabel("no. of reads")
+                self.data[gene_name][e[0]]['log2'] = np.log2(
+                    self.data[gene_name][e[0]]['hits'] / self.data[gene_name][e[1]]['hits'])  ###getting ratio
+                self.data[gene_name][e[0]].to_csv(sep='\t', path_or_buf=(os.getcwd() + '/' + e[0] + '.tab'))
+                self.data[gene_name][e[0]].to_csv(sep=',', path_or_buf=(os.getcwd() + '/' + e[0] + '.csv'))
+
+                first_flank = 300
+                ETS = 700
+                eighteen = 1800
+                its_one = 361
+                five_dot_eight = 158
+                its_two = 232
+                twenty_five = 3396
+                ETS_end = 211
+
+                sliced = collections.OrderedDict()
+                sliced['5flank'] = self.data[gene_name][e[0]][0:first_flank:]  # 5` flank
+                sliced['5ETS'] = self.data[gene_name][e[0]][first_flank:(first_flank + ETS):]  # 5` ETS
+                sliced['18S'] = self.data[gene_name][e[0]][
+                                (first_flank + ETS):(first_flank + ETS + eighteen):]  # 18S
+                sliced['ITS1'] = self.data[gene_name][e[0]][
+                                 (first_flank + ETS + eighteen):(first_flank + ETS + eighteen + its_one):]  # ITS1
+                sliced['5.8S'] = self.data[gene_name][e[0]][(first_flank + ETS + eighteen + its_one):(
+                first_flank + ETS + eighteen + its_one + five_dot_eight):]  # 5.8S
+                sliced['ITS2'] = self.data[gene_name][e[0]][
+                                 (first_flank + ETS + eighteen + its_one + five_dot_eight):(
+                                 first_flank + ETS + eighteen + its_one + five_dot_eight + its_two):]  # ITS2
+                sliced['25S'] = self.data[gene_name][e[0]][
+                                (first_flank + ETS + eighteen + its_one + five_dot_eight + its_two):(
+                                first_flank + ETS + eighteen + its_one + five_dot_eight + its_two + twenty_five):]  # 25S
+                sliced['3ETS`'] = self.data[gene_name][e[0]][(
+                first_flank + ETS + eighteen + its_one + five_dot_eight + its_two + twenty_five):(
+                first_flank + ETS + eighteen + its_one + five_dot_eight + its_two + twenty_five + ETS_end):]  # 3` ETS
+                sliced['3flank'] = self.data[gene_name][e[0]][(
+                first_flank + ETS + eighteen + its_one + five_dot_eight + its_two + twenty_five + ETS_end)::]  # 3` flank
+                for part in sliced:
+                    x_array = np.array(sliced[part]['position'])
+                    y_array = np.array(sliced[part]['log2'])
+                    y_array[0] = 0
+                    y_array[len(y_array) - 1] = 0
+                    plt.fill(x_array, y_array, label=part)
+                    if part in ['18S', '5.8S', '25S']:
+                        plt.axvspan(min(sliced[part]['position']), max(sliced[part]['position']), alpha=0.2,
+                                    color='#0892d0')
+                plt.grid()
+                legend = plt.legend(loc='upper right', shadow=True, fontsize=10)
+
+                plt.xlabel('ID: ' + i_gene_id + ', Name: ' + gene_name)
+                if plot_no == 3:
+                    plot_no = 0
+                    fig_no += 1
+                    plt.savefig(self.prefix + i_gene_id + '_l' + str(self.lookahead) + '_t' + str(
+                        self.hits_threshold) + '_log2ratio_' + str(fig_no) + '.png')
+                    plt.clf()
+            if plot_no > 0:
+                plt.savefig(self.prefix + i_gene_id + '_l' + str(self.lookahead) + '_t' + str(
+                    self.hits_threshold) + '_log2ratio_' + str(fig_no + 1) + '.png')
                 plt.clf()
         return True
 
