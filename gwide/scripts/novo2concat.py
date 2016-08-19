@@ -20,7 +20,9 @@ parser.add_argument("-g", "--gtf_file", dest="gtf_file", help="Provide the path 
                      type=str, default=None)
 parser.add_argument("-t", "--tab_file", dest="tab_file", help="Provide the path to your tab genome file.",
                      type=str, default=None)
-parser.add_argument("-r", dest="ranges", help="Set up ranges for pyPileups. Default = 250", default=250)
+parser.add_argument("-r", dest="ranges", help="Set up ranges for pyPileup. Default = 250", default=250)
+parser.add_argument("--3end", dest="three_end", help="Use pyPileup option --3end to only report counts for the 3' end of the reads. Default = False",
+                    action="store_true", default=False)
 parser.add_argument("-l", dest="list_file", help="Provide the FULL path to your gene_names.list file.", type=str, default=None, required=True)
 parser.add_argument("--tree", dest="tree", help="If you want to leave tree of catalogs including pilups within. Default = None.",
                      action="store_true", default=False)
@@ -47,6 +49,8 @@ for f, d in zip(files, directories):
 
 #setting up concat and log files name
 concat_name = args.prefix+"_r"+ranges
+if args.three_end == True:
+    concat_name = concat_name + "_3end"
 
 #seting up no. of processes to use
 number_of_processors_to_use = len(files)
@@ -59,7 +63,11 @@ number_of_processors_to_use = len(files)
 )
 def create_pileup_files(input_file, output_files):
     os.chdir(os.path.dirname(input_file))
-    subprocess.call(r'pyPileup.py --gtf='+gtf+' --tab='+tab+' -g '+args.list_file+' -f ' + input_file + ' -r '+ranges, shell=True)
+    if args.three_end == True:
+        subprocess.call(r'pyPileup.py --gtf=' + gtf + ' --tab=' + tab + ' -g ' + args.list_file + ' -f ' + input_file + ' -r ' + ranges + ' --3end',
+            shell=True)
+    else:
+        subprocess.call(r'pyPileup.py --gtf='+gtf+' --tab='+tab+' -g '+args.list_file+' -f ' + input_file + ' -r '+ranges, shell=True)
     # subprocess.call(r'rm anti*', shell=True)
     os.chdir(root_dir)
 

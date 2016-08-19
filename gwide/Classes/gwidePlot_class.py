@@ -17,6 +17,7 @@ import plotly.plotly as py
 import plotly.graph_objs as go
 import scipy.stats.morestats as ss
 import scipy.stats.stats as sss
+import seaborn
 
 class GenomeWidePlot():
     def __init__(self, gtf_file, five_prime_flank, three_prime_flank, hits_threshold, lookahead, prefix, readthrough_start, normalized, publish, left_right_ratio):
@@ -521,7 +522,7 @@ class GenomeWidePlot():
                     raw_5data[gene_name] = self.data[gene_name][e]
             transposed = raw_5data.transpose()
             transposed = transposed.fillna(0)
-            transposed.to_csv(str(e)+"_heatmap.csv")
+            transposed.to_csv(self.prefix+str(e)+"_heatmap.csv")
 
     def ratio(self, to_divide, divisor, filter, exp_to_use=str(), select=None):
         new_exp_list = self.group_experiments(to_divide, divisor, exp_to_use=exp_to_use) #exp_to_use allows for normalizations
