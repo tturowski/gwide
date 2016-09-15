@@ -42,9 +42,14 @@ def compare1toRef(dataset=pd.Series(), ranges='mm', heatmap=False, relative=Fals
         for f in ['rae_min', 'rae_max', 'ear_min', 'ear_max']: return_df[f] = differences_df[f]
         return return_df  # return Dataframe
 
+# def addRDN37scheme(df=pd.DataFrame(), value=-1):
+#     for coords in [(1000,2800),(3161,3319),(3552,6947)]:
+#         df['RDN37-1 scheme'][coords[0]:coords[1]] = value
+#     return df
+
 def plot_heatmap(df, title='Heat map of differences between dataset and reference plot for RDN37-1', vmin=None,
-                 vmax=None):
-    fig, ax = plt.subplots(figsize=(20, 10))
+                 vmax=None, figsize=(20,10)):
+    fig, ax = plt.subplots(figsize=figsize)
     if not vmin:
         vmin = -np.absolute(df.max().median())
     if not vmax:
@@ -150,3 +155,4 @@ def plot_diff(dataset=pd.DataFrame(), ranges='mm', label=str(), start=None, stop
     ax1.set_xlabel('position')
     ax1.set_ylabel('fraction of reads ' + label, color='black')
     plt.legend()
+
