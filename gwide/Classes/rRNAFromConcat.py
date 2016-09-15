@@ -158,7 +158,7 @@ class rRNAFromConcat():
                         if pscounts == True:
                             self.data[gene_name][exp] = self.data[gene_name][exp].add(0.000001) #adding pseudocounts
                     if pscounts == True:
-                        self.data[gene_name][exp_old] = self.data[gene_name][exp_old].add(10) #adding pseudocounts
+                        self.data[gene_name][exp_old] = self.data[gene_name][exp_old].add(0.1) #adding pseudocounts
 
                 # #slicing dataframes
                 #         total       =   self.data[gene_name][transcription_start:].sum()[exp]
