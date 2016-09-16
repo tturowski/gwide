@@ -79,11 +79,11 @@ def plot_to_compare(dataset=pd.DataFrame(), label=str(), start=None, stop=None, 
     plt.axhline(0, color='red')
     if len(dataset.columns) == 4: #if only two experiments
         ax1.plot(dataset.index, dataset['mean'], 'black', label=label)
-        ax1.fill_between(dataset.index, dataset['min'], dataset['max'], color='black', alpha=0.3)
+        ax1.fill_between(dataset.index, dataset['min'], dataset['max'], color='black', alpha=0.3, label='min-max')
     else: #if more than two experiments
         ax1.plot(dataset.index, dataset['median'], 'black', label=label)
-        ax1.fill_between(dataset.index, dataset['q1'], dataset['q3'], color='black', alpha=0.2)
-        ax1.fill_between(dataset.index, dataset['min'], dataset['max'], color='black', alpha=0.07)
+        ax1.fill_between(dataset.index, dataset['q1'], dataset['q3'], color='black', alpha=0.2, label='q1-q3')
+        ax1.fill_between(dataset.index, dataset['min'], dataset['max'], color='black', alpha=0.07, label='min-max')
     ax1.set_xlabel('position')
     ax1.set_ylim(0,lim)
     # Make the y-axis label and tick labels match the line color.
@@ -92,8 +92,8 @@ def plot_to_compare(dataset=pd.DataFrame(), label=str(), start=None, stop=None, 
         tl.set_color('black')
 
     ax1.plot(s2.index, s2['median'], 'green', label='reference RDN37-1')
-    ax1.fill_between(s2.index, s2['q1'], s2['q3'], color='green', alpha=0.2)
-    ax1.fill_between(s2.index, s2['min'], s2['max'], color='green', alpha=0.07)
+    ax1.fill_between(s2.index, s2['q1'], s2['q3'], color='green', alpha=0.2, label='q1-q3')
+    ax1.fill_between(s2.index, s2['min'], s2['max'], color='green', alpha=0.07, label='min-max')
     ax1.legend()
 
 def compareMoretoRef(dataset=pd.DataFrame(), ranges='mm',
@@ -145,12 +145,12 @@ def plot_diff(dataset=pd.DataFrame(), ranges='mm', label=str(), start=None, stop
         ax1.plot(s2.index, s2['median'], 'green', label='reference RDN37-1')
     if plot_ranges == True:
         if len(dataset.columns) == 4:  # if only two experiments
-            ax1.fill_between(dataset.index, dataset['min'], dataset['max'], color='black', alpha=0.3)
+            ax1.fill_between(dataset.index, dataset['min'], dataset['max'], color='black', alpha=0.3, label='min-max')
         else:  # if more than two experiments
-            ax1.fill_between(dataset.index, dataset['q1'], dataset['q3'], color='black', alpha=0.2)
-            ax1.fill_between(dataset.index, dataset['min'], dataset['max'], color='black', alpha=0.07)
-        ax1.fill_between(s2.index, s2['q1'], s2['q3'], color='green', alpha=0.2)
-        ax1.fill_between(s2.index, s2['min'], s2['max'], color='green', alpha=0.07)
+            ax1.fill_between(dataset.index, dataset['q1'], dataset['q3'], color='black', alpha=0.2, label='q1-q3')
+            ax1.fill_between(dataset.index, dataset['min'], dataset['max'], color='black', alpha=0.07, label='min=max')
+        ax1.fill_between(s2.index, s2['q1'], s2['q3'], color='green', alpha=0.2, label='q1-q3')
+        ax1.fill_between(s2.index, s2['min'], s2['max'], color='green', alpha=0.07, label='min=max')
     ax1.set_ylim(0, lim)
     ax1.set_xlabel('position')
     ax1.set_ylabel('fraction of reads ' + label, color='black')
