@@ -77,8 +77,9 @@ class rRNAFromConcat():
     #             pass
     #     self.experiments.sort()
 
-    def read_csv(self, concat_file):
+    def read_csv(self, concat_file, use='hits'):
         print "# Reading CSV file..."
+        if use not in ['hits','substitutions','deletions']: exit("Only 'hits','substitutions' or 'deletions' can be used")
         header = ['gene','position','nucleotide','hits','substitutions','deletions','exp_name','n_hits','n_substitutions','n_deletions']
         concat_csv = pd.read_csv(concat_file, sep='\t', names=header, comment='#')
         self.experiments = sorted(set(concat_csv['exp_name'].tolist()))
@@ -105,9 +106,9 @@ class rRNAFromConcat():
             self.data[gene_name]['position'] = positions
             self.data[gene_name]['nucleotide'] = gene_csv['nucleotide'][:(self.five_prime_flank + gene_length + self.three_prime_flank):]
             for e in self.experiments:
-                self.data[gene_name][e] = gene_csv[gene_csv.exp_name == e]['hits']
+                self.data[gene_name][e] = gene_csv[gene_csv.exp_name == e][use]
                 if self.npM == True:
-                    self.data[gene_name][(e+"_nrpm")] = gene_csv[gene_csv.exp_name == e]['n_hits']    #to work with data normalized reads per M
+                    self.data[gene_name][(e+"_nrpm")] = gene_csv[gene_csv.exp_name == e]['n_'+use]    #to work with data normalized reads per M
             self.data[gene_name] = self.data[gene_name].fillna(0)
             # print self.data[gene_name][230:330]
         self.genes_id_list.sort()
