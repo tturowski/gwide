@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-def plot_from_csv(csv_path=str(),title=None, start=None, stop=None,figsize=(15,7),ylim=(None,0.01), color='green'):
+def plot_from_csv(csv_path=str(),title=None, start=None, stop=None,figsize=(15,7),ylim=(None,0.01), color='green', h_lines=list(), lc='red'):
     '''Function creates plot similar to box plot: median, 2 and 3 quartiles and min-max range'''
     reference = pd.read_csv(csv_path, index_col=0).drop('nucleotide', 1)
     s2 = reference[start:stop]
@@ -17,9 +17,10 @@ def plot_from_csv(csv_path=str(),title=None, start=None, stop=None,figsize=(15,7
         ax1.fill_between(s2.index, s2['q1'], s2['q3'], label='range (q2-q3)', color=color, alpha=0.2)
     if set(['min','max']).issubset(list(s2.columns.values)):
         ax1.fill_between(s2.index, s2['min'], s2['max'], label='range (min-max)', color=color, alpha=0.07)
+    for i in [i for i in h_lines if i in range(start,stop)]: ax1.axvline(i, color=lc)
     ax1.legend()
 
-def plot_to_compare(dataset=pd.DataFrame(), label=str(), start=None, stop=None, figsize=(15,8), ylim=(None,0.01) ,reference='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'):
+def plot_to_compare(dataset=pd.DataFrame(), label=str(), start=None, stop=None, figsize=(15,8), ylim=(None,0.01), h_lines=list() ,reference='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'):
     '''Function creates two plots similar to box plot: median, 2 and 3 quartiles and min-max range
         ax1 - dataset given by user
         ax2 - reference dataset'''
@@ -45,6 +46,7 @@ def plot_to_compare(dataset=pd.DataFrame(), label=str(), start=None, stop=None, 
     ax1.plot(s2.index, s2['median'], 'green', label='reference RDN37-1')
     ax1.fill_between(s2.index, s2['q1'], s2['q3'], color='green', alpha=0.2, label='range (q2-q3)')
     ax1.fill_between(s2.index, s2['min'], s2['max'], color='green', alpha=0.07, label='range (min-max)')
+    for i in [i for i in h_lines if i in range(start, stop)]: ax1.axvline(i, color='red')
     ax1.legend()
 
 def compare1toRef(dataset=pd.Series(), ranges='mm', heatmap=False, relative=False,
@@ -148,7 +150,7 @@ def compareMoretoRef(dataset=pd.DataFrame(), ranges='mm',
     return return_df  # returns Dataframe
 
 def plot_diff(dataset=pd.DataFrame(), ranges='mm', label=str(), start=None, stop=None, plot_medians=True,
-              plot_ranges=True, figsize=(15, 8), lim=0.01,
+              plot_ranges=True, figsize=(15, 8), lim=0.01, h_lines=list(),
               reference='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'):
     '''Plots differences calculated using compare1toRef or compareMoretoRef'''
     ranges_dict = {'mm': 'min-max', 'qq': 'q1-q3'}
@@ -175,4 +177,5 @@ def plot_diff(dataset=pd.DataFrame(), ranges='mm', label=str(), start=None, stop
     ax1.set_ylim(0, lim)
     ax1.set_xlabel('position')
     ax1.set_ylabel('fraction of reads ' + label, color='black')
+    for i in [i for i in h_lines if i in range(start, stop)]: ax1.axvline(i, color='red')
     plt.legend()

@@ -69,3 +69,11 @@ def define_experiments(paths_in, whole_name=False):
         if len(experiments) != len(paths):
             exit("No. of experiments is not equal to no. of paths")
     return experiments, paths
+
+def calGC(dataset=pd.DataFrame(), calFor=['G','C']):
+    '''
+    Returns GC content in a given dataset
+    :param dataset: Pandas DataFrame with "nucleotide" column
+    :return: fraction of GC content
+    '''
+    return float(len(dataset[dataset['nucleotide'].isin(calFor)]))/float(len(dataset))
