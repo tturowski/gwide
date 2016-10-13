@@ -2,8 +2,35 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-def plot_from_csv(csv_path=str(),title=None, start=None, stop=None,figsize=(15,7),ylim=(None,0.01), color='green', h_lines=list(), lc='red'):
-    '''Function creates plot similar to box plot: median, 2 and 3 quartiles and min-max range'''
+def save_csv(data_ref=pd.DataFrame(), datasets=pd.DataFrame(), path=str()):
+    '''
+    Takes two dataframes:
+    :param data_ref: dataframe with ['position'] and ['nucleotide'] collumns
+    :param datasets: dataframe containinig only experimental data
+    :param path: path to save csv
+    :return: reference dataframe
+    '''
+    reference = pd.DataFrame()
+    reference['position'], reference['nucleotide'] = data_ref['position'], data_ref['nucleotide']
+    reference['mean'], reference['std'] = datasets.mean(axis=1), datasets.std(axis=1)
+    reference['median'], reference['q1'], reference['q3'] = datasets.median(axis=1), datasets.quantile(q=0.25,axis=1), datasets.quantile(q=0.75, axis=1),
+    reference['min'], reference['max'] = datasets.min(axis=1), datasets.max(axis=1)
+    reference.to_csv(path)  ## reference plot
+    return reference
+
+def plot_from_csv(csv_path=str(),title=None, start=None, stop=None,figsize=(15,6),ylim=(None,0.01), color='green', h_lines=list(), lc='red'):
+    '''
+    Function creates plot similar to box plot: median, 2 and 3 quartiles and min-max range
+    :param csv_path: path to csv file
+    :param title: plot title
+    :param start: start
+    :param stop: stop
+    :param figsize: size of figure
+    :param ylim: OY axes lim - def (None,0.01)
+    :param color: plot color
+    :param h_lines: optional list of horizontal lines
+    :param lc: color of horizontal lines
+    '''
     reference = pd.read_csv(csv_path, index_col=0).drop('nucleotide', 1)
     s2 = reference[start:stop]
     #plotting reference dataset
@@ -14,16 +41,20 @@ def plot_from_csv(csv_path=str(),title=None, start=None, stop=None,figsize=(15,7
     ax1.set_ylim(ylim)
     ax1.plot(s2.index, s2['median'], color=color)
     if set(['q1','q3']).issubset(list(s2.columns.values)):
-        ax1.fill_between(s2.index, s2['q1'], s2['q3'], label='range (q2-q3)', color=color, alpha=0.2)
+        ax1.fill_between(s2.index, s2['q1'], s2['q3'], label='range (2nd-3rd quartile)', color=color, alpha=0.2)
     if set(['min','max']).issubset(list(s2.columns.values)):
         ax1.fill_between(s2.index, s2['min'], s2['max'], label='range (min-max)', color=color, alpha=0.07)
     for i in [i for i in h_lines if i in range(start,stop)]: ax1.axvline(i, color=lc)
     ax1.legend()
 
-def plot_to_compare(dataset=pd.DataFrame(), label=str(), start=None, stop=None, figsize=(15,8), ylim=(None,0.01), h_lines=list() ,reference='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'):
-    '''Function creates two plots similar to box plot: median, 2 and 3 quartiles and min-max range
-        ax1 - dataset given by user
-        ax2 - reference dataset'''
+def plot_to_compare(dataset=pd.DataFrame(), label=str(), start=None, stop=None, figsize=(15,7), ylim=(None,0.01), h_lines=list() ,reference='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'):
+    '''
+    Plot given dataset and reference dataset from csv file.
+    :param dataset: DataFrame()
+    :param label: label for a given dataset
+    :param reference: path to reference plot str()
+    '''
+
     reference = pd.read_csv(reference, index_col=0) # reading reference
     dataset, s2 = dataset[start:stop], reference[start:stop] # prepating datasets
     #plotting
@@ -34,7 +65,7 @@ def plot_to_compare(dataset=pd.DataFrame(), label=str(), start=None, stop=None, 
         ax1.fill_between(dataset.index, dataset['min'], dataset['max'], color='black', alpha=0.3, label='range (min-max)')
     else: #if more than two experiments
         ax1.plot(dataset.index, dataset['median'], 'black', label=label)
-        ax1.fill_between(dataset.index, dataset['q1'], dataset['q3'], color='black', alpha=0.2, label='range (q2-q3)')
+        ax1.fill_between(dataset.index, dataset['q1'], dataset['q3'], color='black', alpha=0.2, label='range (2nd-3rd quartile)')
         ax1.fill_between(dataset.index, dataset['min'], dataset['max'], color='black', alpha=0.07, label='range (min-max)')
     ax1.set_xlabel('position')
     ax1.set_ylim(ylim)
