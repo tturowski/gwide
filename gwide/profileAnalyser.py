@@ -10,7 +10,10 @@ def save_csv(data_ref=pd.DataFrame(), datasets=pd.DataFrame(), path=str()):
     :param path: path to save csv
     :return: reference dataframe
     '''
+
     reference = pd.DataFrame()
+    # if 'position'
+
     reference['position'], reference['nucleotide'] = data_ref['position'], data_ref['nucleotide']
     reference['mean'], reference['std'] = datasets.mean(axis=1), datasets.std(axis=1)
     reference['median'], reference['q1'], reference['q3'] = datasets.median(axis=1), datasets.quantile(q=0.25,axis=1), datasets.quantile(q=0.75, axis=1),
@@ -26,7 +29,7 @@ def plot_from_csv(csv_path=str(),title=None, start=None, stop=None,figsize=(15,6
     :param start: start
     :param stop: stop
     :param figsize: size of figure
-    :param ylim: OY axes lim - def (None,0.01)
+    :param ylim: OY axes lim - def (None,0.01)Piotr Klimas
     :param color: plot color
     :param h_lines: optional list of horizontal lines
     :param lc: color of horizontal lines
@@ -47,7 +50,7 @@ def plot_from_csv(csv_path=str(),title=None, start=None, stop=None,figsize=(15,6
     for i in [i for i in h_lines if i in range(start,stop)]: ax1.axvline(i, color=lc)
     ax1.legend()
 
-def plot_to_compare(dataset=pd.DataFrame(), label=str(), start=None, stop=None, figsize=(15,7), ylim=(None,0.01), h_lines=list() ,reference='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'):
+def plot_to_compare(dataset=pd.DataFrame(), label=str(), start=None, stop=None, figsize=(15,6), ylim=(None,0.01), h_lines=list() ,reference='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'):
     '''
     Plot given dataset and reference dataset from csv file.
     :param dataset: DataFrame()
@@ -82,11 +85,18 @@ def plot_to_compare(dataset=pd.DataFrame(), label=str(), start=None, stop=None, 
 
 def compare1toRef(dataset=pd.Series(), ranges='mm', heatmap=False, relative=False,
                     reference='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'):
-    '''Takes series and compare this with reference DataFrame, as a result gives:
-    (a) if heatmap = False: Dataframe with(reference_above_experiment minimum etc.): rae_min, rae_max, ear_min, ear_max
-    (b) if heatmap = True: Series of differences to plot heatmap
-    relative : only for heatmap, recalculates differences according to the peak size. Warning: negative values are in range -1 to 0
-    but positive are from 0 to values higher than 1 '''
+    '''
+    Takes series and compare this with reference DataFrame, as a result gives
+    :param dataset: given series
+    :param ranges: mm : min-max or qq : q1-q3
+    :param  heatmap=False: Dataframe with(reference_above_experiment minimum etc.): rae_min, rae_max, ear_min, ear_max;
+            heatmap=True: Series of differences to plot heatmap
+    :param relative: only for heatmap, recalculates differences according to the peak size. Warning: negative values are in range -1 to 0
+    but positive are from 0 to values higher than 1
+    :param reference: path to reference plot
+    :return: Dataframe (heatmap=False) or Series (heatmap=True)
+    '''
+
     ranges_dict = {'mm': ['min', 'max'], 'qq': ['q1', 'q3']}
 
     # preparing dataframe and reference
@@ -138,13 +148,24 @@ def plot_heatmap(df=pd.DataFrame(), title='Heat map of differences between datas
     fig.colorbar(heatmap)
     ax.set_title(title)
 
-def filter_df(input_df=pd.DataFrame(), let_in=[''], let_out=['wont_find_this_string']):
-    '''using input dataframe, calculates mean, median etc. for all experiments "let in"'''
+def filter_df(input_df=pd.DataFrame(), let_in=[''], let_out=['wont_find_this_string'], smooth=True):
+    '''
+    Returns dataframe for choosen experiments
+    :param input_df: input dataframe
+    :param let_in: list of words that characterize experiment
+    :param let_out: list of word that disqualify experiments (may remain predefined)
+    :param smooth: apply 10nt smootheninig window
+    :return: dataframe with 'mean', 'median', 'min', 'max' and quartiles if more than 2 experiments
+    '''
+
     working_df, result_df = pd.DataFrame(), pd.DataFrame()
     print "Experiments:"
-    for f in [d for d in list(input_df.columns.values) if any(i in d for i in let_in) and any(o not in d for o in let_out)]:
+    for f in [d for d in list(input_df.columns.values) if all(i in d for i in let_in) and any(o not in d for o in let_out)]:
         print f
-        working_df[f]=input_df[f]
+        if smooth==True:
+            working_df[f]=input_df[f].rolling(10, win_type='blackman', center=True).mean()
+        else:
+            working_df[f] = input_df[f]
     for function in ['mean', 'median', 'min', 'max']: result_df[function]=getattr(working_df, function)(axis=1) #calculates using pandas function listed in []
     if len(working_df.columns) > 2: #calculating quartiles only in more than two experiments
         result_df['q1'], result_df['q3'] = working_df.quantile(q=0.25, axis=1),working_df.quantile(q=0.75, axis=1),
@@ -181,9 +202,23 @@ def compareMoretoRef(dataset=pd.DataFrame(), ranges='mm',
     return return_df  # returns Dataframe
 
 def plot_diff(dataset=pd.DataFrame(), ranges='mm', label=str(), start=None, stop=None, plot_medians=True,
-              plot_ranges=True, figsize=(15, 8), lim=0.01, h_lines=list(),
+              plot_ranges=True, figsize=(15, 6), ylim=(None,0.01), h_lines=list(),
               reference='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'):
-    '''Plots differences calculated using compare1toRef or compareMoretoRef'''
+    '''
+    Plot given dataset and reference, differences are marked
+    :param dataset: dataset from filter_df
+    :param ranges: mm : min-max or qq : q1-q3
+    :param label: label of given dataset
+    :param start: start
+    :param stop: stop
+    :param plot_medians: plot medians
+    :param plot_ranges: plot ranges
+    :param figsize: figzise touple(15, 6)
+    :param ylim: ylim touple(None,0.01)
+    :param h_lines: list of horizontal lines
+    :param reference: path to reference plot
+    :return: plot with marked differences
+    '''
     ranges_dict = {'mm': 'min-max', 'qq': 'q1-q3'}
     reference = pd.read_csv(reference, index_col=0)  # reading reference
     differences_df = compareMoretoRef(dataset=dataset, ranges=ranges)[start:stop]
@@ -205,7 +240,7 @@ def plot_diff(dataset=pd.DataFrame(), ranges='mm', label=str(), start=None, stop
             ax1.fill_between(dataset.index, dataset['min'], dataset['max'], color='black', alpha=0.07, label='min=max')
         ax1.fill_between(s2.index, s2['q1'], s2['q3'], color='green', alpha=0.2, label='q1-q3')
         ax1.fill_between(s2.index, s2['min'], s2['max'], color='green', alpha=0.07, label='min=max')
-    ax1.set_ylim(0, lim)
+    ax1.set_ylim(ylim)
     ax1.set_xlabel('position')
     ax1.set_ylabel('fraction of reads ' + label, color='black')
     for i in [i for i in h_lines if i in range(start, stop)]: ax1.axvline(i, color='red')
