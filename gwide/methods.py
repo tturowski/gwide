@@ -1,6 +1,6 @@
 __author__ = 'tturowski'
 
-import os, yaml, sys
+import os, yaml, sys, re
 import numpy as np
 import pandas as pd
 
@@ -77,3 +77,51 @@ def calGC(dataset=pd.DataFrame(), calFor=['G','C']):
     :return: fraction of GC content
     '''
     return float(len(dataset[dataset['nucleotide'].isin(calFor)]))/float(len(dataset))
+
+
+def expNameParser(name, additional_tags=list(), output='root', order='b_d_e'):
+    '''
+    Function handles experiment name; recognizes AB123456 as experiment date; BY4741 or HTP or given string as bait protein
+    :param name:
+    :param additional_tags: list of tags
+    :param output: default 'root' ; print other elements when 'all'
+    :param order: defoult 'b_d_e' b-bait; d-details, e-experiment
+    :return: reordered name
+    '''
+    if output not in ['root', 'all']: exit('Wrong output form for expNameParser')
+    tag_list = ['HTP', 'HTG', 'HTF', 'BY4741'] + additional_tags
+    output_dict = {'b': str(), 'd': str(), 'e': str(), 'o': list()}  # bait; details; experiment; other
+    name_elements = name.split('_')
+    for e in name_elements:
+        if any(tag in e for tag in tag_list):
+            output_dict['b'] = e  # bait
+            try:
+                output_dict['d'] = name.split('HTP_', 1)[1]  # details
+            except:
+                output_dict['d'] = 'wt'
+                print 'WARNING: wt added for '+name
+        elif re.search(r"[a-zA-Z][a-zA-Z]\d{6}", e):
+            output_dict['e'] = e  # experiment name
+        else:
+            output_dict['o'].append(e)  # other
+
+    return_list = list()
+    for out in order.split('_'):
+        return_list.append(output_dict[out])
+
+    if output == 'all':
+        return '_'.join(return_list + output_dict['o']).strip('_')
+    else:
+        return '_'.join(return_list).strip('_')
+
+def cleanNames(df=pd.DataFrame(), additional_tags=list()):
+    '''Cleans some problems with names if exist'''
+    for tag in additional_tags: df.columns = [f.replace(tag, tag+'HTP') for f in list(df.columns.values)]
+    df.columns = [f.replace('HTPHTP', 'HTP').replace('HTPHTP', 'HTP') for f in list(df.columns.values)]
+    return df
+
+def indexOrder(df=pd.DataFrame(), additional_tags=list(), output='root', order='b_d_e'):
+    '''Aplly expNameParser to whole dataframe'''
+    df = cleanNames(df, additional_tags=additional_tags)
+    df.columns = [expNameParser(f, additional_tags=additional_tags, output=output, order=order) for f in list(df.columns.values)]
+    return df.sort_index(axis=1)
