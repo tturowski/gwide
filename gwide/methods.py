@@ -79,40 +79,43 @@ def calGC(dataset=pd.DataFrame(), calFor=['G','C']):
     return float(len(dataset[dataset['nucleotide'].isin(calFor)]))/float(len(dataset))
 
 
-def expNameParser(name, additional_tags=list(), output='root', order='b_d_e'):
+def expNameParser(name, additional_tags=list(), order='b_d_e_p'):
     '''
     Function handles experiment name; recognizes AB123456 as experiment date; BY4741 or HTP or given string as bait protein
     :param name:
     :param additional_tags: list of tags
     :param output: default 'root' ; print other elements when 'all'
-    :param order: defoult 'b_d_e' b-bait; d-details, e-experiment
+    :param order: defoult 'b_d_e_p' b-bait; d-details, e-experiment, p-prefix
     :return: reordered name
     '''
-    if output not in ['root', 'all']: exit('Wrong output form for expNameParser')
     tag_list = ['HTP', 'HTG', 'HTF', 'BY4741'] + additional_tags
-    output_dict = {'b': str(), 'd': str(), 'e': str(), 'o': list()}  # bait; details; experiment; other
+    output_dict = {'b': str(), 'd': str(), 'e': str(), 'p': list()}  # bait; details; experiment; prefix
     name_elements = name.split('_')
     for e in name_elements:
-        if any(tag in e for tag in tag_list):
+        tag_in_e = [tag for tag in tag_list if tag in e]
+        if tag_in_e and len(tag_in_e) >= 1:
             output_dict['b'] = e  # bait
             try:
-                output_dict['d'] = name.split('HTP_', 1)[1]  # details
+                output_dict['d'] = name.split(tag_in_e[0], 1)[1].strip('_')  # details
             except:
                 output_dict['d'] = 'wt'
                 print 'WARNING: wt added for '+name
         elif re.search(r"[a-zA-Z][a-zA-Z]\d{6}", e):
             output_dict['e'] = e  # experiment name
-        else:
-            output_dict['o'].append(e)  # other
+            try:
+                output_dict['p'] = name.split(e, 1)[0].strip('_')  # prefix
+            except:
+                output_dict['p'] = ''
+
+    if len(output_dict['b']) < 3 or len(output_dict['e']) < 8:
+        print output_dict
+        sys.exit("ERROR: Can not define experiment or bait for "+name)
 
     return_list = list()
     for out in order.split('_'):
         return_list.append(output_dict[out])
 
-    if output == 'all':
-        return '_'.join(return_list + output_dict['o']).strip('_')
-    else:
-        return '_'.join(return_list).strip('_')
+    return '_'.join(return_list).strip('_')
 
 def cleanNames(df=pd.DataFrame(), additional_tags=list()):
     '''Cleans some problems with names if exist'''
@@ -120,8 +123,8 @@ def cleanNames(df=pd.DataFrame(), additional_tags=list()):
     df.columns = [f.replace('HTPHTP', 'HTP').replace('HTPHTP', 'HTP') for f in list(df.columns.values)]
     return df
 
-def indexOrder(df=pd.DataFrame(), additional_tags=list(), output='root', order='b_d_e'):
+def indexOrder(df=pd.DataFrame(), additional_tags=list(), output='root', order='b_d_e_p'):
     '''Aplly expNameParser to whole dataframe'''
     df = cleanNames(df, additional_tags=additional_tags)
-    df.columns = [expNameParser(f, additional_tags=additional_tags, output=output, order=order) for f in list(df.columns.values)]
+    df.columns = [expNameParser(f, additional_tags=additional_tags, order=order) for f in list(df.columns.values)]
     return df.sort_index(axis=1)
