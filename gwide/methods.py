@@ -100,7 +100,7 @@ def expNameParser(name, additional_tags=list(), order='b_d_e_p'):
             except:
                 output_dict['d'] = 'wt'
                 print 'WARNING: wt added for '+name
-        elif re.search(r"[a-zA-Z][a-zA-Z]\d{6}", e):
+        elif re.search(r"[a-zA-Z][a-zA-Z]\d{6}", e) or re.search(r"[a-zA-Z][a-zA-Z][a-zA-Z]\d{6}", e):
             output_dict['e'] = e  # experiment name
             try:
                 output_dict['p'] = name.split(e, 1)[0].strip('_')  # prefix
@@ -124,7 +124,9 @@ def cleanNames(df=pd.DataFrame(), additional_tags=list()):
     return df
 
 def indexOrder(df=pd.DataFrame(), additional_tags=list(), output='root', order='b_d_e_p'):
-    '''Aplly expNameParser to whole dataframe'''
+    '''Aplly expNameParser to whole dataframe
+    :param order: defoult 'b_d_e_p' b-bait; d-details, e-experiment, p-prefix
+    '''
     df = cleanNames(df, additional_tags=additional_tags)
     df.columns = [expNameParser(f, additional_tags=additional_tags, order=order) for f in list(df.columns.values)]
     return df.sort_index(axis=1)

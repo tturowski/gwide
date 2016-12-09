@@ -50,18 +50,18 @@ def plot_from_csv(csv_path=str(),title=None, start=None, stop=None,figsize=(15,6
     for i in [i for i in h_lines if i in range(start,stop)]: ax1.axvline(i, color=lc)
     ax1.legend()
 
-def plot_to_compare(dataset=pd.DataFrame(), label=str(), start=None, stop=None, figsize=(15,6), ylim=(None,0.01), h_lines=list() ,reference='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'):
+def plot_to_compare(dataset=pd.DataFrame(), dataset2=pd.DataFrame(), color2='darkred', label=str(), title=None, start=None, stop=None, figsize=(15,6), ylim=(None,0.01), h_lines=list() ,reference='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'):
     '''
     Plot given dataset and reference dataset from csv file.
     :param dataset: DataFrame()
     :param label: label for a given dataset
     :param reference: path to reference plot str()
     '''
-
     reference = pd.read_csv(reference, index_col=0) # reading reference
     dataset, s2 = dataset[start:stop], reference[start:stop] # prepating datasets
     #plotting
     fig, ax1 = plt.subplots(figsize=figsize)
+    plt.title(title)
     plt.axhline(0, color='red')
     if len(dataset.columns) == 4: #if only two experiments
         ax1.plot(dataset.index, dataset['mean'], 'black', label=label)
@@ -80,8 +80,25 @@ def plot_to_compare(dataset=pd.DataFrame(), label=str(), start=None, stop=None, 
     ax1.plot(s2.index, s2['median'], 'green', label='reference RDN37-1')
     ax1.fill_between(s2.index, s2['q1'], s2['q3'], color='green', alpha=0.2, label='range (q2-q3)')
     ax1.fill_between(s2.index, s2['min'], s2['max'], color='green', alpha=0.07, label='range (min-max)')
+
+    if len(dataset2.columns) == 4:  # if only two experiments
+        dataset2 = dataset2[start:stop]
+        ax1.plot(dataset2.index, dataset2['mean'], color2, label=label)
+        ax1.fill_between(dataset2.index, dataset2['min'], dataset2['max'], color=color2, alpha=0.3,
+                         label='range (min-max)')
+    elif len(dataset2.columns) > 4:  # if more than two experiments
+        dataset2 = dataset2[start:stop]
+        ax1.plot(dataset2.index, dataset2['median'], color2, label=label)
+        ax1.fill_between(dataset2.index, dataset2['q1'], dataset2['q3'], color=color2, alpha=0.2,
+                         label='range (2nd-3rd quartile)')
+        ax1.fill_between(dataset2.index, dataset2['min'], dataset2['max'], color=color2, alpha=0.07,
+                         label='range (min-max)')
+
+
     for i in [i for i in h_lines if i in range(start, stop)]: ax1.axvline(i, color='red')
     ax1.legend()
+
+
 
 def compare1toRef(dataset=pd.Series(), ranges='mm', heatmap=False, relative=False,
                     reference='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'):
