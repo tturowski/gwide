@@ -7,7 +7,7 @@ Turowski TW, Leśniewska E, Delan-Forino C, Sayou C, Boguta M, Tollervey D.
 Genome Res. 2016 May 20. pii: gr.205492.116.
 http://www.ncbi.nlm.nih.gov/pubmed/27206856
 
-Instalation
+Installation
 ===========
 for users: 
 pip install --user mercurial git+git://github.com/tturowski/gwide.git (or skip --user mercurial to install globally);

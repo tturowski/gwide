@@ -104,7 +104,7 @@ class rRNAFromConcat():
             columns = ['position','nucleotide']
             self.data[gene_name] = pd.DataFrame(index=frame_index, columns=columns)
             self.data[gene_name]['position'] = positions
-            self.data[gene_name]['nucleotide'] = gene_csv['nucleotide'][:(self.five_prime_flank + gene_length + self.three_prime_flank):]
+            self.data[gene_name]['nucleotide'] = gene_csv['nucleotide'][:(self.five_prime_flank + gene_length -1 + self.three_prime_flank):]
             for e in self.experiments:
                 self.data[gene_name][e] = gene_csv[gene_csv.exp_name == e][use]
                 if self.npM == True:
