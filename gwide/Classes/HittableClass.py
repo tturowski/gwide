@@ -147,14 +147,14 @@ class HittableClass():
                 if not line.startswith('#'):
                     line_elements = line.strip().split('\t')
                     if len(line_elements) == 4:
-                        gene_name, hits = line_elements[0], int(line_elements[1])
+                        gene_name, hits = line_elements[0], float(line_elements[1])
                         # print gene_name
-                        data.loc[gene_name, name] = int(math.ceil(float(hits*normalizator)))
+                        data.loc[gene_name, name] = float(math.ceil(float(hits*normalizator)))
                     elif len(line_elements) == 6:
-                        gene_name, hits, RPKM = line_elements[0], int(line_elements[1]), int(line_elements[2])
+                        gene_name, hits, RPKM = line_elements[0], float(line_elements[1]), float(line_elements[2])
                         # print gene_name
-                        if use_RPKM == False: data.loc[gene_name, name] = int(math.ceil(float(hits * normalizator)))
-                        else: data.loc[gene_name, name] = int(math.ceil(float(RPKM * normalizator)))
+                        if use_RPKM == False: data.loc[gene_name, name] = float(math.ceil(float(hits * normalizator)))
+                        else: data.loc[gene_name, name] = float(math.ceil(float(RPKM * normalizator)))
         print "Creating output.tab file..."
         data.to_csv(self.out_prefix+'output.tab', sep='\t')
 

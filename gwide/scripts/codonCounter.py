@@ -22,6 +22,7 @@ files.add_argument("-g", "--gtf_file", dest="gtf_file", help="Provide the path t
                    metavar="FILE", default=None)
 files.add_argument("-c", dest="codone", help="codone that want to count",
                    type=str, default='CGA')
+files.add_argument("--id", dest="id_given", help="gene ID given instead of gene names", action="store_true", default=False)
 args = parser.parse_args()
 
 gtf = GTF2.Parse_GTF()
@@ -34,13 +35,12 @@ for gene_name in gtf.genes:
 
 gene_name = id_to_gene[gene_id]
 
-
-
 in_seq_handle = open(args.fasta_file)
 seq_dict = SeqIO.to_dict(SeqIO.parse(in_seq_handle, "fasta"))
 in_seq_handle.close()
 seq_dict_keys =  seq_dict.keys()
 
+#fragment taken from stackoverflow and slightly changed
 for name in seq_dict_keys:
     a = str(seq_dict[name].seq)
     codons = (a[n:n+3] for n in xrange(0,len(a),3)) # creates generator
@@ -50,5 +50,9 @@ for name in seq_dict_keys:
             dict_codons[codon] += 1
         else:
             dict_codons[codon] = 1
-    if dict_codons.has_key(args.codone): print id_to_gene[name]+'\t'+str(dict_codons[args.codone])+'\t'+args.codone
-    else: print id_to_gene[name]+'\t'+str(0)+'\t'+args.codoneecho
+    if args.id_given == True:
+        if dict_codons.has_key(args.codone): print id_to_gene[name]+'\t'+str(dict_codons[args.codone])+'\t'+args.codone
+        else: print id_to_gene[name]+'\t'+str(0)+'\t'+args.codone
+    elif args.id_given == False:
+        if dict_codons.has_key(args.codone): print name+'\t'+str(dict_codons[args.codone])+'\t'+args.codone
+        else: print name+'\t'+str(0)+'\t'+args.codone
