@@ -29,6 +29,10 @@ def hittable():
     universal.add_argument("-n", dest="normalized", action="store_true", help="Use when you want to work on data normalized 'reads per Milion'. Default: False", default=False)
     universal.add_argument("-w", dest="whole_name", action="store_true", help="As defauls scripts takes 'a_b_c' from a_b_c_hittable_reads.txt as experiment name. Use this option if your file names do not suit to this pattern. Default: False", default=False)
     universal.add_argument("-p", dest="out_prefix", type=str, help="Prefix for output files.", default=None)
+    # parser specific for counts
+    corr_group = parser.add_argument_group("counts options")
+    corr_group.add_argument("--not_normalize", dest="normalize", action="store_false", help="Use raw hits instead of normalized. Default: True", default=True)
+    corr_group.add_argument("--rpkm", dest="rpkm", action="store_true", help="Use RPKM instead of hits. Default: False", default=False)
     # parser specific for correlations
     corr_group = parser.add_argument_group("correlation options")
     corr_group.add_argument("-c", dest="gene_class", action="store_true", help="Calculate Pearson coefficient for different classes separately. Default: False", default=False)
@@ -46,7 +50,7 @@ def hittable():
     if options.function == 'correlation':
         data.correlation(output=options.output, gene_class=options.gene_class)
     elif options.function == 'count':
-        data.count()
+        data.count(normalize=options.normalize, use_RPKM=options.rpkm)
     elif options.function == 'piechart':
         data.plot(print_single=options.print_single)
 

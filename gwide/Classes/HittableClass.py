@@ -107,14 +107,13 @@ class HittableClass():
                     matrix = new_data.corr(method=corr_dict[output],min_periods=1)
                     matrix.to_csv(self.out_prefix+this_type+"_correlation_"+corr_dict[output]+".table", sep='\t')
 
-    def count(self):
+    def count(self, normalize=True, use_RPKM=False):
         no_of_reads = dict()
         genes_name = list()
         normalizator = float()
 
         paths = gtk.list_paths_in_current_dir('hittable_reads.txt', stdin=self.read_stdin) #get paths of hittables
         experiments, paths = gtk.define_experiments(paths_in=paths, whole_name=self.whole_name) #extract experiments from paths
-
         data = pd.DataFrame(columns=[['gene_name', 'gene_id', 'type']+experiments]) # initialize Pandas DataFrame
 
         #reading gtf file
@@ -143,13 +142,19 @@ class HittableClass():
                 if line.startswith('# total number of single reads'):
                     total_mapped_reads = int(filter(str.isdigit, line)) # no of mapped reads
                     no_of_reads[name] = total_mapped_reads
-                    normalizator = 1000000.0/total_mapped_reads
+                    if normalize == True: normalizator = 1000000.0/total_mapped_reads
+                    else: normalizator = 1.0
                 if not line.startswith('#'):
                     line_elements = line.strip().split('\t')
                     if len(line_elements) == 4:
                         gene_name, hits = line_elements[0], int(line_elements[1])
                         # print gene_name
                         data.loc[gene_name, name] = int(math.ceil(float(hits*normalizator)))
+                    elif len(line_elements) == 6:
+                        gene_name, hits, RPKM = line_elements[0], int(line_elements[1]), int(line_elements[2])
+                        # print gene_name
+                        if use_RPKM == False: data.loc[gene_name, name] = int(math.ceil(float(hits * normalizator)))
+                        else: data.loc[gene_name, name] = int(math.ceil(float(RPKM * normalizator)))
         print "Creating output.tab file..."
         data.to_csv(self.out_prefix+'output.tab', sep='\t')
 
