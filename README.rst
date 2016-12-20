@@ -55,6 +55,14 @@ gwidetRNA (-h for help, input *.concat):
   - calculate dG RNA_DNA/DNA_DNA for each valley or last 20 nt after tRNA gene
   - save tab-deliminated file with each plot calculations
 
+GTF parser tools (-h for help, work with standard input):
+  - getFastaSeqs
+  - getGeneLength
+  - getIdFromName
+  - getNameFromId
+  - getGeneNamesFromGTF
+  - getNameFromId4Tab
+
 Citation
 ===========
 Turowski TW, Leśniewska E, Delan-Forino C, Sayou C, Boguta M, Tollervey D.
