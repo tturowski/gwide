@@ -49,7 +49,7 @@ def hittable():
     if options.function == 'correlation':
         data.correlation(output=options.output, gene_class=options.gene_class)
     elif options.function == 'count':
-        data.count(normalize=options.normalize, use_RPKM=options.rpkm)
+        data.count(normalize=options.normalized, use_RPKM=options.rpkm)
     elif options.function == 'piechart':
         data.plot(print_single=options.print_single)
 
