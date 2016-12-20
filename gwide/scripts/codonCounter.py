@@ -11,6 +11,7 @@ from pyCRAC.Parsers import GTF2
 import gwide.methods as gtm
 import argparse
 from argparse import RawTextHelpFormatter
+import pandas as pd
 
 usage = "Usage: calculate codon usage of fasta sequences"
 
@@ -22,6 +23,8 @@ files.add_argument("-g", "--gtf_file", dest="gtf_file", help="Provide the path t
                    metavar="FILE", default=None)
 files.add_argument("-c", dest="codone", help="codone that want to count",
                    type=str, default='CGA')
+files.add_argument("--all", dest="save_matrix", help="Saves number of all codones as a matrix. Default=False",
+                   action="store_true", default=False)
 files.add_argument("--id", dest="id_given", help="gene ID given instead of gene names", action="store_true", default=False)
 args = parser.parse_args()
 
@@ -40,6 +43,8 @@ seq_dict = SeqIO.to_dict(SeqIO.parse(in_seq_handle, "fasta"))
 in_seq_handle.close()
 seq_dict_keys =  seq_dict.keys()
 
+matrix = pd.DataFrame()
+
 #fragment taken from stackoverflow and slightly changed
 for name in seq_dict_keys:
     a = str(seq_dict[name].seq)
@@ -50,9 +55,16 @@ for name in seq_dict_keys:
             dict_codons[codon] += 1
         else:
             dict_codons[codon] = 1
-    if args.id_given == True:
-        if dict_codons.has_key(args.codone): print id_to_gene[name]+'\t'+str(dict_codons[args.codone])+'\t'+args.codone
-        else: print id_to_gene[name]+'\t'+str(0)+'\t'+args.codone
-    elif args.id_given == False:
-        if dict_codons.has_key(args.codone): print name+'\t'+str(dict_codons[args.codone])+'\t'+args.codone
-        else: print name+'\t'+str(0)+'\t'+args.codone
+    if args.save_matrix == False:
+        if args.id_given == True:
+            if dict_codons.has_key(args.codone): print id_to_gene[name]+'\t'+str(dict_codons[args.codone])+'\t'+args.codone
+            else: print id_to_gene[name]+'\t'+str(0)+'\t'+args.codone
+        elif args.id_given == False:
+            if dict_codons.has_key(args.codone): print name+'\t'+str(dict_codons[args.codone])+'\t'+args.codone
+            else: print name+'\t'+str(0)+'\t'+args.codone
+    else:
+        matrix[name]=pd.Series(dict_codons)
+
+if args.save_matrix == True:
+    matrix = matrix.transpose()
+    matrix.to_csv("codone_composition.tab", sep='\t')

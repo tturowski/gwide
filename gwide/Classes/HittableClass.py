@@ -12,7 +12,7 @@ import gwide.methods as gtk
 import matplotlib.pyplot as plt
 
 class HittableClass():
-    def __init__(self, gtf, whole_name, n_rpM, out_prefix, read_stdin):
+    def     __init__(self, gtf, whole_name, n_rpM, out_prefix, read_stdin):
         self.gtf = gtf
         self.whole_name = whole_name
         self.n_rpM = n_rpM
