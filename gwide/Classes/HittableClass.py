@@ -111,6 +111,8 @@ class HittableClass():
         no_of_reads = dict()
         genes_name = list()
         normalizator = float()
+        if normalize==True: self.out_prefix = self.out_prefix+'rpM_'
+        if use_RPKM == True: self.out_prefix = self.out_prefix + 'RPKM_'
 
         paths = gtk.list_paths_in_current_dir('hittable_reads.txt', stdin=self.read_stdin) #get paths of hittables
         experiments, paths = gtk.define_experiments(paths_in=paths, whole_name=self.whole_name) #extract experiments from paths
@@ -154,7 +156,7 @@ class HittableClass():
                         gene_name, hits, RPKM = line_elements[0], float(line_elements[1]), float(line_elements[2])
                         # print gene_name
                         if use_RPKM == False: data.loc[gene_name, name] = float(math.ceil(float(hits * normalizator)))
-                        else: data.loc[gene_name, name] = float(math.ceil(float(RPKM * normalizator)))
+                        else: data.loc[gene_name, name] = float(RPKM)
         print "Creating output.tab file..."
         data.to_csv(self.out_prefix+'output.tab', sep='\t')
 

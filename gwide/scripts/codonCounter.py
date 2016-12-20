@@ -56,7 +56,7 @@ for name in seq_dict_keys:
         else:
             dict_codons[codon] = 1
     if args.save_matrix == False:
-        if args.id_given == True:
+        if args.id_given == True: #when gene ID are given as a names
             if dict_codons.has_key(args.codone): print id_to_gene[name]+'\t'+str(dict_codons[args.codone])+'\t'+args.codone
             else: print id_to_gene[name]+'\t'+str(0)+'\t'+args.codone
         elif args.id_given == False:
@@ -65,6 +65,7 @@ for name in seq_dict_keys:
     else:
         matrix[name]=pd.Series(dict_codons)
 
+#saving matrix with all codones
 if args.save_matrix == True:
     matrix = matrix.transpose()
     matrix.to_csv("codone_composition.tab", sep='\t')

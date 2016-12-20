@@ -31,7 +31,6 @@ def hittable():
     universal.add_argument("-p", dest="out_prefix", type=str, help="Prefix for output files.", default=None)
     # parser specific for counts
     corr_group = parser.add_argument_group("counts options")
-    corr_group.add_argument("--not_normalize", dest="normalize", action="store_false", help="Use raw hits instead of normalized. Default: True", default=True)
     corr_group.add_argument("--rpkm", dest="rpkm", action="store_true", help="Use RPKM instead of hits. Default: False", default=False)
     # parser specific for correlations
     corr_group = parser.add_argument_group("correlation options")
