@@ -107,9 +107,9 @@ def getNameFromId4Tab():
         id_to_gene[gene_id] = gene_name
 
     for i in sys.stdin:
-        i_elem = str(i.strip().split("\t"))
+        i_elem = i.strip().split("\t")
         gene_id = i_elem[0]
-        seq = i_elem[2]
+        seq = i_elem[1]
         gene_name = id_to_gene[gene_id]
         print gene_name+'\t'+seq
 
