@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='gwide',
-    version='0.4.5',
+    version='0.4.6',
     # py_modules=['gwide'],
     packages=find_packages(),
     install_requires=[
@@ -33,6 +33,7 @@ setup(
         getIdFromName=gwide.parserTools:getIdFromName
         getNameFromId=gwide.parserTools:getNameFromId
         getGeneNamesFromGTF=gwide.parserTools:getGeneNamesFromGTF
+        getNameFromId4Tab=gwide.parserTools:getNameFromId4Tab
     ''',
     scripts=[
         'gwide/scripts/novo2concat.py',

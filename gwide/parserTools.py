@@ -91,6 +91,28 @@ def getNameFromId():
         gene_name = id_to_gene[gene_id]
         print gene_name
 
+def getNameFromId4Tab():
+    parser = OptionParser(usage="usage: List of genes as std input")
+    parser.add_option("-g", "--gtf_file", dest="gtf_file", help="Provide the path to your gtf file.",
+                     type="str", default=None)
+    (options, args) = parser.parse_args()
+    signal(SIGPIPE,SIG_DFL)
+
+    gtf = GTF2.Parse_GTF()
+    gtf.read_GTF(gtm.getGTF(options.gtf_file))
+
+    id_to_gene = dict()
+    for gene_name in gtf.genes:
+        gene_id = gtf.genes[gene_name]['gene_id']
+        id_to_gene[gene_id] = gene_name
+
+    for i in sys.stdin:
+        i_elem = str(i.strip().split("\t"))
+        gene_id = i_elem[0]
+        seq = i_elem[2]
+        gene_name = id_to_gene[gene_id]
+        print gene_name+'\t'+seq
+
 def getGeneNamesFromGTF():
     parser = OptionParser(usage="getGenesNames; type usage: %prog [options] -f filename")
     files = OptionGroup(parser, "File input options")
