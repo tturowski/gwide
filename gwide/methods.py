@@ -59,12 +59,10 @@ def define_experiments(paths_in, whole_name=False):
     paths = list()
     for path in paths_in:
         paths.append(path.strip())
-        file_path = path.strip().split('/')
+        file_path = path.split('/')
         file_name = file_path[len(file_path)-1]
-        if whole_name == False:
-            name = "_".join(file_name.split('_')[0:3]) #take fist three elements of file name as experiment name
-        elif whole_name == True:
-            name = file_name.strip('_hittable_reads.txt')
+        if whole_name == False: name = "_".join(file_name.split('_')[0:3]) #take fist three elements of file name as experiment name
+        elif whole_name == True: name = file_name.strip('_hittable_reads.txt')
         experiments.append(name)
         if len(experiments) != len(paths):
             exit("No. of experiments is not equal to no. of paths")

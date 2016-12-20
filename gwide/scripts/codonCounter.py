@@ -63,9 +63,17 @@ for name in seq_dict_keys:
             if dict_codons.has_key(args.codone): print name+'\t'+str(dict_codons[args.codone])+'\t'+args.codone
             else: print name+'\t'+str(0)+'\t'+args.codone
     else:
-        matrix[name]=pd.Series(dict_codons)
+        dict_codons['sum']=len(dict_codons)
+        matrix = pd.concat([matrix, pd.Series(data=dict_codons,name=name)], axis=1)
 
 #saving matrix with all codones
 if args.save_matrix == True:
+    # save numbers for each codone
     matrix = matrix.transpose()
+    matrix = matrix.fillna(0)
     matrix.to_csv("codone_composition.tab", sep='\t')
+
+    #calculate and save ratio for each codone
+    codones_sum = matrix.pop('sum')
+    ratio_matrix = matrix.div(codones_sum, axis=0)
+    ratio_matrix.to_csv("codone_composition_ratio.tab", sep='\t')
