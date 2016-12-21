@@ -22,8 +22,9 @@ class HittableClass():
             self.out_prefix = str()
         self.read_stdin = read_stdin
 
-    def correlation(self, output, gene_class):
+    def correlation(self, output, gene_class, use_RPKM=False):
         print "# Calculate correlation is running..."
+        if use_RPKM == True: self.out_prefix = self.out_prefix + 'RPKM_'
 
         no_of_reads = dict()
         genes_name = list()
@@ -70,14 +71,18 @@ class HittableClass():
                     total_mapped_reads = int(filter(str.isdigit, line)) # no of mapped reads
                     no_of_reads[name]['total_mapped_reads'] = total_mapped_reads
                     normalizator = 1000000.0/total_mapped_reads
+
                 if not line.startswith('#'):
                     line_elements = line.strip().split('\t')
-                    if len(line_elements) == 4: #needs modification if --rpkm applied for pyReadCounter
-                        gene_name, hits = line_elements[0], int(line_elements[1])
-                        if self.n_rpM == True:
-                            data.loc[gene_name, name] = int(math.ceil(float(hits*normalizator)))
-                        else:
-                            data.loc[gene_name, name] = hits
+                    if len(line_elements) == 4:
+                        gene_name, hits = line_elements[0], float(line_elements[1])
+                        # print gene_name
+                        data.loc[gene_name, name] = float(math.ceil(float(hits*normalizator)))
+                    elif len(line_elements) == 6:
+                        gene_name, hits, RPKM = line_elements[0], float(line_elements[1]), float(line_elements[2])
+                        # print gene_name
+                        if use_RPKM == False: data.loc[gene_name, name] = float(math.ceil(float(hits * normalizator)))
+                        else: data.loc[gene_name, name] = float(RPKM)
             no_of_reads_file.write(name+'\t'+str(no_of_reads[name]['total_mapped_reads'])+'\t'+str(no_of_reads[name]['total_reads'])+'\n')
         no_of_reads_file.close()
 
