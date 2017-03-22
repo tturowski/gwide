@@ -8,6 +8,8 @@ __status__		= "Production"
 
 from ruffus import *
 import subprocess, os, argparse, time
+import yaml
+
 #sorting out GTF file
 def getGTF(gtf_from_options):
     if gtf_from_options:

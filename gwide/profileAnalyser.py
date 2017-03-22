@@ -177,7 +177,7 @@ def filter_df(input_df=pd.DataFrame(), let_in=[''], let_out=['wont_find_this_str
 
     working_df, result_df = pd.DataFrame(), pd.DataFrame()
     print "Experiments:"
-    for f in [d for d in list(input_df.columns.values) if all(i in d for i in let_in) and any(o not in d for o in let_out)]:
+    for f in [d for d in list(input_df.columns.values) if all(i in d for i in let_in) and all(o not in d for o in let_out)]:
         print f
         if smooth==True:
             working_df[f]=input_df[f].rolling(10, win_type='blackman', center=True).mean()
@@ -185,7 +185,7 @@ def filter_df(input_df=pd.DataFrame(), let_in=[''], let_out=['wont_find_this_str
             working_df[f] = input_df[f]
     for function in ['mean', 'median', 'min', 'max']: result_df[function]=getattr(working_df, function)(axis=1) #calculates using pandas function listed in []
     if len(working_df.columns) > 2: #calculating quartiles only in more than two experiments
-        result_df['q1'], result_df['q3'] = working_df.quantile(q=0.25, axis=1),working_df.quantile(q=0.75, axis=1),
+        result_df['q1'], result_df['q3'] = working_df.quantile(q=0.25, axis=1), working_df.quantile(q=0.75, axis=1)
     return result_df
 
 def compareMoretoRef(dataset=pd.DataFrame(), ranges='mm',
@@ -237,9 +237,9 @@ def plot_diff(dataset=pd.DataFrame(), ranges='mm', label=str(), start=None, stop
     :return: plot with marked differences
     '''
     ranges_dict = {'mm': 'min-max', 'qq': 'q1-q3'}
-    reference = pd.read_csv(reference, index_col=0)  # reading reference
-    differences_df = compareMoretoRef(dataset=dataset, ranges=ranges)[start:stop]
-    dataset, s2 = dataset[start:stop], reference[start:stop]  # prepating datasets
+    reference_df = pd.read_csv(reference, index_col=0)  # reading reference
+    differences_df = compareMoretoRef(dataset=dataset, ranges=ranges, reference=reference)[start:stop]
+    dataset, s2 = dataset[start:stop], reference_df[start:stop]  # prepating datasets
     # plotting
     fig, ax1 = plt.subplots(figsize=figsize)
     ax1.fill_between(differences_df.index, differences_df['ear_min'], differences_df['ear_max'], color='red',

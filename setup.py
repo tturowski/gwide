@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='gwide',
-    version='0.5',
+    version='0.5.1',
     # py_modules=['gwide'],
     packages=find_packages(),
     install_requires=[
@@ -39,7 +39,8 @@ setup(
         'gwide/scripts/novo2concat.py',
         'gwide/scripts/defineTerminator.py',
         'gwide/scripts/geneUsage.py',
-        'gwide/scripts/codonCounter.py'
+        'gwide/scripts/codonCounter.py',
+        'gwide/scripts/aminoacidCounter.py'
     ],
     author="Tomasz W. Turowski",
     description='Set of tools to downstream analysis of pyCRAC data',
