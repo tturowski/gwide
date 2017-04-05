@@ -54,6 +54,8 @@ for f, d in zip(files, directories):
 concat_name = args.prefix+"_r"+ranges
 if args.three_end == True:
     concat_name = concat_name + "_3end"
+elif args.five_end == True:
+    concat_name = concat_name + "_5end"
 
 #seting up no. of processes to use
 number_of_processors_to_use = len(files)
