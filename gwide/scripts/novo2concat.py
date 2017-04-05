@@ -23,6 +23,9 @@ parser.add_argument("-t", "--tab_file", dest="tab_file", help="Provide the path 
 parser.add_argument("-r", dest="ranges", help="Set up ranges for pyPileup. Default = 250", default=250)
 parser.add_argument("--3end", dest="three_end", help="Use pyPileup option --3end to only report counts for the 3' end of the reads. Default = False",
                     action="store_true", default=False)
+parser.add_argument("--5end", dest="five_end",
+                    help="Use pyPileup option --5end to only report counts for the 5' end of the reads. Default = False",
+                    action="store_true", default=False)
 parser.add_argument("-l", dest="list_file", help="Provide the FULL path to your gene_names.list file.", type=str, default=None, required=True)
 parser.add_argument("--tree", dest="tree", help="If you want to leave tree of catalogs including pilups within. Default = None.",
                      action="store_true", default=False)
@@ -65,6 +68,9 @@ def create_pileup_files(input_file, output_files):
     os.chdir(os.path.dirname(input_file))
     if args.three_end == True:
         subprocess.call(r'pyPileup.py --gtf=' + gtf + ' --tab=' + tab + ' -g ' + args.list_file + ' -f ' + input_file + ' -r ' + ranges + ' --3end',
+            shell=True)
+    elif args.five_end == True:
+        subprocess.call(r'pyPileup.py --gtf=' + gtf + ' --tab=' + tab + ' -g ' + args.list_file + ' -f ' + input_file + ' -r ' + ranges + ' --5end',
             shell=True)
     else:
         subprocess.call(r'pyPileup.py --gtf='+gtf+' --tab='+tab+' -g '+args.list_file+' -f ' + input_file + ' -r '+ranges, shell=True)
