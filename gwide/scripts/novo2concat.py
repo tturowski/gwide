@@ -94,8 +94,6 @@ def merge_files(infiles, concat):
     line_number_list = list()
     output_dict = dict()
 
-    print infiles
-
     for file_path in infiles:
         exp_name = extract_names(file_path)
         if "sense-reads" in file_path:
@@ -128,9 +126,9 @@ def merge_files(infiles, concat):
     output.close()
 
     if args.anti == True:
-        line_number = 0
-        line_number_list = list()
-        output_dict = dict()
+        line_number_a = 0
+        line_number_list_a = list()
+        output_dict_a = dict()
 
         for file_path in infiles:
             exp_name = extract_names(file_path)
@@ -144,8 +142,8 @@ def merge_files(infiles, concat):
                     if not line.startswith('#'):
                         line_elements = line.strip().split('\t')
                         if len(line_elements) > 1:
-                            line_number = line_number + 1
-                            line_number_list.append(line_number)
+                            line_number_a = line_number_a + 1
+                            line_number_list_a.append(line_number_a)
                             line_list = list()
                             for i in line_elements:
                                 line_list.append(str(i))
@@ -153,9 +151,9 @@ def merge_files(infiles, concat):
                             line_list.append(str(int(math.ceil(float(line_elements[3]) * normalizator))))
                             line_list.append(str(int(math.ceil(float(line_elements[4]) * normalizator))))
                             line_list.append(str(int(math.ceil(float(line_elements[5]) * normalizator))))
-                            output_dict[str(line_number)] = line_list
+                            output_dict_a[str(line_number_a)] = line_list
 
-        line_number_list.sort()
+        line_number_list_a.sort()
         output = open(concat+"_antisense_reads.concat", 'w')
         output.write("# concat file from pileup files created: " + time.ctime() + "\n")
         output.write(
