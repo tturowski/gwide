@@ -94,6 +94,8 @@ def merge_files(infiles, concat):
     line_number_list = list()
     output_dict = dict()
 
+    print infiles
+
     for file_path in infiles:
         exp_name = extract_names(file_path)
         if "sense-reads" in file_path:
