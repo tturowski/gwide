@@ -29,6 +29,8 @@ parser.add_argument("--5end", dest="five_end",
 parser.add_argument("-l", dest="list_file", help="Provide the FULL path to your gene_names.list file.", type=str, default=None, required=True)
 parser.add_argument("--tree", dest="tree", help="If you want to leave tree of catalogs including pilups within. Default = None.",
                      action="store_true", default=False)
+parser.add_argument("--anti", dest="anti",  help="Create additional concat file with antisense reads Default = None.",
+                    action="store_true", default=False)
 parser.add_argument("-p", dest="prefix", help="Prefix for concat file name", type=str, default="")
 args = parser.parse_args()
 
@@ -50,7 +52,7 @@ for f, d in zip(files, directories):
     links.append(os.path.abspath('./'+f))
     os.chdir(root_dir)
 
-#setting up concat and log files name
+#setting up concat and log files nameq
 concat_name = args.prefix+"_r"+ranges
 if args.three_end == True:
     concat_name = concat_name + "_3end"
@@ -68,15 +70,12 @@ number_of_processors_to_use = len(files)
 )
 def create_pileup_files(input_file, output_files):
     os.chdir(os.path.dirname(input_file))
-    if args.three_end == True:
-        subprocess.call(r'pyPileup.py --gtf=' + gtf + ' --tab=' + tab + ' -g ' + args.list_file + ' -f ' + input_file + ' -r ' + ranges + ' --3end',
-            shell=True)
-    elif args.five_end == True:
-        subprocess.call(r'pyPileup.py --gtf=' + gtf + ' --tab=' + tab + ' -g ' + args.list_file + ' -f ' + input_file + ' -r ' + ranges + ' --5end',
-            shell=True)
-    else:
-        subprocess.call(r'pyPileup.py --gtf='+gtf+' --tab='+tab+' -g '+args.list_file+' -f ' + input_file + ' -r '+ranges, shell=True)
-    # subprocess.call(r'rm anti*', shell=True)
+    command_part = ''
+    if args.three_end: command_part = command_part+' --3end'
+    if args.five_end: command_part = command_part+' --5end'
+    if args.anti: command_part = command_part + ' --anti_sense'
+
+    subprocess.call(r'pyPileup.py --gtf='+gtf+' --tab='+tab+' -g '+args.list_file+' -f ' + input_file + ' -r '+ranges + command_part, shell=True)
     os.chdir(root_dir)
 
 #creating concat file
@@ -125,6 +124,43 @@ def merge_files(infiles, concat):
     for i in line_number_list:
         output.write('\t'.join(output_dict[str(i)]) + '\n')
     output.close()
+
+    if args.anti == True:
+        line_number = 0
+        line_number_list = list()
+        output_dict = dict()
+
+        for file_path in infiles:
+            exp_name = extract_names(file_path)
+            if "anti_sense-reads" in file_path:
+                pileup_file = open(file_path)
+                for line in pileup_file:
+                    if line.startswith('# total number of mapped reads:'):
+                        line_elem_1 = line.strip().split('\t')
+                        total_mapped_reads = float(line_elem_1[1])
+                        normalizator = 1000000.0 / total_mapped_reads
+                    if not line.startswith('#'):
+                        line_elements = line.strip().split('\t')
+                        if len(line_elements) > 1:
+                            line_number = line_number + 1
+                            line_number_list.append(line_number)
+                            line_list = list()
+                            for i in line_elements:
+                                line_list.append(str(i))
+                            line_list.append(exp_name)
+                            line_list.append(str(int(math.ceil(float(line_elements[3]) * normalizator))))
+                            line_list.append(str(int(math.ceil(float(line_elements[4]) * normalizator))))
+                            line_list.append(str(int(math.ceil(float(line_elements[5]) * normalizator))))
+                            output_dict[str(line_number)] = line_list
+
+        line_number_list.sort()
+        output = open('antisense_reads_'+concat, 'w')
+        output.write("# concat file from pileup files created: " + time.ctime() + "\n")
+        output.write(
+            "# gene\tposition\tnucleotide\thits\tsubstitutions\tdeletions\texperiment\thits_pM\tsubst_pM\tdel_pM\n")
+        for i in line_number_list:
+            output.write('\t'.join(output_dict[str(i)]) + '\n')
+        output.close()
 
 #version using dataframe but was extreamly slow!
     # columns = ['gene','position','nucleotide','hits','substitutions','deletions','exp_name','n_hits','n_substitutions','n_deletions']
