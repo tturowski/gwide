@@ -79,7 +79,7 @@ def create_pileup_files(input_file, output_files):
     os.chdir(root_dir)
 
 #creating concat file
-@merge(create_pileup_files, os.path.join(root_dir, concat_name+".concat"))
+@merge(create_pileup_files, os.path.join(root_dir, concat_name))
 def merge_files(infiles, concat):
     print "# Creating concat file..."
     #below pileupsToConcac.py script is implemented
@@ -118,7 +118,7 @@ def merge_files(infiles, concat):
                         output_dict[str(line_number)] = line_list
 
     line_number_list.sort()
-    output = open(concat, 'w')
+    output = open(concat+".concat", 'w')
     output.write("# concat file from pileup files created: "+time.ctime()+"\n")
     output.write("# gene\tposition\tnucleotide\thits\tsubstitutions\tdeletions\texperiment\thits_pM\tsubst_pM\tdel_pM\n")
     for i in line_number_list:
@@ -154,7 +154,7 @@ def merge_files(infiles, concat):
                             output_dict[str(line_number)] = line_list
 
         line_number_list.sort()
-        output = open('antisense_reads_'+concat, 'w')
+        output = open(concat+"_antisense_reads.concat", 'w')
         output.write("# concat file from pileup files created: " + time.ctime() + "\n")
         output.write(
             "# gene\tposition\tnucleotide\thits\tsubstitutions\tdeletions\texperiment\thits_pM\tsubst_pM\tdel_pM\n")
