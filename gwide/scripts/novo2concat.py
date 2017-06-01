@@ -73,8 +73,9 @@ def create_pileup_files(input_file, output_files):
     command_part = ''
     if args.three_end: command_part = command_part+' --3end'
     if args.five_end: command_part = command_part+' --5end'
+    subprocess.call(r'pyPileup.py --gtf=' + gtf + ' --tab=' + tab + ' -g ' + args.list_file + ' -f ' + input_file + ' -r ' + ranges + command_part,
+        shell=True)
     if args.anti: command_part = command_part + ' --anti_sense'
-
     subprocess.call(r'pyPileup.py --gtf='+gtf+' --tab='+tab+' -g '+args.list_file+' -f ' + input_file + ' -r '+ranges + command_part, shell=True)
     os.chdir(root_dir)
 
@@ -96,7 +97,7 @@ def merge_files(infiles, concat):
 
     for file_path in infiles:
         exp_name = extract_names(file_path)
-        if "sense-reads" in file_path:
+        if "/sense-reads" in file_path:
             pileup_file = open(file_path)
             for line in pileup_file:
                 if line.startswith('# total number of mapped reads:'):
@@ -126,13 +127,13 @@ def merge_files(infiles, concat):
     output.close()
 
     if args.anti == True:
-        line_number_a = 0
-        line_number_list_a = list()
-        output_dict_a = dict()
+        line_number = 0
+        line_number_list = list()
+        output_dict = dict()
 
         for file_path in infiles:
             exp_name = extract_names(file_path)
-            if "anti_sense-reads" in file_path:
+            if "/anti-sense-reads" in file_path:
                 pileup_file = open(file_path)
                 for line in pileup_file:
                     if line.startswith('# total number of mapped reads:'):
@@ -142,8 +143,8 @@ def merge_files(infiles, concat):
                     if not line.startswith('#'):
                         line_elements = line.strip().split('\t')
                         if len(line_elements) > 1:
-                            line_number_a = line_number_a + 1
-                            line_number_list_a.append(line_number_a)
+                            line_number = line_number + 1
+                            line_number_list.append(line_number)
                             line_list = list()
                             for i in line_elements:
                                 line_list.append(str(i))
@@ -151,9 +152,9 @@ def merge_files(infiles, concat):
                             line_list.append(str(int(math.ceil(float(line_elements[3]) * normalizator))))
                             line_list.append(str(int(math.ceil(float(line_elements[4]) * normalizator))))
                             line_list.append(str(int(math.ceil(float(line_elements[5]) * normalizator))))
-                            output_dict_a[str(line_number_a)] = line_list
+                            output_dict[str(line_number)] = line_list
 
-        line_number_list_a.sort()
+        line_number_list.sort()
         output = open(concat+"_antisense_reads.concat", 'w')
         output.write("# concat file from pileup files created: " + time.ctime() + "\n")
         output.write(
