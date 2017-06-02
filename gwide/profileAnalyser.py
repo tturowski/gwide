@@ -5,7 +5,7 @@ import pandas as pd
 def save_csv(data_ref=pd.DataFrame(), datasets=pd.DataFrame(), path=str()):
     '''
     Takes two dataframes:
-    :param data_ref: dataframe with ['position'] and ['nucleotide'] collumns
+    :param data_ref: dataframe with ['position'] and ['nucleotide'] columns
     :param datasets: dataframe containinig only experimental data
     :param path: path to save csv
     :return: reference dataframe
@@ -29,7 +29,7 @@ def plot_from_csv(csv_path=str(),title=None, start=None, stop=None,figsize=(15,6
     :param start: start
     :param stop: stop
     :param figsize: size of figure
-    :param ylim: OY axes lim - def (None,0.01)Piotr Klimas
+    :param ylim: OY axes lim - def (None,0.01)
     :param color: plot color
     :param h_lines: optional list of horizontal lines
     :param lc: color of horizontal lines
@@ -165,7 +165,7 @@ def plot_heatmap(df=pd.DataFrame(), title='Heat map of differences between datas
     fig.colorbar(heatmap)
     ax.set_title(title)
 
-def filter_df(input_df=pd.DataFrame(), let_in=[''], let_out=['wont_find_this_string'], smooth=True):
+def filter_df(input_df=pd.DataFrame(), let_in=[''], let_out=['wont_find_this_string'], smooth=True, window=10):
     '''
     Returns dataframe for choosen experiments
     :param input_df: input dataframe
@@ -180,7 +180,7 @@ def filter_df(input_df=pd.DataFrame(), let_in=[''], let_out=['wont_find_this_str
     for f in [d for d in list(input_df.columns.values) if all(i in d for i in let_in) and all(o not in d for o in let_out)]:
         print f
         if smooth==True:
-            working_df[f]=input_df[f].rolling(10, win_type='blackman', center=True).mean()
+            working_df[f]=input_df[f].rolling(window, win_type='blackman', center=True).mean()
         else:
             working_df[f] = input_df[f]
     for function in ['mean', 'median', 'min', 'max']: result_df[function]=getattr(working_df, function)(axis=1) #calculates using pandas function listed in []
@@ -262,3 +262,54 @@ def plot_diff(dataset=pd.DataFrame(), ranges='mm', label=str(), start=None, stop
     ax1.set_ylabel('fraction of reads ' + label, color='black')
     for i in [i for i in h_lines if i in range(start, stop)]: ax1.axvline(i, color='red')
     plt.legend()
+
+
+def plot_ChIP(df_sense=pd.DataFrame(), df_anti=pd.DataFrame(), title=None, start=None, stop=None, figsize=(15, 6),
+              ylim=(-0.001, 0.001), s_color='red', as_color='blue', h_lines=list(), lc='black',
+              csv_path='/home/tturowski/notebooks/RDN37_reference_collapsed.csv', color='green'):
+    '''
+    Function creates plot similar to box plot: median, 2 and 3 quartiles and min-max range
+    :param csv_path: path to csv file
+    :param title: plot title
+    :param start: start
+    :param stop: stop
+    :param figsize: size of figure
+    :param ylim: OY axes lim - def (None,0.01)
+    :param color: plot color
+    :param h_lines: optional list of horizontal lines
+    :param lc: color of horizontal lines
+    '''
+    reference = pd.read_csv(csv_path, index_col=0).drop('nucleotide', 1)
+    s2 = reference[start:stop]
+    # plotting reference dataset
+    fig, ax1 = plt.subplots(figsize=figsize)
+    plt.title(title)
+    ax1.set_xlabel('position')
+    ax1.set_ylabel('fraction of reads')
+    ax1.set_ylim(ylim)
+    # reference plot
+    ax1.plot(s2.index, s2['median'], color=color)
+    if set(['q1', 'q3']).issubset(list(s2.columns.values)):
+        ax1.fill_between(s2.index, s2['q1'], s2['q3'], label='range (2nd-3rd quartile)', color=color, alpha=0.2)
+    if set(['min', 'max']).issubset(list(s2.columns.values)):
+        ax1.fill_between(s2.index, s2['min'], s2['max'], label='range (min-max)', color=color, alpha=0.07)
+
+    for i in [i for i in h_lines if i in range(start, stop)]: ax1.axvline(i, color=lc)
+    ax1.axhline(0, color='black', alpha=0.7, ls='dashed', lw=1)
+
+    # ChIP sense
+    c1 = df_sense[start:stop]
+    ax1.plot(s2.index, c1['median'], color=s_color)
+    if set(['q1', 'q3']).issubset(list(c1.columns.values)):
+        ax1.fill_between(s2.index, c1['q1'], c1['q3'], label='range (2nd-3rd quartile)', color=s_color, alpha=0.2)
+    if set(['min', 'max']).issubset(list(c1.columns.values)):
+        ax1.fill_between(s2.index, c1['min'], c1['max'], label='range (min-max)', color=s_color, alpha=0.07)
+    # ChIP antisense
+    c2 = df_anti[start:stop] * -1
+    ax1.plot(s2.index, c2['median'], color=as_color)
+    if set(['q1', 'q3']).issubset(list(c2.columns.values)):
+        ax1.fill_between(s2.index, c2['q1'], c2['q3'], label='range (2nd-3rd quartile)', color=as_color, alpha=0.2)
+    if set(['min', 'max']).issubset(list(c2.columns.values)):
+        ax1.fill_between(s2.index, c2['min'], c2['max'], label='range (min-max)', color=as_color, alpha=0.07)
+
+    ax1.legend()
