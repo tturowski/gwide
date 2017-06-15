@@ -17,7 +17,7 @@ def hittable():
     description = "Downstream analysis on hittables crated by pyReadCounter. Chose type of analysys Usage: create hittables using pyReadCounter then run script in the folder containing hittables"
     parser = argparse.ArgumentParser(usage=usage, description=description)
     #functions
-    parser.add_argument('--output', required=True, dest="function", choices=['correlation', 'count', 'piechart'], help='REQUIRED, Calculate "correlations"; '
+    parser.add_argument('--output', required=True, dest="function", choices=['correlation', 'count', 'piechart', 'classes'], help='REQUIRED, Calculate "correlations"; '
                                                                                                                          '"count" hittables for further analysis. Ideal to work with multiple experiments; '
                                                                                                                          'Plot "piechart"s for hittable classes')
     # parser for input files options
@@ -52,5 +52,6 @@ def hittable():
         data.count(normalize=options.normalized, use_RPKM=options.rpkm)
     elif options.function == 'piechart':
         data.plot(print_single=options.print_single)
-
+    elif options.function == 'classes':
+        data.classes_to_tab()
     print "Done."

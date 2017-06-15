@@ -238,3 +238,37 @@ class HittableClass():
                 plt.savefig(e+'.png')
                 plt.clf()
         print 'Done.'
+
+    def classes_to_tab(self):
+
+        paths = gtk.list_paths_in_current_dir('hittable_reads.txt', stdin=self.read_stdin)  # get paths of hittables
+        experiments, paths = gtk.define_experiments(paths_in=paths,
+                                                    whole_name=self.whole_name)  # extract experiments from paths
+
+        # initiating DataFrame
+        data = pd.DataFrame(columns=[['group'] + ['legend'] + experiments])  # initialize Pandas DataFrame
+        data = data.set_index(['group'])
+        general = dict()
+
+        # filling DataFrame
+        for path_no, hittable in enumerate(paths):
+            name = experiments[path_no]
+            general[name] = list()  ## [total_mapped_reads, total_reads]
+            for line in open(hittable):
+                if line.startswith('# total number of mapped reads:'):
+                    line_elements = line.strip().split('\t')
+                    total_mapped_reads = int(line_elements[1])
+                    general[name].append(total_mapped_reads)
+                if line.startswith('# total number of reads') and not line.startswith(
+                        '# total number of reads without'):
+                    line_elements = line.strip().split('\t')
+                    total_reads = int(line_elements[1])
+                    general[name].append(total_reads)
+                if line.startswith('##'):
+                    line_elements = line.strip().split('\t')
+                    type_of_reads = str(line_elements[0].strip('#').strip())
+                    no_of_reads = int(line_elements[1])
+                    data.loc[type_of_reads, name] = no_of_reads
+            data = data.fillna(0)
+        data.to_csv('classes.tab', sep='\t')
+        print 'Done.'
