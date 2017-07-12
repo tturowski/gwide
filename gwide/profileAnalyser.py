@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-def save_csv(data_ref=pd.DataFrame(), datasets=pd.DataFrame(), path=str()):
+def save_csv(data_ref=pd.DataFrame(), datasets=pd.DataFrame(), path=None):
     '''
     Takes two dataframes:
     :param data_ref: dataframe with ['position'] and ['nucleotide'] columns
@@ -10,7 +10,6 @@ def save_csv(data_ref=pd.DataFrame(), datasets=pd.DataFrame(), path=str()):
     :param path: path to save csv
     :return: reference dataframe
     '''
-
     reference = pd.DataFrame()
     # if 'position'
 
@@ -18,8 +17,42 @@ def save_csv(data_ref=pd.DataFrame(), datasets=pd.DataFrame(), path=str()):
     reference['mean'], reference['std'] = datasets.mean(axis=1), datasets.std(axis=1)
     reference['median'], reference['q1'], reference['q3'] = datasets.median(axis=1), datasets.quantile(q=0.25,axis=1), datasets.quantile(q=0.75, axis=1),
     reference['min'], reference['max'] = datasets.min(axis=1), datasets.max(axis=1)
-    reference.to_csv(path)  ## reference plot
+
+    if path and type(path) == str():
+        reference.to_csv(path)  ## reference plot
+    elif path and type(path) != str():
+        exit('Path should be str()')
+
     return reference
+
+def plot_as_box_plot(df=pd.DataFrame(),title=None, start=None, stop=None,figsize=(15,6),ylim=(None,0.01), color='green', h_lines=list(), lc='red'):
+    '''
+    Function creates plot similar to box plot: median, 2 and 3 quartiles and min-max range
+    :param csv_path: path to csv file
+    :param title: plot title
+    :param start: start
+    :param stop: stop
+    :param figsize: size of figure
+    :param ylim: OY axes lim - def (None,0.01)
+    :param color: plot color
+    :param h_lines: optional list of horizontal lines
+    :param lc: color of horizontal lines
+    '''
+    reference = df.drop('nucleotide', 1)
+    s2 = reference[start:stop]
+    #plotting reference dataset
+    fig, ax1 = plt.subplots(figsize=figsize)
+    plt.title(title)
+    ax1.set_xlabel('position')
+    ax1.set_ylabel('fraction of reads')
+    ax1.set_ylim(ylim)
+    ax1.plot(s2.index, s2['median'], color=color)
+    if set(['q1','q3']).issubset(list(s2.columns.values)):
+        ax1.fill_between(s2.index, s2['q1'], s2['q3'], label='range (2nd-3rd quartile)', color=color, alpha=0.2)
+    if set(['min','max']).issubset(list(s2.columns.values)):
+        ax1.fill_between(s2.index, s2['min'], s2['max'], label='range (min-max)', color=color, alpha=0.07)
+    for i in [i for i in h_lines if i in range(start,stop)]: ax1.axvline(i, color=lc)
+    ax1.legend()
 
 def plot_from_csv(csv_path=str(),title=None, start=None, stop=None,figsize=(15,6),ylim=(None,0.01), color='green', h_lines=list(), lc='red'):
     '''

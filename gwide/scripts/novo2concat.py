@@ -21,8 +21,6 @@ parser.add_argument("-g", "--gtf_file", dest="gtf_file", help="Provide the path 
 parser.add_argument("-t", "--tab_file", dest="tab_file", help="Provide the path to your tab genome file.",
                      type=str, default=None)
 parser.add_argument("-r", dest="ranges", help="Set up ranges for pyPileup. Default = 250", default=250)
-parser.add_argument("--CDS", dest="cds", help="Use pyPileup -s CDS option to work with coding sequences. Default = False",
-                    action="store_true", default=False)
 parser.add_argument("--3end", dest="three_end",
                     help="Use pyPileup option --3end to only report counts for the 3' end of the reads. Default = False",
                     action="store_true", default=False)
@@ -57,8 +55,6 @@ for f, d in zip(files, directories):
 
 #setting up concat and log files nameq
 concat_name = args.prefix+"_r"+ranges
-if args.cds == True:
-    concat_name = concat_name + "_CDS"
 if args.three_end == True:
     concat_name = concat_name + "_3end"
 elif args.five_end == True:
@@ -76,7 +72,6 @@ number_of_processors_to_use = len(files)
 def create_pileup_files(input_file, output_files):
     os.chdir(os.path.dirname(input_file))
     command_part = ''
-    if args.cds: command_part = command_part + ' -s CDS'
     if args.three_end: command_part = command_part+' --3end'
     if args.five_end: command_part = command_part+' --5end'
     subprocess.call(r'pyPileup.py --gtf=' + gtf + ' --tab=' + tab + ' -g ' + args.list_file + ' -f ' + input_file + ' -r ' + ranges + command_part,

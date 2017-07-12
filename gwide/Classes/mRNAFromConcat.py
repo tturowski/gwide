@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 class mRNAFromConcat():
-    def __init__(self, gtf_file, five_prime_flank, three_prime_flank, hits_threshold, lookahead, prefix, npM):
+    def __init__(self, gtf_file, five_prime_flank, three_prime_flank, hits_threshold, lookahead, prefix, npM=False):
         self.gtf_file           =   str(gtf_file)
         self.gtf                =   GTF2.Parse_GTF()
         self.gtf.read_GTF(self.gtf_file)
@@ -189,119 +189,111 @@ class mRNAFromConcat():
             print '# Calculating readthrough...'
 
         for gene_name in self.genes:
-            transcription_start =   self.five_prime_flank-21
-            gene_length         =   self.genes[gene_name]['gene_length']
-            gene_end            =   self.five_prime_flank + gene_length
-            RT_begin            =   self.five_prime_flank + gene_length + self.readthrough_start
-            gene_middle         =   self.five_prime_flank + ( gene_length / 2 )
-            three_middle           =   self.five_prime_flank + gene_length + (self.three_prime_flank / 2)
-            three_one_third        =   self.five_prime_flank + gene_length + (self.three_prime_flank / 3)
-            three_two_third        =   self.five_prime_flank + gene_length + (2*(self.three_prime_flank / 3))
-
-        #getting intron length
-            introns = list()
-            if not self.genes[gene_name]['introns'][0]:
-                intron_length = 0
-            else:
-                for intron in range(0,len(self.genes[gene_name]['introns'][0])):
-                    introns.append(str(self.genes[gene_name]['introns'][0][intron]))
-                intron_length = int(''.join(map(str,introns)))
-                intron_start_stop = self.genes[gene_name]['introns'][1][0]      #start and stop of first intron only!
-
+        #     transcription_start =   self.five_prime_flank-21
+        #     gene_length         =   self.genes[gene_name]['gene_length']
+        #     gene_end            =   self.five_prime_flank + gene_length
+        #     RT_begin            =   self.five_prime_flank + gene_length + self.readthrough_start
+        #     gene_middle         =   self.five_prime_flank + ( gene_length / 2 )
+        #     three_middle           =   self.five_prime_flank + gene_length + (self.three_prime_flank / 2)
+        #     three_one_third        =   self.five_prime_flank + gene_length + (self.three_prime_flank / 3)
+        #     three_two_third        =   self.five_prime_flank + gene_length + (2*(self.three_prime_flank / 3))
+        #
+        # #getting intron length
+        #     introns = list()
+        #     if not self.genes[gene_name]['introns'][0]:
+        #         intron_length = 0
+        #     else:
+        #         for intron in range(0,len(self.genes[gene_name]['introns'][0])):
+        #             introns.append(str(self.genes[gene_name]['introns'][0][intron]))
+        #         intron_length = int(''.join(map(str,introns)))
+        #         intron_start_stop = self.genes[gene_name]['introns'][1][0]      #start and stop of first intron only!
             for exp in self.experiments:
         # !! changes in exp name !!
                 exp_old = exp
-                try:
-                    if max(list(self.data[gene_name][exp])) >= self.hits_threshold:
-                #normalization options
-                        if nmax == True:
-                            exp = exp_old+'_nmax'
-                            self.data[gene_name][exp] = self.data[gene_name][exp_old]/self.data[gene_name][exp_old].max()
-                            if pscounts == True:
-                                self.data[gene_name][exp] = self.data[gene_name][exp].add(0.000001) #adding pseudocounts
-                        if ntotal == True:
-                            exp = exp_old+'_ntotal'
-                            self.data[gene_name][exp] = self.data[gene_name][exp_old]/self.data[gene_name][exp_old].sum()
-                            if pscounts == True:
-                                self.data[gene_name][exp] = self.data[gene_name][exp].add(0.000001) #adding pseudocounts
+                # try:
+                if max(list(self.data[gene_name][exp])) >= self.hits_threshold:
+            #normalization options
+                    if nmax == True:
+                        exp = exp_old+'_nmax'
+                        self.data[gene_name][exp] = self.data[gene_name][exp_old]/self.data[gene_name][exp_old].max()
                         if pscounts == True:
-                            self.data[gene_name][exp_old] = self.data[gene_name][exp_old].add(10) #adding pseudocounts
+                            self.data[gene_name][exp] = self.data[gene_name][exp].add(0.000001) #adding pseudocounts
+                    if ntotal == True:
+                        exp = exp_old+'_ntotal'
+                        self.data[gene_name][exp] = self.data[gene_name][exp_old]/self.data[gene_name][exp_old].sum()
+                        if pscounts == True:
+                            self.data[gene_name][exp] = self.data[gene_name][exp].add(0.000001) #adding pseudocounts
+                    if pscounts == True:
+                        self.data[gene_name][exp_old] = self.data[gene_name][exp_old].add(0.1) #adding pseudocounts
 
-                #slicing dataframes
-                        total       =   self.data[gene_name][transcription_start:].sum()[exp]
-                        total_av    =   self.data[gene_name][transcription_start:].mean()[exp]
-                        total_med   =   self.data[gene_name][transcription_start:].median()[exp]
-                        total_SD    =   self.data[gene_name][transcription_start:].std()[exp]
-                        c           =   float(self.data[gene_name][RT_begin:].sum()[exp])
-                        if details==True:
-                            g       =   self.data[gene_name][transcription_start:gene_end].sum()[exp]
-                            g_av    =   self.data[gene_name][transcription_start:gene_end].mean()[exp]
-                            g_med   =   self.data[gene_name][transcription_start:gene_end].median()[exp]
-                            g_SD    =   self.data[gene_name][transcription_start:gene_end].std()[exp]
-                            a1      =   float(self.data[gene_name][transcription_start:gene_middle].sum()[exp])
-                            a2      =   self.data[gene_name][gene_middle+1:gene_end].sum()[exp]
-                            d       =   self.data[gene_name][gene_end+1:].sum()[exp]
-                            d_av    =   self.data[gene_name][gene_end+1:].mean()[exp]
-                            d_med   =   self.data[gene_name][gene_end+1:].median()[exp]
-                            d_SD    =   self.data[gene_name][gene_end+1:].std()[exp]
-                            e1      =   float(self.data[gene_name][gene_end+1:three_middle].sum()[exp])
-                            e2      =   self.data[gene_name][three_middle+1:].sum()[exp]
-                            f1      =   float(self.data[gene_name][gene_end+1:three_one_third].sum()[exp])
-                            f2      =   self.data[gene_name][three_one_third+1:three_two_third].sum()[exp]
-                            f3      =   self.data[gene_name][three_two_third+1:].sum()[exp]
-                            if intron_length > 0:
-                                b1  =   float(self.data[gene_name][transcription_start:intron_start_stop[0]+self.five_prime_flank].sum()[exp])
-                                b2  =   float(self.data[gene_name][intron_start_stop[0]+1+self.five_prime_flank:intron_start_stop[1]+self.five_prime_flank].sum()[exp])
-                                b3  =   self.data[gene_name][intron_start_stop[1]+1+self.five_prime_flank:gene_end].sum()[exp]
-                #calculating
-                        RT = np.float64(c) / total #allows for dividing by 0
-                        if details==True:
-                            a = np.float64(a1) / a2
-                            e = np.float64(e1) / e2
-                            f = np.float64(f1) / f3
-
-                            if intron_length > 0:
-                                b = np.float64(b1) / b3
-                                i = np.float64(b2) / (b1 + b3)
-                            else:
-                                b = 0
-                                i = 0
-                    else:
-                        RT, total, total_av, total_med, total_SD, c = ['too_low_reads'] * 6
-                        if details == True:
-                            g, g_av, g_med, g_SD, d, d_av, d_med, d_SD, a, e, f, b, i = ['too_low_reads'] * 13
-                except KeyError as e:
+                # #slicing dataframes
+                #         total       =   self.data[gene_name][transcription_start:].sum()[exp]
+                #         total_av    =   self.data[gene_name][transcription_start:].mean()[exp]
+                #         total_med   =   self.data[gene_name][transcription_start:].median()[exp]
+                #         total_SD    =   self.data[gene_name][transcription_start:].std()[exp]
+                #         c           =   float(self.data[gene_name][RT_begin:].sum()[exp])
+                #         if details==True:
+                #             g       =   self.data[gene_name][transcription_start:gene_end].sum()[exp]
+                #             g_av    =   self.data[gene_name][transcription_start:gene_end].mean()[exp]
+                #             g_med   =   self.data[gene_name][transcription_start:gene_end].median()[exp]
+                #             g_SD    =   self.data[gene_name][transcription_start:gene_end].std()[exp]
+                #             a1      =   float(self.data[gene_name][transcription_start:gene_middle].sum()[exp])
+                #             a2      =   self.data[gene_name][gene_middle+1:gene_end].sum()[exp]
+                #             d       =   self.data[gene_name][gene_end+1:].sum()[exp]
+                #             d_av    =   self.data[gene_name][gene_end+1:].mean()[exp]
+                #             d_med   =   self.data[gene_name][gene_end+1:].median()[exp]
+                #             d_SD    =   self.data[gene_name][gene_end+1:].std()[exp]
+                #             e1      =   float(self.data[gene_name][gene_end+1:three_middle].sum()[exp])
+                #             e2      =   self.data[gene_name][three_middle+1:].sum()[exp]
+                #             f1      =   float(self.data[gene_name][gene_end+1:three_one_third].sum()[exp])
+                #             f2      =   self.data[gene_name][three_one_third+1:three_two_third].sum()[exp]
+                #             f3      =   self.data[gene_name][three_two_third+1:].sum()[exp]
+                #             if intron_length > 0:
+                #                 b1  =   float(self.data[gene_name][transcription_start:intron_start_stop[0]+self.five_prime_flank].sum()[exp])
+                #                 b2  =   float(self.data[gene_name][intron_start_stop[0]+1+self.five_prime_flank:intron_start_stop[1]+self.five_prime_flank].sum()[exp])
+                #                 b3  =   self.data[gene_name][intron_start_stop[1]+1+self.five_prime_flank:gene_end].sum()[exp]
+                # #calculating
+                #         RT = np.float64(c) / total #allows for dividing by 0
+                #         if details==True:
+                #             a = np.float64(a1) / a2
+                #             e = np.float64(e1) / e2
+                #             f = np.float64(f1) / f3
+                #
+                #             if intron_length > 0:
+                #                 b = np.float64(b1) / b3
+                #                 i = np.float64(b2) / (b1 + b3)
+                #             else:
+                #                 b = 0
+                #                 i = 0
+                #     else:
+                #         RT, total, total_av, total_med, total_SD, c = ['too_low_reads'] * 6
+                #         if details == True:
+                #             g, g_av, g_med, g_SD, d, d_av, d_med, d_SD, a, e, f, b, i = ['too_low_reads'] * 13
+                # except KeyError as e:
                     # print "Error raised by key: "+str(e)
-                    RT, total, total_av, total_med, total_SD, c = ['no_reads'] * 6
-                    if details == True:
-                            g, g_av, g_med, g_SD, d, d_av, d_med, d_SD, a, e, f, b, i = ['no_reads'] * 13
-                #stroing in dictionary
-                self.genes[gene_name]['RT'][exp_old] = RT
-                if details==True:
-                    self.genes[gene_name]['total']      =   total
-                    self.genes[gene_name]['total_av']   =   total_av
-                    self.genes[gene_name]['total_med']  =   total_med
-                    self.genes[gene_name]['total_std']  =   total_SD
-                    self.genes[gene_name]['a']          =   a
-                    self.genes[gene_name]['b']          =   b
-                    self.genes[gene_name]['i']          =   i
-                    self.genes[gene_name]['e']          =   e
-                    self.genes[gene_name]['f']          =   f
-                    self.genes[gene_name]['d']      =   d
-                    self.genes[gene_name]['d_av']   =   d_av
-                    self.genes[gene_name]['d_med']  =   d_med
-                    self.genes[gene_name]['d_std']  =   d_SD
-                    self.genes[gene_name]['g']      =   g
-                    self.genes[gene_name]['g_av']   =   g_av
-                    self.genes[gene_name]['g_med']  =   g_med
-                    self.genes[gene_name]['g_std']  =   g_SD
-
-        ### below part of function is needed to sort tRNA according to readthrough
-                tRNA_group = self.genes[gene_name]['gene_id'][0:2]
-                gene_id = self.genes[gene_name]['gene_id']
-                if tRNA_group not in self.rt:
-                    self.rt[tRNA_group] = dict()
-                self.rt[tRNA_group][gene_id] = RT
+                #     RT, total, total_av, total_med, total_SD, c = ['no_reads'] * 6
+                #     if details == True:
+                #             g, g_av, g_med, g_SD, d, d_av, d_med, d_SD, a, e, f, b, i = ['no_reads'] * 13
+                # #stroing in dictionary
+                # self.genes[gene_name]['RT'][exp_old] = RT
+                # if details==True:
+                #     self.genes[gene_name]['total']      =   total
+                #     self.genes[gene_name]['total_av']   =   total_av
+                #     self.genes[gene_name]['total_med']  =   total_med
+                #     self.genes[gene_name]['total_std']  =   total_SD
+                #     self.genes[gene_name]['a']          =   a
+                #     self.genes[gene_name]['b']          =   b
+                #     self.genes[gene_name]['i']          =   i
+                #     self.genes[gene_name]['e']          =   e
+                #     self.genes[gene_name]['f']          =   f
+                #     self.genes[gene_name]['d']      =   d
+                #     self.genes[gene_name]['d_av']   =   d_av
+                #     self.genes[gene_name]['d_med']  =   d_med
+                #     self.genes[gene_name]['d_std']  =   d_SD
+                #     self.genes[gene_name]['g']      =   g
+                #     self.genes[gene_name]['g_av']   =   g_av
+                #     self.genes[gene_name]['g_med']  =   g_med
+                #     self.genes[gene_name]['g_std']  =   g_SD
         return True
 
 # making output; if -p option then text file, else to standard output
