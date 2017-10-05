@@ -15,7 +15,8 @@ def save_csv(data_ref=pd.DataFrame(), datasets=pd.DataFrame(), path=None):
 
     reference['position'], reference['nucleotide'] = data_ref['position'], data_ref['nucleotide']
     reference['mean'], reference['std'] = datasets.mean(axis=1), datasets.std(axis=1)
-    reference['median'], reference['q1'], reference['q3'] = datasets.median(axis=1), datasets.quantile(q=0.25,axis=1), datasets.quantile(q=0.75, axis=1),
+    reference['median'] = datasets.median(axis=1)
+    reference['q1'], reference['q3'] = datasets.quantile(q=0.25,axis=1), datasets.quantile(q=0.75, axis=1)
     reference['min'], reference['max'] = datasets.min(axis=1), datasets.max(axis=1)
 
     if path and type(path) == str():
