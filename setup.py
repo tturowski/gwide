@@ -12,7 +12,7 @@ setup(
     # py_modules=['gwide'],
     packages=find_packages(),
     install_requires=[
-        'pypeaks',
+        # 'pypeaks',
         'pandas',
         'ruffus',
         'PyYAML',

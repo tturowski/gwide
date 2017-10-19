@@ -3,12 +3,22 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 def save_csv(data_ref=pd.DataFrame(), datasets=pd.DataFrame(), path=None):
-    '''
-    Takes two dataframes:
-    :param data_ref: dataframe with ['position'] and ['nucleotide'] columns
-    :param datasets: dataframe containinig only experimental data
-    :param path: path to save csv
-    :return: reference dataframe
+    '''Take two dataframes and return .
+
+    Parameters
+    ----------
+    param data_ref
+      dataframe with ['position'] and ['nucleotide'] columns
+
+    param datasets
+      dataframe containinig only experimental data
+
+    param path
+      path to save csv
+
+    Returns
+    -------
+    reference dataframe
     '''
 
     reference = pd.DataFrame()
