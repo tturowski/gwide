@@ -4,7 +4,6 @@ gwide Reference manual
 ==========================
 
 
-
 DigestionProblem
 --------------------
 .. mermaid::
@@ -15,4 +14,9 @@ DigestionProblem
     DP --> IDP[IdealDigestionProblem]
 
 .. automodule:: gwide.profileAnalyser
+.. automodule:: gwide.Classes.rRNAFromConcat
+.. automodule:: gwide.Classes.tRNAFromConcatv2
+.. automodule:: gwide.methods
+.. automodule:: gwide.methods
+
    :members:
