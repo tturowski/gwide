@@ -1,5 +1,3 @@
-__author__ = 'tturowski'
-
 import os, yaml, sys, re
 import numpy as np
 import pandas as pd

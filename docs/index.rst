@@ -1,8 +1,3 @@
-.. image:: https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/gwide/master/docs/_static/images/title.png
-   :alt: [logo]
-   :align: center
-   :width: 400px
-
 gwide
 ==========
 

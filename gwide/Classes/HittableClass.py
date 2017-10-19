@@ -1,10 +1,4 @@
 #!/usr/bin/env python
-__author__ = 'Tomasz Turowski'
-__copyright__	= "Copyright 2015"
-__version__		= "1.0"
-__credits__		= ["Tomasz Turowski"]
-__email__		= "twturowski@gmail.com"
-__status__		= "Production"
 
 import os, re, math, sys
 import pandas as pd

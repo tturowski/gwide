@@ -1,11 +1,4 @@
 #!/usr/bin/env python
-__author__ = 'Tomasz Turowski'
-__copyright__	= "Copyright 2015"
-__version__		= "2.0"
-__credits__		= ["Tomasz Turowski"]
-__email__		= "twturowski@gmail.com"
-__status__		= "Production"
-
 import numpy as np
 import sys, collections, re
 from pypeaks import Data

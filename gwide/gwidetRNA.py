@@ -1,11 +1,4 @@
 #!/usr/bin/env python
-__author__ = 'Tomasz Turowski'
-__copyright__	= "Copyright 2015"
-__version__		= "2.0"
-__credits__		= ["Tomasz Turowski"]
-__email__		= "twturowski@gmail.com"
-__status__		= "Production"
-
 import argparse, os
 import gwide.methods as gtm
 from gwide.Classes.tRNAFromConcatv2 import *

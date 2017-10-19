@@ -1,11 +1,4 @@
 #!/usr/bin/env python
-__author__ = 'Tomasz Turowski'
-__copyright__	= "Copyright 2015"
-__version__		= "0.2"
-__credits__		= ["Tomasz Turowski"]
-__email__		= "twturowski@gmail.com"
-__status__		= "Production"
-
 from optparse import OptionParser
 import select
 from gwide.Classes.rRNAFromConcat import *

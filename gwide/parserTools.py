@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-__author__ = 'Tomasz Turowski'
 from pyCRAC.Parsers import GTF2
 import sys, re
 from optparse import *
