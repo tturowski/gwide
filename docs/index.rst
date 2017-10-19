@@ -79,24 +79,11 @@ Contribute
 ----------
 
 gwide is an open-source library originally written at the
-Edinburgh Genome Foundry by TomaszWTurowski_. It is released on Github_ under the MIT
-licence (¢ Edinburgh Genome Foundry), everyone is welcome to contribute.
+Edinburgh Genome Foundry by TomaszWTurowski_. It is released on Github_ under the Apache 2.0
+licence (¢ Tomasz W. Turowski), everyone is welcome to contribute.
 
 .. _TomaszWTurowski: https://www.researchgate.net/profile/Tomasz_Turowski
 .. _Github: https://github.com/tturowski/gwide
-
-
-.. raw:: html
-
-       <a href="https://twitter.com/share" class="twitter-share-button"
-       data-text="gwide - Digestion enzyme selection with Python" data-size="large" data-hashtags="Bioprinting">Tweet
-       </a>
-       <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
-       if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';
-       fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
-       </script>
-       <iframe src="http://ghbtns.com/github-btn.html?user=Edinburgh-Genome-Foundry&repo=gwide&type=watch&count=true&size=large"
-       allowtransparency="true" frameborder="0" scrolling="0" width="152px" height="30px" margin-bottom="30px"></iframe>
 
 
 .. toctree::
