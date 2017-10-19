@@ -9,13 +9,16 @@ http://www.ncbi.nlm.nih.gov/pubmed/27206856
 
 Installation
 ===========
-for users: 
-pip install --user mercurial git+git://github.com/tturowski/gwide.git (or skip --user mercurial to install globally);
+for users:
+.. code:: shell
+    pip install --user mercurial git+git://github.com/tturowski/gwide.git (or skip --user mercurial to install globally);
 add to your .profile or .bash_profile or .bash_login:
-PATH="$HOME/.local/bin:$PATH"
+.. code:: shell
+    PATH="$HOME/.local/bin:$PATH"
 
 for developers:
-clone folder and;
+.. code:: shell
+    git clone git@github.com:tturowski/gwide.git
 pip install --editable .
 
 Setup
