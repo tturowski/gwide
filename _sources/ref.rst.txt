@@ -3,14 +3,17 @@
 gwide Reference manual
 ==========================
 
-DigestionProblem
+ProfileAnalyser
 --------------------
-.. mermaid::
-
-  graph TD
-    SC[SetCoverProblem] --> DP[DigestionProblem]
-    DP --> SDP[SeparatingDigestionProblem]
-    DP --> IDP[IdealDigestionProblem]
+Set of functions designed to analysis of genomic profiles
 
 .. automodule:: gwide.profileAnalyser
-   :members:
+    :members:
+
+Methods
+--------------------
+Common methods
+
+.. automodule:: gwide.methods
+    :members:
+    

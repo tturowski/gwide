@@ -166,18 +166,19 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <div class="viewcode-block" id="save_csv"><a class="viewcode-back" href="../../ref.html#gwide.profileAnalyser.save_csv">[docs]</a><span class="k">def</span> <span class="nf">save_csv</span><span class="p">(</span><span class="n">data_ref</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(),</span> <span class="n">datasets</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(),</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Take two dataframes and return .</span>
+
+    <span class="sd">&#39;&#39;&#39;Takes reference and data DataFrame&#39;s</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    param data_ref</span>
-<span class="sd">      dataframe with [&#39;position&#39;] and [&#39;nucleotide&#39;] columns</span>
+<span class="sd">      DataFrame with ``[&#39;position&#39;]`` and ``[&#39;nucleotide&#39;]`` columns</span>
 
 <span class="sd">    param datasets</span>
-<span class="sd">      dataframe containinig only experimental data</span>
+<span class="sd">      DataFrame containinig experimental data only</span>
 
 <span class="sd">    param path</span>
-<span class="sd">      path to save csv</span>
+<span class="sd">      Optional: path to save csv</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -568,7 +569,6 @@
       <script type="text/javascript" src="../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script>
 
   
 

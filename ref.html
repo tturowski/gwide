@@ -97,7 +97,8 @@
 <p class="caption"><span class="caption-text">Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">gwide Reference manual</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#digestionproblem">DigestionProblem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#profileanalyser">ProfileAnalyser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a></li>
 </ul>
 </li>
 </ul>
@@ -165,21 +166,10 @@
             
   <div class="section" id="gwide-reference-manual">
 <h1>gwide Reference manual<a class="headerlink" href="#gwide-reference-manual" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="digestionproblem">
-<h2>DigestionProblem<a class="headerlink" href="#digestionproblem" title="Permalink to this headline">¶</a></h2>
-
-            <style>
-            /* mermaid issue 527 workaround */
-            .section {
-                opacity: 1.0 !important;
-            }
-            </style>
-            <script>mermaid.initialize({startOnLoad:true});</script><div class="mermaid">
-            graph TD
-  SC[SetCoverProblem] --&gt; DP[DigestionProblem]
-  DP --&gt; SDP[SeparatingDigestionProblem]
-  DP --&gt; IDP[IdealDigestionProblem]
-        </div><span class="target" id="module-gwide.profileAnalyser"></span><dl class="function">
+<div class="section" id="profileanalyser">
+<h2>ProfileAnalyser<a class="headerlink" href="#profileanalyser" title="Permalink to this headline">¶</a></h2>
+<p>Set of functions designed to analysis of genomic profiles</p>
+<span class="target" id="module-gwide.profileAnalyser"></span><dl class="function">
 <dt id="gwide.profileAnalyser.compare1toRef">
 <code class="descclassname">gwide.profileAnalyser.</code><code class="descname">compare1toRef</code><span class="sig-paren">(</span><em>dataset=Series([]</em>, <em>dtype: float64)</em>, <em>ranges='mm'</em>, <em>heatmap=False</em>, <em>relative=False</em>, <em>reference='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/profileAnalyser.html#compare1toRef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.profileAnalyser.compare1toRef" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes series and compare this with reference DataFrame, as a result gives
@@ -299,27 +289,107 @@
 <dl class="function">
 <dt id="gwide.profileAnalyser.save_csv">
 <code class="descclassname">gwide.profileAnalyser.</code><code class="descname">save_csv</code><span class="sig-paren">(</span><em>data_ref=Empty DataFrame Columns: [] Index: []</em>, <em>datasets=Empty DataFrame Columns: [] Index: []</em>, <em>path=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/profileAnalyser.html#save_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.profileAnalyser.save_csv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Take two dataframes and return .</p>
+<dd><p>Takes reference and data DataFrame&#8217;s</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>param data_ref</strong></p>
 <blockquote>
-<div><p>dataframe with [&#8216;position&#8217;] and [&#8216;nucleotide&#8217;] columns</p>
+<div><p>DataFrame with <code class="docutils literal"><span class="pre">['position']</span></code> and <code class="docutils literal"><span class="pre">['nucleotide']</span></code> columns</p>
 </div></blockquote>
 <p><strong>param datasets</strong></p>
 <blockquote>
-<div><p>dataframe containinig only experimental data</p>
+<div><p>DataFrame containinig experimental data only</p>
 </div></blockquote>
 <p><strong>param path</strong></p>
 <blockquote>
-<div><p>path to save csv</p>
+<div><p>Optional: path to save csv</p>
 </div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">reference DataFrame</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<p>Common methods</p>
+<span class="target" id="module-gwide.methods"></span><dl class="function">
+<dt id="gwide.methods.calGC">
+<code class="descclassname">gwide.methods.</code><code class="descname">calGC</code><span class="sig-paren">(</span><em>dataset=Empty DataFrame Columns: [] Index: [], calFor=['G', 'C']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/methods.html#calGC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.methods.calGC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns GC content in a given dataset
+:param dataset: Pandas DataFrame with &#8220;nucleotide&#8221; column
+:return: fraction of GC content</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwide.methods.cleanNames">
+<code class="descclassname">gwide.methods.</code><code class="descname">cleanNames</code><span class="sig-paren">(</span><em>df=Empty DataFrame Columns: [] Index: []</em>, <em>additional_tags=[]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/methods.html#cleanNames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.methods.cleanNames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleans some problems with names if exist</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwide.methods.define_experiments">
+<code class="descclassname">gwide.methods.</code><code class="descname">define_experiments</code><span class="sig-paren">(</span><em>paths_in</em>, <em>whole_name=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/methods.html#define_experiments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.methods.define_experiments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse file names and extract experiment name from them
+:param whole_name As defaults script takes first &#8216;a_b_c&#8217; from a_b_c_hittable_reads.txt as experiment name.
+:return: list of experiment names and list of paths.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwide.methods.expNameParser">
+<code class="descclassname">gwide.methods.</code><code class="descname">expNameParser</code><span class="sig-paren">(</span><em>name</em>, <em>additional_tags=[]</em>, <em>order='b_d_e_p'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/methods.html#expNameParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.methods.expNameParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function handles experiment name; recognizes AB123456 as experiment date; BY4741 or HTP or given string as bait protein
+:param name:
+:param additional_tags: list of tags
+:param output: default &#8216;root&#8217; ; print other elements when &#8216;all&#8217;
+:param order: defoult &#8216;b_d_e_p&#8217; b-bait; d-details, e-experiment, p-prefix
+:return: reordered name</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwide.methods.getRefFile">
+<code class="descclassname">gwide.methods.</code><code class="descname">getRefFile</code><span class="sig-paren">(</span><em>file_from_options</em>, <em>file_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/methods.html#getRefFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.methods.getRefFile" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Sorting out source of gtf, fasta or tab path, in order (1) from options parser, (2) from ~/bin/default.aml</dt>
+<dd>or (3) from environmental variable $xxx_PATH</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_from_options</strong> &#8211; file path from options parser, can be an empty string
+file_type: &#8216;GTF&#8217;, &#8216;FASTA&#8217;, &#8216;TAB&#8217;</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">path to the file</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwide.methods.indexOrder">
+<code class="descclassname">gwide.methods.</code><code class="descname">indexOrder</code><span class="sig-paren">(</span><em>df=Empty DataFrame Columns: [] Index: []</em>, <em>additional_tags=[]</em>, <em>output='root'</em>, <em>order='b_d_e_p'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/methods.html#indexOrder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.methods.indexOrder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Aplly expNameParser to whole dataframe
+:param order: defoult &#8216;b_d_e_p&#8217; b-bait; d-details, e-experiment, p-prefix</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwide.methods.list_paths_in_current_dir">
+<code class="descclassname">gwide.methods.</code><code class="descname">list_paths_in_current_dir</code><span class="sig-paren">(</span><em>suffix=''</em>, <em>stdin=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/methods.html#list_paths_in_current_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.methods.list_paths_in_current_dir" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">suffix  -   lists paths in current directory ending with an indicated suffix only
+stdin   -   read from standard input instead current directory</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of paths in current dir ending with suffix</td>
 </tr>
 </tbody>
 </table>
@@ -380,7 +450,6 @@
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://unpkg.com/mermaid@7.1.0/dist/mermaid.min.js"></script>
 
   
 

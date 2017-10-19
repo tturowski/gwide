@@ -160,56 +160,98 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <a class="reference internal image-reference" href="https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/gwide/master/docs/_static/images/title.png"><img alt="[logo]" class="align-center" src="https://raw.githubusercontent.com/Edinburgh-Genome-Foundry/gwide/master/docs/_static/images/title.png" style="width: 400px;" /></a>
-<div class="section" id="gwide">
+  <div class="section" id="gwide">
 <h1>gwide<a class="headerlink" href="#gwide" title="Permalink to this headline">¶</a></h1>
 <p>(the documentation is under construction, come back later for more)</p>
-<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gwide</span> <span class="k">import</span> <span class="p">(</span><span class="n">SeparatingDigestionsProblem</span><span class="p">,</span> <span class="n">list_common_enzymes</span><span class="p">,</span>
-                       <span class="n">LADDERS</span><span class="p">,</span> <span class="n">load_genbank</span><span class="p">)</span>
-
-
-<span class="c1"># DEFINE SEQUENCES AND ENZYME SET (6-CUTTERS WITH &gt;3 COMMERCIAL PROVIDERS)</span>
-<span class="n">enzymes</span> <span class="o">=</span> <span class="n">list_common_enzymes</span><span class="p">(</span><span class="n">site_length</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,),</span> <span class="n">min_suppliers</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">sequences</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">load_genbank</span><span class="p">(</span><span class="n">genbank_file_path</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">genbank_file_path</span> <span class="ow">in</span> <span class="n">some_llist_of_files</span><span class="p">)</span>
-<span class="p">]</span>
-
-<span class="c1"># SELECT THE BEST DIGESTION PAIRS (AT MOST 1 ENZYME PER DIGESTION)</span>
-<span class="n">problem</span> <span class="o">=</span> <span class="n">SeparatingDigestionsProblem</span><span class="p">(</span><span class="n">enzymes</span><span class="o">=</span><span class="n">enzymes</span><span class="p">,</span>
-                                      <span class="n">ladder</span><span class="o">=</span><span class="n">LADDERS</span><span class="p">[</span><span class="s1">&#39;100_to_4k&#39;</span><span class="p">],</span>
-                                      <span class="n">sequences</span><span class="o">=</span><span class="n">sequences</span><span class="p">,</span>
-                                      <span class="n">max_enzymes_per_digestion</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">score</span><span class="p">,</span> <span class="n">selected_digestions</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">select_digestions</span><span class="p">(</span><span class="n">max_digestions</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
-<span class="c1"># GENERATE A FIGURE OF THE BAND PATTERNS</span>
-
-<span class="n">problem</span><span class="o">.</span><span class="n">plot_digestions</span><span class="p">(</span>
-    <span class="n">selected_digestions</span><span class="p">,</span>
-    <span class="n">patterns_props</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;label_fontdict&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;rotation&#39;</span><span class="p">:</span> <span class="mi">35</span><span class="p">}},</span>
-    <span class="n">target_file</span><span class="o">=</span><span class="s2">&quot;separating_digestions.png&quot;</span>
-<span class="p">)</span>
-
-<span class="n">problem</span><span class="o">.</span><span class="n">plot_distances_map</span><span class="p">(</span><span class="n">digestions</span><span class="o">=</span><span class="n">selected_digestions</span><span class="p">,</span>
-                           <span class="n">target_file</span><span class="o">=</span><span class="s2">&quot;separating_digestions_distances.png&quot;</span><span class="p">)</span>
-</pre></div>
+<p>Python package for downstream analysis of CRAC data. Package developed for analysis of RNA polymerase III data published in
+Global analysis of transcriptionally engaged yeast RNA polymerase III reveals extended tRNA transcripts.
+Turowski TW, Leśniewska E, Delan-Forino C, Sayou C, Boguta M, Tollervey D.
+Genome Res. 2016 May 20. pii: gr.205492.116.
+<a class="reference external" href="http://www.ncbi.nlm.nih.gov/pubmed/27206856">http://www.ncbi.nlm.nih.gov/pubmed/27206856</a></p>
 </div>
-<p>Usage: Construct validation or identification from experimental data
-&#8212;</p>
+<div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>for users:
+.. code:: shell</p>
+<blockquote>
+<div>pip install &#8211;user mercurial git+git://github.com/tturowski/gwide.git (or skip &#8211;user mercurial to install globally);</div></blockquote>
+<p>add to your .profile or .bash_profile or .bash_login:
+.. code:: shell</p>
+<blockquote>
+<div>PATH=&#8221;$HOME/.local/bin:$PATH&#8221;</div></blockquote>
+<p>for developers:
+.. code:: shell</p>
+<blockquote>
+<div>git clone <a class="reference external" href="mailto:git&#37;&#52;&#48;github&#46;com">git<span>&#64;</span>github<span>&#46;</span>com</a>:tturowski/gwide.git
+pip install &#8211;editable .</div></blockquote>
+</div>
+<div class="section" id="setup">
+<h1>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h1>
+<p>It&#8217;s possible to create $HOME/bin/default.aml file with paths to follwing files:
+#default paths to genome files
+GTF_PATH : <a href="#id1"><span class="problematic" id="id2">*</span></a>.gtf
+FASTA_PATH : <a href="#id3"><span class="problematic" id="id4">*</span></a>.fasta
+TAB_PATH : <a href="#id5"><span class="problematic" id="id6">*</span></a>.tab</p>
+</div>
+<div class="section" id="description">
+<h1>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h1>
+<p>ploting of genome-wide plots pyCRAC downstream tool</p>
+<dl class="docutils">
+<dt>gwideHittable (-h for help, input <a href="#id7"><span class="problematic" id="id8">*</span></a>.hittable) - Three options:</dt>
+<dd><ul class="first last simple">
+<li>Calculate &#8220;correlations&#8221;: Pearson, Spearman or Kendall Tau</li>
+<li>&#8220;count&#8221; hittables for further analysis. Ideal to work with multiple experiments</li>
+<li>Plot &#8220;piechart&#8221;s for hittable classes (plots are not ideal...)</li>
+</ul>
+</dd>
+<dt>novo2concat.py (-h for help):</dt>
+<dd><ul class="first last simple">
+<li>copy <a href="#id9"><span class="problematic" id="id10">*</span></a>.novo files to new folder</li>
+<li>prefix from <a href="#id11"><span class="problematic" id="id12">*</span></a>.novo file is used as experiment name</li>
+</ul>
+</dd>
+<dt>gwidePlot (-h for help, input <a href="#id13"><span class="problematic" id="id14">*</span></a>.concat):</dt>
+<dd><ul class="first last simple">
+<li>plot genome wide plots, 5&#8217; and 3&#8217; end aligned or aligned to choosen aligner (-o aligner) or aligneg to 3&#8217; end of read-through</li>
+<li>plot genome wide ratio between different experiment</li>
+<li>possibility to filter genes using -f option</li>
+<li>printing <a href="#id15"><span class="problematic" id="id16">*</span></a>.csv tables to generate heatmaps using other software (i.e. GENE-E)</li>
+<li>calculate p-value for a non-canonical termination sites</li>
+<li>making GTF files (for whole transcripts or only for extensions</li>
+</ul>
+</dd>
+<dt>gwidetRNA (-h for help, input <a href="#id17"><span class="problematic" id="id18">*</span></a>.concat):</dt>
+<dd><ul class="first last simple">
+<li>plot single tRNA plots: multiple experiments per page, one experiment per page, one experiment under another, mark A and B boxes</li>
+<li>plot ratio between experiments</li>
+<li>plot under nucleotides resolution</li>
+<li>calculate dG RNA_DNA/DNA_DNA for each valley or last 20 nt after tRNA gene</li>
+<li>save tab-deliminated file with each plot calculations</li>
+</ul>
+</dd>
+<dt>GTF parser tools (-h for help, work with standard input):</dt>
+<dd><ul class="first last simple">
+<li>getFastaSeqs</li>
+<li>getGeneLength</li>
+<li>getIdFromName</li>
+<li>getNameFromId</li>
+<li>getGeneNamesFromGTF</li>
+<li>getNameFromId4Tab</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="citation">
+<h1>Citation<a class="headerlink" href="#citation" title="Permalink to this headline">¶</a></h1>
+<p>Turowski TW, Leśniewska E, Delan-Forino C, Sayou C, Boguta M, Tollervey D.
+Global analysis of transcriptionally engaged yeast RNA polymerase III reveals extended tRNA transcripts.
+Genome Res. 2016 May 20. pii: gr.205492.116.</p>
 <div class="section" id="contribute">
 <h2>Contribute<a class="headerlink" href="#contribute" title="Permalink to this headline">¶</a></h2>
 <p>gwide is an open-source library originally written at the
-Edinburgh Genome Foundry by <a class="reference external" href="https://github.com/Zulko/">Zulko</a>. It is released on <a class="reference external" href="https://github.com/EdinburghGenomeFoundry/gwide">Github</a> under the MIT
-licence (¢ Edinburgh Genome Foundry), everyone is welcome to contribute.</p>
-<a href="https://twitter.com/share" class="twitter-share-button"
-data-text="gwide - Digestion enzyme selection with Python" data-size="large" data-hashtags="Bioprinting">Tweet
-</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
-if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';
-fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
-</script>
-<iframe src="http://ghbtns.com/github-btn.html?user=Edinburgh-Genome-Foundry&repo=gwide&type=watch&count=true&size=large"
-allowtransparency="true" frameborder="0" scrolling="0" width="152px" height="30px" margin-bottom="30px"></iframe><div class="toctree-wrapper compound">
+Edinburgh Genome Foundry by <a class="reference external" href="https://www.researchgate.net/profile/Tomasz_Turowski">TomaszWTurowski</a>. It is released on <a class="reference external" href="https://github.com/tturowski/gwide">Github</a> under the Apache 2.0
+licence (¢ Tomasz W. Turowski), everyone is welcome to contribute.</p>
+<div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
 </div>
