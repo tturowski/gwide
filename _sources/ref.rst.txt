@@ -16,4 +16,3 @@ Common methods
 
 .. automodule:: gwide.methods
     :members:
-    

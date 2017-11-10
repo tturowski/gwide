@@ -173,21 +173,14 @@
 <dt id="gwide.profileAnalyser.compare1toRef">
 <code class="descclassname">gwide.profileAnalyser.</code><code class="descname">compare1toRef</code><span class="sig-paren">(</span><em>dataset=Series([]</em>, <em>dtype: float64)</em>, <em>ranges='mm'</em>, <em>heatmap=False</em>, <em>relative=False</em>, <em>reference='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/profileAnalyser.html#compare1toRef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.profileAnalyser.compare1toRef" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes series and compare this with reference DataFrame, as a result gives
-:param dataset: given series
-:param ranges: mm : min-max or qq : q1-q3
-:param  heatmap=False: Dataframe with(reference_above_experiment minimum etc.): rae_min, rae_max, ear_min, ear_max;</p>
+param dataset: given series
+param ranges: mm : min-max or qq : q1-q3
+param  heatmap=False: Dataframe with(reference_above_experiment minimum etc.): rae_min, rae_max, ear_min, ear_max;</p>
 <blockquote>
 <div>heatmap=True: Series of differences to plot heatmap</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>relative</strong> &#8211; only for heatmap, recalculates differences according to the peak size. Warning: negative values are in range -1 to 0</td>
-</tr>
-</tbody>
-</table>
-<p>but positive are from 0 to values higher than 1
-:param reference: path to reference plot
+<p>param relative: only for heatmap, recalculates differences according to the peak size. Warning: negative values are in range -1 to 0
+but positive are from 0 to values higher than 1
+param reference: path to reference plot
 :return: Dataframe (heatmap=False) or Series (heatmap=True)</p>
 </dd></dl>
 
@@ -201,10 +194,10 @@
 <dt id="gwide.profileAnalyser.filter_df">
 <code class="descclassname">gwide.profileAnalyser.</code><code class="descname">filter_df</code><span class="sig-paren">(</span><em>input_df=Empty DataFrame Columns: [] Index: [], let_in=[''], let_out=['wont_find_this_string'], smooth=True, window=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/profileAnalyser.html#filter_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.profileAnalyser.filter_df" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns dataframe for choosen experiments
-:param input_df: input dataframe
-:param let_in: list of words that characterize experiment
-:param let_out: list of word that disqualify experiments (may remain predefined)
-:param smooth: apply 10nt smootheninig window
+param input_df: input dataframe
+param let_in: list of words that characterize experiment
+param let_out: list of word that disqualify experiments (may remain predefined)
+param smooth: apply 10nt smootheninig window
 :return: dataframe with &#8216;mean&#8217;, &#8216;median&#8217;, &#8216;min&#8217;, &#8216;max&#8217; and quartiles if more than 2 experiments</p>
 </dd></dl>
 
@@ -212,47 +205,71 @@
 <dt id="gwide.profileAnalyser.plot_ChIP">
 <code class="descclassname">gwide.profileAnalyser.</code><code class="descname">plot_ChIP</code><span class="sig-paren">(</span><em>df_sense=Empty DataFrame Columns: [] Index: []</em>, <em>df_anti=Empty DataFrame Columns: [] Index: []</em>, <em>title=None</em>, <em>start=None</em>, <em>stop=None</em>, <em>figsize=(15</em>, <em>6)</em>, <em>ylim=(-0.001</em>, <em>0.001)</em>, <em>s_color='red'</em>, <em>as_color='blue'</em>, <em>h_lines=[]</em>, <em>lc='black'</em>, <em>csv_path='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'</em>, <em>color='green'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/profileAnalyser.html#plot_ChIP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.profileAnalyser.plot_ChIP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function creates plot similar to box plot: median, 2 and 3 quartiles and min-max range
-:param csv_path: path to csv file
-:param title: plot title
-:param start: start
-:param stop: stop
-:param figsize: size of figure
-:param ylim: OY axes lim - def (None,0.01)
-:param color: plot color
-:param h_lines: optional list of horizontal lines
-:param lc: color of horizontal lines</p>
+param csv_path: path to csv file
+param title: plot title
+param start: start
+param stop: stop
+param figsize: size of figure
+param ylim: OY axes lim - def (None,0.01)
+param color: plot color
+param h_lines: optional list of horizontal lines
+param lc: color of horizontal lines</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwide.profileAnalyser.plot_as_box_plot">
 <code class="descclassname">gwide.profileAnalyser.</code><code class="descname">plot_as_box_plot</code><span class="sig-paren">(</span><em>df=Empty DataFrame Columns: [] Index: []</em>, <em>title=None</em>, <em>start=None</em>, <em>stop=None</em>, <em>figsize=(15</em>, <em>6)</em>, <em>ylim=(None</em>, <em>0.01)</em>, <em>color='green'</em>, <em>h_lines=[]</em>, <em>lc='red'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/profileAnalyser.html#plot_as_box_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.profileAnalyser.plot_as_box_plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function creates plot similar to box plot: median, 2 and 3 quartiles and min-max range
-:param csv_path: path to csv file
-:param title: plot title
-:param start: start
-:param stop: stop
-:param figsize: size of figure
-:param ylim: OY axes lim - def (None,0.01)
-:param color: plot color
-:param h_lines: optional list of horizontal lines
-:param lc: color of horizontal lines</p>
+<dd><p>Function plots figure similar to box plot: median, 2 and 3 quartiles and min-max range</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>df</strong> : DataFrame</p>
+<blockquote>
+<div><p>Dataframe containing following columns:<code class="docutils literal"><span class="pre">`['position']</span> <span class="pre">['nucleotide']</span> <span class="pre">['mean']</span> <span class="pre">['median']</span> <span class="pre">['std']</span>
+<span class="pre">['q1']</span> <span class="pre">['q3']</span> <span class="pre">['max']</span> <span class="pre">['min']`</span></code></p>
+</div></blockquote>
+<p><strong>title</strong> : str</p>
+<p><strong>start</strong> : int</p>
+<p><strong>stop</strong> : int</p>
+<p><strong>figsize</strong> : (fload, float)</p>
+<p><strong>ylim</strong> : (float, float)</p>
+<blockquote>
+<div><p>OY axes lim. Default = (None,0.01)</p>
+</div></blockquote>
+<p><strong>color</strong> : str</p>
+<blockquote>
+<div><p>line color</p>
+</div></blockquote>
+<p><strong>h_lines</strong> : list</p>
+<blockquote>
+<div><p>optional: list of horizontal lines</p>
+</div></blockquote>
+<p><strong>lc</strong> : str</p>
+<blockquote class="last">
+<div><p>optional: color of horizontal lines</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwide.profileAnalyser.plot_diff">
 <code class="descclassname">gwide.profileAnalyser.</code><code class="descname">plot_diff</code><span class="sig-paren">(</span><em>dataset=Empty DataFrame Columns: [] Index: []</em>, <em>ranges='mm'</em>, <em>label=''</em>, <em>start=None</em>, <em>stop=None</em>, <em>plot_medians=True</em>, <em>plot_ranges=True</em>, <em>figsize=(15</em>, <em>6)</em>, <em>ylim=(None</em>, <em>0.01)</em>, <em>h_lines=[]</em>, <em>reference='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/profileAnalyser.html#plot_diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.profileAnalyser.plot_diff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot given dataset and reference, differences are marked
-:param dataset: dataset from filter_df
-:param ranges: mm : min-max or qq : q1-q3
-:param label: label of given dataset
-:param start: start
-:param stop: stop
-:param plot_medians: plot medians
-:param plot_ranges: plot ranges
-:param figsize: figzise touple(15, 6)
-:param ylim: ylim touple(None,0.01)
-:param h_lines: list of horizontal lines
-:param reference: path to reference plot
+param dataset: dataset from filter_df
+param ranges: mm : min-max or qq : q1-q3
+param label: label of given dataset
+param start: start
+param stop: stop
+param plot_medians: plot medians
+param plot_ranges: plot ranges
+param figsize: figzise touple(15, 6)
+param ylim: ylim touple(None,0.01)
+param h_lines: list of horizontal lines
+param reference: path to reference plot
 :return: plot with marked differences</p>
 </dd></dl>
 
@@ -260,15 +277,15 @@
 <dt id="gwide.profileAnalyser.plot_from_csv">
 <code class="descclassname">gwide.profileAnalyser.</code><code class="descname">plot_from_csv</code><span class="sig-paren">(</span><em>csv_path=''</em>, <em>title=None</em>, <em>start=None</em>, <em>stop=None</em>, <em>figsize=(15</em>, <em>6)</em>, <em>ylim=(None</em>, <em>0.01)</em>, <em>color='green'</em>, <em>h_lines=[]</em>, <em>lc='red'</em>, <em>dpi=75</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/profileAnalyser.html#plot_from_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.profileAnalyser.plot_from_csv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function creates plot similar to box plot: median, 2 and 3 quartiles and min-max range
-:param csv_path: path to csv file
-:param title: plot title
-:param start: start
-:param stop: stop
-:param figsize: size of figure
-:param ylim: OY axes lim - def (None,0.01)
-:param color: plot color
-:param h_lines: optional list of horizontal lines
-:param lc: color of horizontal lines</p>
+param csv_path: path to csv file
+param title: plot title
+param start: start
+param stop: stop
+param figsize: size of figure
+param ylim: OY axes lim - def (None,0.01)
+param color: plot color
+param h_lines: optional list of horizontal lines
+param lc: color of horizontal lines</p>
 </dd></dl>
 
 <dl class="function">
@@ -281,9 +298,9 @@
 <dt id="gwide.profileAnalyser.plot_to_compare">
 <code class="descclassname">gwide.profileAnalyser.</code><code class="descname">plot_to_compare</code><span class="sig-paren">(</span><em>dataset=Empty DataFrame Columns: [] Index: []</em>, <em>dataset2=None</em>, <em>color1='black'</em>, <em>color2='darkred'</em>, <em>label=''</em>, <em>title=None</em>, <em>start=None</em>, <em>stop=None</em>, <em>figsize=(15</em>, <em>6)</em>, <em>ylim=(None</em>, <em>0.01)</em>, <em>h_lines=[]</em>, <em>dpi=75</em>, <em>reference='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/profileAnalyser.html#plot_to_compare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.profileAnalyser.plot_to_compare" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot given dataset and reference dataset from csv file.
-:param dataset: DataFrame()
-:param label: label for a given dataset
-:param reference: path to reference plot str()</p>
+param dataset: DataFrame()
+param label: label for a given dataset
+param reference: path to reference plot str()</p>
 </dd></dl>
 
 <dl class="function">
@@ -294,17 +311,17 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>param data_ref</strong></p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data_ref</strong> : DataFrame</p>
 <blockquote>
 <div><p>DataFrame with <code class="docutils literal"><span class="pre">['position']</span></code> and <code class="docutils literal"><span class="pre">['nucleotide']</span></code> columns</p>
 </div></blockquote>
-<p><strong>param datasets</strong></p>
+<p><strong>datasets</strong> : DataFrame</p>
 <blockquote>
 <div><p>DataFrame containinig experimental data only</p>
 </div></blockquote>
-<p><strong>param path</strong></p>
+<p><strong>path</strong> : str</p>
 <blockquote>
-<div><p>Optional: path to save csv</p>
+<div><p>Optional: path to save csv. Default: None</p>
 </div></blockquote>
 </td>
 </tr>
