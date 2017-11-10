@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import gffutils
 
 def save_csv(data_ref=pd.DataFrame(), datasets=pd.DataFrame(), path=None):
 
@@ -8,14 +9,15 @@ def save_csv(data_ref=pd.DataFrame(), datasets=pd.DataFrame(), path=None):
 
     Parameters
     ----------
-    param data_ref
+    data_ref : DataFrame
       DataFrame with ``['position']`` and ``['nucleotide']`` columns
 
-    param datasets
+    datasets : DataFrame
       DataFrame containinig experimental data only
 
-    param path
-      Optional: path to save csv
+    path : str
+      Optional: path to save csv. Default: None
+
 
     Returns
     -------
@@ -39,17 +41,25 @@ def save_csv(data_ref=pd.DataFrame(), datasets=pd.DataFrame(), path=None):
     return reference
 
 def plot_as_box_plot(df=pd.DataFrame(),title=None, start=None, stop=None,figsize=(15,6),ylim=(None,0.01), color='green', h_lines=list(), lc='red'):
-    '''
-    Function creates plot similar to box plot: median, 2 and 3 quartiles and min-max range
-    :param csv_path: path to csv file
-    :param title: plot title
-    :param start: start
-    :param stop: stop
-    :param figsize: size of figure
-    :param ylim: OY axes lim - def (None,0.01)
-    :param color: plot color
-    :param h_lines: optional list of horizontal lines
-    :param lc: color of horizontal lines
+    '''plots figure similar to box plot: median, 2 and 3 quartiles and min-max range
+    
+    Parameters
+    ----------
+    df : DataFrame
+        Dataframe containing following columns:```['position'] ['nucleotide'] ['mean'] ['median'] ['std']```
+        optionally ```['q1'] ['q3'] ['max'] ['min']```
+    title : str
+    start : int
+    stop : int
+    figsize : (float, float)
+    ylim : (float, float)
+        OY axes lim. Default = (None,0.01)
+    color : str
+        line color
+    h_lines : list
+        optional: list of horizontal lines
+    lc : str
+        optional: color of horizontal lines
     '''
     reference = df.drop('nucleotide', 1)
     s2 = reference[start:stop]
@@ -68,17 +78,25 @@ def plot_as_box_plot(df=pd.DataFrame(),title=None, start=None, stop=None,figsize
     ax1.legend()
 
 def plot_from_csv(csv_path=str(),title=None, start=None, stop=None,figsize=(15,6),ylim=(None,0.01), color='green', h_lines=list(), lc='red', dpi=75):
-    '''
-    Function creates plot similar to box plot: median, 2 and 3 quartiles and min-max range
-    :param csv_path: path to csv file
-    :param title: plot title
-    :param start: start
-    :param stop: stop
-    :param figsize: size of figure
-    :param ylim: OY axes lim - def (None,0.01)
-    :param color: plot color
-    :param h_lines: optional list of horizontal lines
-    :param lc: color of horizontal lines
+    '''Plots figure similar to box plot: median, 2 and 3 quartiles and min-max range
+
+    Parameters
+    ----------
+    csv_path: str
+        path to csv file
+    title: str
+    start: int
+    stop: int
+    figsize: (float, float)
+        Default = (15,6)
+    ylim : (float, float)
+        OY axes lim. Default = (None,0.01)
+    color : str
+        line color
+    h_lines : list
+        optional: list of horizontal lines
+    lc : str
+        optional: color of horizontal lines
     '''
     reference = pd.read_csv(csv_path, index_col=0).drop('nucleotide', 1)
     s2 = reference[start:stop]
@@ -96,15 +114,36 @@ def plot_from_csv(csv_path=str(),title=None, start=None, stop=None,figsize=(15,6
     for i in [i for i in h_lines if i in range(start,stop)]: ax1.axvline(i, color=lc)
     ax1.legend()
 
-def plot_to_compare(dataset=pd.DataFrame(), dataset2=None, color1='black', color2='darkred', label=str(), title=None, start=None, stop=None, figsize=(15,6), ylim=(None,0.01), h_lines=list(), dpi=75 ,reference='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'):
+def plot_to_compare(df=pd.DataFrame(), df2=None, color1='black', color2='darkred', label=str(), title=None, start=None, stop=None, figsize=(15,6), ylim=(None,0.01), h_lines=list(), dpi=75 ,csv_path='/home/tturowski/notebooks/RDN37_csv_path_collapsed.csv'):
+    '''Plots given dataset and reference dataset from csv file.
+
+    Parameters
+    ----------
+    df : DataFrame
+        Dataframe (dataset) containing following columns:```['position'] ['nucleotide'] ['mean'] ['median'] ['std']```
+        optionally ```['q1'] ['q3'] ['max'] ['min']```
+    df2 : DataFrame
+        Optional Dataframe (dataset2). Default = None
+    color1 : str
+        Default color for dataset1 = 'black'
+    color2 : str
+        Default color for dataset2 = 'darkred'
+    label : str
+    title : str
+    start : int
+    stop : int
+    figsize : (float, float)
+    ylim : (float, float)
+        OY axes lim. Default = (None,0.01)
+    h_lines : list
+        optional: list of horizontal lines
+    dpi : int
+        Default dpi=75
+    csv_path : str
+        Default = ``'/home/tturowski/notebooks/RDN37_csv_path_collapsed.csv'``
     '''
-    Plot given dataset and reference dataset from csv file.
-    :param dataset: DataFrame()
-    :param label: label for a given dataset
-    :param reference: path to reference plot str()
-    '''
-    reference = pd.read_csv(reference, index_col=0) # reading reference
-    dataset, s2 = dataset[start:stop], reference[start:stop] # prepating datasets
+    reference = pd.read_csv(csv_path, index_col=0) # reading reference
+    dataset, s2 = df[start:stop], reference[start:stop] # prepating datasets
     #plotting
     fig, ax1 = plt.subplots(figsize=figsize, dpi=dpi)
     plt.title(title)
@@ -127,9 +166,9 @@ def plot_to_compare(dataset=pd.DataFrame(), dataset2=None, color1='black', color
     ax1.fill_between(s2.index, s2['q1'], s2['q3'], color='green', alpha=0.2, label='range (q2-q3)')
     ax1.fill_between(s2.index, s2['min'], s2['max'], color='green', alpha=0.07, label='range (min-max)')
 
-    if dataset2:
-        if len(dataset2.columns) == 4:  # if only two experiments
-            dataset2 = dataset2[start:stop]
+    if df2:
+        if len(df2.columns) == 4:  # if only two experiments
+            dataset2 = df2[start:stop]
             ax1.plot(dataset2.index, dataset2['mean'], color2, label=label)
             ax1.fill_between(dataset2.index, dataset2['min'], dataset2['max'], color=color2, alpha=0.3,
                              label='range (min-max)')
@@ -151,13 +190,13 @@ def compare1toRef(dataset=pd.Series(), ranges='mm', heatmap=False, relative=Fals
                     reference='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'):
     '''
     Takes series and compare this with reference DataFrame, as a result gives
-    :param dataset: given series
-    :param ranges: mm : min-max or qq : q1-q3
-    :param  heatmap=False: Dataframe with(reference_above_experiment minimum etc.): rae_min, rae_max, ear_min, ear_max;
+    param dataset: given series
+    param ranges: mm : min-max or qq : q1-q3
+    param  heatmap=False: Dataframe with(reference_above_experiment minimum etc.): rae_min, rae_max, ear_min, ear_max;
             heatmap=True: Series of differences to plot heatmap
-    :param relative: only for heatmap, recalculates differences according to the peak size. Warning: negative values are in range -1 to 0
+    param relative: only for heatmap, recalculates differences according to the peak size. Warning: negative values are in range -1 to 0
     but positive are from 0 to values higher than 1
-    :param reference: path to reference plot
+    param reference: path to reference plot
     :return: Dataframe (heatmap=False) or Series (heatmap=True)
     '''
 
@@ -215,10 +254,10 @@ def plot_heatmap(df=pd.DataFrame(), title='Heat map of differences between datas
 def filter_df(input_df=pd.DataFrame(), let_in=[''], let_out=['wont_find_this_string'], smooth=True, window=10):
     '''
     Returns dataframe for choosen experiments
-    :param input_df: input dataframe
-    :param let_in: list of words that characterize experiment
-    :param let_out: list of word that disqualify experiments (may remain predefined)
-    :param smooth: apply 10nt smootheninig window
+    param input_df: input dataframe
+    param let_in: list of words that characterize experiment
+    param let_out: list of word that disqualify experiments (may remain predefined)
+    param smooth: apply 10nt smootheninig window
     :return: dataframe with 'mean', 'median', 'min', 'max' and quartiles if more than 2 experiments
     '''
 
@@ -270,17 +309,17 @@ def plot_diff(dataset=pd.DataFrame(), ranges='mm', label=str(), start=None, stop
               reference='/home/tturowski/notebooks/RDN37_reference_collapsed.csv'):
     '''
     Plot given dataset and reference, differences are marked
-    :param dataset: dataset from filter_df
-    :param ranges: mm : min-max or qq : q1-q3
-    :param label: label of given dataset
-    :param start: start
-    :param stop: stop
-    :param plot_medians: plot medians
-    :param plot_ranges: plot ranges
-    :param figsize: figzise touple(15, 6)
-    :param ylim: ylim touple(None,0.01)
-    :param h_lines: list of horizontal lines
-    :param reference: path to reference plot
+    param dataset: dataset from filter_df
+    param ranges: mm : min-max or qq : q1-q3
+    param label: label of given dataset
+    param start: start
+    param stop: stop
+    param plot_medians: plot medians
+    param plot_ranges: plot ranges
+    param figsize: figzise touple(15, 6)
+    param ylim: ylim touple(None,0.01)
+    param h_lines: list of horizontal lines
+    param reference: path to reference plot
     :return: plot with marked differences
     '''
     ranges_dict = {'mm': 'min-max', 'qq': 'q1-q3'}
@@ -314,17 +353,27 @@ def plot_diff(dataset=pd.DataFrame(), ranges='mm', label=str(), start=None, stop
 def plot_ChIP(df_sense=pd.DataFrame(), df_anti=pd.DataFrame(), title=None, start=None, stop=None, figsize=(15, 6),
               ylim=(-0.001, 0.001), s_color='red', as_color='blue', h_lines=list(), lc='black',
               csv_path='/home/tturowski/notebooks/RDN37_reference_collapsed.csv', color='green'):
-    '''
-    Function creates plot similar to box plot: median, 2 and 3 quartiles and min-max range
-    :param csv_path: path to csv file
-    :param title: plot title
-    :param start: start
-    :param stop: stop
-    :param figsize: size of figure
-    :param ylim: OY axes lim - def (None,0.01)
-    :param color: plot color
-    :param h_lines: optional list of horizontal lines
-    :param lc: color of horizontal lines
+    '''Function creates plot similar to box plot: median, 2 and 3 quartiles and min-max range
+    Parameters
+    -----------
+    csv_path: str()
+        Path to CRAC or other reference file
+    title: str()
+    start: int()
+    stop: int()
+    figsize: tuple()
+    ylim: tuple()
+        OY axes lim - def (None,0.01)
+    color: str()
+        plot color
+    h_lines: list()
+        Optional. list() of horizontal lines
+    lc: str()
+        color of horizontal lines
+    Returns
+    -------
+    None
+
     '''
     reference = pd.read_csv(csv_path, index_col=0).drop('nucleotide', 1)
     s2 = reference[start:stop]
@@ -360,3 +409,4 @@ def plot_ChIP(df_sense=pd.DataFrame(), df_anti=pd.DataFrame(), title=None, start
         ax1.fill_between(s2.index, c2['min'], c2['max'], label='range (min-max)', color=as_color, alpha=0.07)
 
     ax1.legend()
+    return None

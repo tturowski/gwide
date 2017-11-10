@@ -38,6 +38,8 @@ def getFastaSeqs():
         print '>'+gene_name
         print genomic_seq[options.five_end:options.three_end]+'\n'
 
+    gtf.codingSequence()
+
 def getGeneLength():
     parser = OptionParser(usage="usage: List of genes as std input")
     parser.add_option("-g", "--gtf_file", dest="gtf_file", help="Provide the path to your gtf file.",
