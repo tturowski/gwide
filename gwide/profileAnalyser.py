@@ -40,7 +40,7 @@ def save_csv(data_ref=pd.DataFrame(), datasets=pd.DataFrame(), path=None):
 
     return reference
 
-def plot_as_box_plot(df=pd.DataFrame(),title=None, start=None, stop=None,figsize=(15,6),ylim=(None,0.01), color='green', h_lines=list(), lc='red'):
+def plot_as_box_plot(df=pd.DataFrame(),title=None, start=None, stop=None,figsize=(15,6),ylim=(None,0.01), dpi=150, color='green', h_lines=list(), lc='red'):
     '''plots figure similar to box plot: median, 2 and 3 quartiles and min-max range
     
     Parameters
@@ -64,7 +64,7 @@ def plot_as_box_plot(df=pd.DataFrame(),title=None, start=None, stop=None,figsize
     reference = df.drop('nucleotide', 1)
     s2 = reference[start:stop]
     #plotting reference dataset
-    fig, ax1 = plt.subplots(figsize=figsize)
+    fig, ax1 = plt.subplots(figsize=figsize, dpi=dpi)
     plt.title(title)
     ax1.set_xlabel('position')
     ax1.set_ylabel('fraction of reads')
@@ -172,8 +172,8 @@ def plot_to_compare(df=pd.DataFrame(), df2=None, color1='black', color2='darkred
             ax1.plot(dataset2.index, dataset2['mean'], color2, label=label)
             ax1.fill_between(dataset2.index, dataset2['min'], dataset2['max'], color=color2, alpha=0.3,
                              label='range (min-max)')
-        elif len(dataset2.columns) > 4:  # if more than two experiments
-            dataset2 = dataset2[start:stop]
+        elif len(df2.columns) > 4:  # if more than two experiments
+            dataset2 = df2[start:stop]
             ax1.plot(dataset2.index, dataset2['median'], color2, label=label)
             ax1.fill_between(dataset2.index, dataset2['q1'], dataset2['q3'], color=color2, alpha=0.2,
                              label='range (2nd-3rd quartile)')
@@ -351,7 +351,7 @@ def plot_diff(dataset=pd.DataFrame(), ranges='mm', label=str(), start=None, stop
 
 
 def plot_ChIP(df_sense=pd.DataFrame(), df_anti=pd.DataFrame(), title=None, start=None, stop=None, figsize=(15, 6),
-              ylim=(-0.001, 0.001), s_color='red', as_color='blue', h_lines=list(), lc='black',
+              ylim=(-0.001, 0.001), s_color='red', as_color='blue', h_lines=list(), lc='black', dpi=150,
               csv_path='/home/tturowski/notebooks/RDN37_reference_collapsed.csv', color='green'):
     '''Function creates plot similar to box plot: median, 2 and 3 quartiles and min-max range
     Parameters
@@ -378,7 +378,7 @@ def plot_ChIP(df_sense=pd.DataFrame(), df_anti=pd.DataFrame(), title=None, start
     reference = pd.read_csv(csv_path, index_col=0).drop('nucleotide', 1)
     s2 = reference[start:stop]
     # plotting reference dataset
-    fig, ax1 = plt.subplots(figsize=figsize)
+    fig, ax1 = plt.subplots(figsize=figsize, dpi=dpi)
     plt.title(title)
     ax1.set_xlabel('position')
     ax1.set_ylabel('fraction of reads')

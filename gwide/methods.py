@@ -126,3 +126,33 @@ def indexOrder(df=pd.DataFrame(), additional_tags=list(), output='root', order='
     df = cleanNames(df, additional_tags=additional_tags)
     df.columns = [expNameParser(f, additional_tags=additional_tags, order=order) for f in list(df.columns.values)]
     return df.sort_index(axis=1)
+
+def filterExp(datasets, let_in=[''], let_out=['wont_find_this_string']):
+    '''for pd.DataFrame() or dict(). Returns object with filtered columns/keys.
+    Parameters
+    ----------
+    datasets : DataFrame() or dict()
+      DataFrame() or dict() with exp name as a key
+
+    let_in : list()
+      list() with elements of name to filter in
+
+    let_out : list()
+      list() with elements of name to filter out
+
+    Returns
+    -------
+    DataFrame() or dict()
+    '''
+    #for pd.DataFrame()
+    if type(datasets) == type(pd.DataFrame()):
+        output_df = pd.DataFrame()
+        for f in [d for d in list(datasets.columns.values) if all(i in d for i in let_in) and all(o not in d for o in let_out)]:
+            output_df[f]=datasets[f]
+        return output_df
+    #for dict()
+    elif type(datasets) == type(dict()):
+        output_dict = dict()
+        for f in [d for d in list(datasets.keys()) if all(i in d for i in let_in) and all(o not in d for o in let_out)]:
+            output_dict[f]=datasets[f]
+        return output_dict
