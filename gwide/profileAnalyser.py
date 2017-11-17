@@ -7,8 +7,6 @@ def save_csv(data_ref=pd.DataFrame(), datasets=pd.DataFrame(), path=None):
 
     '''Takes reference and data DataFrame's
 
-    Parameters
-    ----------
     data_ref : DataFrame
       DataFrame with ``['position']`` and ``['nucleotide']`` columns
 
@@ -43,15 +41,18 @@ def save_csv(data_ref=pd.DataFrame(), datasets=pd.DataFrame(), path=None):
 def plot_as_box_plot(df=pd.DataFrame(),title=None, start=None, stop=None,figsize=(15,6),ylim=(None,0.01), dpi=150, color='green', h_lines=list(), lc='red'):
     '''plots figure similar to box plot: median, 2 and 3 quartiles and min-max range
     
-    Parameters
-    ----------
+
     df : DataFrame
         Dataframe containing following columns:```['position'] ['nucleotide'] ['mean'] ['median'] ['std']```
         optionally ```['q1'] ['q3'] ['max'] ['min']```
     title : str
+
     start : int
+
     stop : int
+
     figsize : (float, float)
+
     ylim : (float, float)
         OY axes lim. Default = (None,0.01)
     color : str
@@ -80,13 +81,15 @@ def plot_as_box_plot(df=pd.DataFrame(),title=None, start=None, stop=None,figsize
 def plot_from_csv(csv_path=str(),title=None, start=None, stop=None,figsize=(15,6),ylim=(None,0.01), color='green', h_lines=list(), lc='red', dpi=75):
     '''Plots figure similar to box plot: median, 2 and 3 quartiles and min-max range
 
-    Parameters
-    ----------
+
     csv_path: str
         path to csv file
     title: str
+
     start: int
+
     stop: int
+
     figsize: (float, float)
         Default = (15,6)
     ylim : (float, float)
@@ -117,8 +120,6 @@ def plot_from_csv(csv_path=str(),title=None, start=None, stop=None,figsize=(15,6
 def plot_to_compare(df=pd.DataFrame(), df2=None, color1='black', color2='darkred', label=str(), title=None, start=None, stop=None, figsize=(15,6), ylim=(None,0.01), h_lines=list(), dpi=75 ,csv_path='/home/tturowski/notebooks/RDN37_csv_path_collapsed.csv'):
     '''Plots given dataset and reference dataset from csv file.
 
-    Parameters
-    ----------
     df : DataFrame
         Dataframe (dataset) containing following columns:```['position'] ['nucleotide'] ['mean'] ['median'] ['std']```
         optionally ```['q1'] ['q3'] ['max'] ['min']```
@@ -129,10 +130,15 @@ def plot_to_compare(df=pd.DataFrame(), df2=None, color1='black', color2='darkred
     color2 : str
         Default color for dataset2 = 'darkred'
     label : str
+
     title : str
+
     start : int
+
     stop : int
+
     figsize : (float, float)
+
     ylim : (float, float)
         OY axes lim. Default = (None,0.01)
     h_lines : list
@@ -354,14 +360,17 @@ def plot_ChIP(df_sense=pd.DataFrame(), df_anti=pd.DataFrame(), title=None, start
               ylim=(-0.001, 0.001), s_color='red', as_color='blue', h_lines=list(), lc='black', dpi=150,
               csv_path='/home/tturowski/notebooks/RDN37_reference_collapsed.csv', color='green'):
     '''Function creates plot similar to box plot: median, 2 and 3 quartiles and min-max range
-    Parameters
-    -----------
+
     csv_path: str()
         Path to CRAC or other reference file
     title: str()
+
     start: int()
+
     stop: int()
+
     figsize: tuple()
+
     ylim: tuple()
         OY axes lim - def (None,0.01)
     color: str()

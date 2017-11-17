@@ -8,8 +8,7 @@ import gwide.profileAnalyser as pa
 
 def BigWigCount(datasets=dict(), genes=dict(), normalization="pM"):
     '''Calculates coverage for individual genes for given experiments
-    Parameters
-    ----------
+
     datasets : dict()
       Dictionary with exp name as key and pyBigWig object
 
@@ -50,8 +49,7 @@ def BigWigCount(datasets=dict(), genes=dict(), normalization="pM"):
 def BigWigPileup(datasets=dict(), gene_name=str(), transcript_length=int(), normalization='ntotal', window=1,
                  median_only=False):
     '''Returns pd.DataFrame() for multiple experiments with calculated
-    Parameters
-    ----------
+
     datasets : dict()
       Dictionary with exp name as a key and pyBigWig object
 
@@ -97,8 +95,7 @@ def BigWigPileup(datasets=dict(), gene_name=str(), transcript_length=int(), norm
 
 def mRNAalign(df_genes=pd.DataFrame(), datasets=dict(), normalization='ntotal', window=1):
     '''Returns DataFrame() for multiple experiments with calculated median and etc.
-    Parameters
-    ----------
+
     df_genes : DataFrame()
       DataFrame() containing genes to align
 
@@ -156,9 +153,9 @@ def mRNAalign(df_genes=pd.DataFrame(), datasets=dict(), normalization='ntotal', 
 def metaplot(df, df2=pd.DataFrame(), h_line=int(), title=str(), color='black', lc='red', figsize=(10, 6), dpi=200,
              center=True):
     '''Creates metaplot
-    Parameters
-    ----------
+
     df : DataFrame()
+
     df2 : DataFrame()
         Dataframe with GC%
 
@@ -166,11 +163,15 @@ def metaplot(df, df2=pd.DataFrame(), h_line=int(), title=str(), color='black', l
         Line visualazing aligning position
 
     title : str()
+
     color : str()
+
     lc    : str()
         horozontal line color
     figsize : touple()
+
     dpi  : int()
+
     center : boolean
         detault = True; center plot 1000 bp arount aligning site
     '''
@@ -216,13 +217,13 @@ def metaplot(df, df2=pd.DataFrame(), h_line=int(), title=str(), color='black', l
 
 def featureBinCollect(data=pd.Series(), df_genes=pd.DataFrame(), gene_name=str(), bins=[1, 10, 1], warn=False):
     '''Calculates coverage districution for mRNA elements (UTRs and CDS)
-    Parameters
-    ----------
+
     data : Series()
 
     df_genes : DataFrame()
       DataFrame() containig gene_details
     gene_name : str()
+
     bins : list()
         Number of bins for each feature [5UTR, CDS, 3UTR]. Default = '[1,10,1]'
 

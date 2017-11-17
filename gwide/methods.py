@@ -129,8 +129,7 @@ def indexOrder(df=pd.DataFrame(), additional_tags=list(), output='root', order='
 
 def filterExp(datasets, let_in=[''], let_out=['wont_find_this_string']):
     '''for pd.DataFrame() or dict(). Returns object with filtered columns/keys.
-    Parameters
-    ----------
+
     datasets : DataFrame() or dict()
       DataFrame() or dict() with exp name as a key
 
@@ -160,11 +159,17 @@ def filterExp(datasets, let_in=[''], let_out=['wont_find_this_string']):
 
 def calculateFDR(data=pd.Series(), iterations=100, target_FDR=0.05):
     '''calculates False Discovery Rate (FDR) for a given dataset.
+
     data : pd.Series()
+
     iterations : int()
         number of iterations. Default = 100
     target_FDR : float()
         Detault = 0.05
+    Returns
+    -----------
+    Series()
+
     '''
     normalized_data = data / data.sum()  # normalize data
     random_df = pd.DataFrame(np.random.rand(len(data), iterations))  # generating random datasets

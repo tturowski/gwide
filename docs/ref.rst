@@ -16,3 +16,11 @@ Common methods
 
 .. automodule:: gwide.methods
     :members:
+
+
+BigWigTools
+--------------------
+Tools to analyse BigWig files
+
+.. automodule:: gwide.BigWigTools
+    :members:
