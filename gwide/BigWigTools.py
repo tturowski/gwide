@@ -239,7 +239,7 @@ def featureBinCollect(data=pd.Series(), df_genes=pd.DataFrame(), gene_name=str()
     normalized_data = data / data.sum()  # normalize data
 
     def binSum(data, bins):
-        splited = numpy.array_split(np.array(data), bins)  # splitting into an even chunks
+        splited = np.array_split(np.array(data), bins)  # splitting into an even chunks
         return list(pd.DataFrame(splited).sum(1))  # returns sum
 
     output = list()
