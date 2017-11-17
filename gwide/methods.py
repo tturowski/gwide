@@ -1,5 +1,5 @@
 import os, yaml, sys, re
-import numpy as np
+import numpy as np, numpy.random
 import pandas as pd
 
 def getRefFile(file_from_options, file_type):
@@ -156,3 +156,25 @@ def filterExp(datasets, let_in=[''], let_out=['wont_find_this_string']):
         for f in [d for d in list(datasets.keys()) if all(i in d for i in let_in) and all(o not in d for o in let_out)]:
             output_dict[f]=datasets[f]
         return output_dict
+
+
+def calculateFDR(data=pd.Series(), iterations=100, target_FDR=0.05):
+    '''calculates False Discovery Rate (FDR) for a given dataset.
+    data : pd.Series()
+    iterations : int()
+        number of iterations. Default = 100
+    target_FDR : float()
+        Detault = 0.05
+    '''
+    normalized_data = data / data.sum()  # normalize data
+    random_df = pd.DataFrame(np.random.rand(len(data), iterations))  # generating random datasets
+    normalized_random_df = random_df / random_df.sum()  # normalize random df
+
+    # getting Discovery Rate (DR)
+    DR_df = normalized_random_df.T >= normalized_data  # random discovery rate
+    DR = DR_df.sum() / iterations
+
+    # comparing DR to False Discovery Rate (FDR)
+    FDR = DR <= target_FDR
+    return data * FDR
+

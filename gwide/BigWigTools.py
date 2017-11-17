@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, warnings
 import random, pyBigWig
 import pandas as pd
 import numpy as np
@@ -80,7 +80,7 @@ def BigWigPileup(datasets=dict(), gene_name=str(), transcript_length=int(), norm
         s1 = pd.Series(datasets[name].values(gene_name, 0, transcript_length)) / normalizator[normalization]
         data_df[name] = s1
 
-    # smothening
+    # smoothing
     if window > 1:
         data_df = data_df.rolling(window, win_type='blackman', center=True).mean()
 
@@ -213,3 +213,43 @@ def metaplot(df, df2=pd.DataFrame(), h_line=int(), title=str(), color='black', l
     ax1.legend()
     plt.show()
 
+
+def featureBinCollect(data=pd.Series(), df_genes=pd.DataFrame(), gene_name=str(), bins=[1, 10, 1], warn=False):
+    '''Calculates coverage districution for mRNA elements (UTRs and CDS)
+    Parameters
+    ----------
+    data : Series()
+
+    df_genes : DataFrame()
+      DataFrame() containig gene_details
+    gene_name : str()
+    bins : list()
+        Number of bins for each feature [5UTR, CDS, 3UTR]. Default = '[1,10,1]'
+
+    Returns
+    -------
+    Series()'''
+
+    details = df_genes[df_genes.index == gene_name]  # details for the given gene
+    if len(data) != int(details['len']):
+        len_difference = len(data) - int(details['len'])
+        data = data[:-len_difference]  # removing polyA when applicable
+        if warn == True: warnings.warn("Data " + str(len_difference) + " nt longer than expected from given details.",
+                                       UserWarning)
+    normalized_data = data / data.sum()  # normalize data
+
+    def binSum(data, bins):
+        splited = numpy.array_split(np.array(data), bins)  # splitting into an even chunks
+        return list(pd.DataFrame(splited).sum(1))  # returns sum
+
+    output = list()
+    # 5' UTR
+    a = normalized_data[:int(details['5UTR'])]
+    output += binSum(a, bins[0])
+    # CDS
+    b = normalized_data[int(details['5UTR']):int(details['5UTR']) + int(details['CDS'])]
+    output += binSum(b, bins[1])
+    # 3' UTR
+    c = normalized_data[int(details['5UTR']) + int(details['CDS']):]
+    output += binSum(c, bins[2])
+    return pd.Series(output)
