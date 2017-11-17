@@ -48,7 +48,7 @@ def BigWigCount(datasets=dict(), genes=dict(), normalization="pM"):
 
 def BigWigPileup(datasets=dict(), gene_name=str(), transcript_length=int(), normalization='ntotal', window=1,
                  median_only=False):
-    '''Returns pd.DataFrame() for multiple experiments with calculated
+    '''Returns pd.DataFrame() for multiple experiments with calculated median or all statistic
 
     datasets : dict()
       Dictionary with exp name as a key and pyBigWig object
@@ -254,3 +254,59 @@ def featureBinCollect(data=pd.Series(), df_genes=pd.DataFrame(), gene_name=str()
     c = normalized_data[int(details['5UTR']) + int(details['CDS']):]
     output += binSum(c, bins[2])
     return pd.Series(output)
+
+
+def codons(data=pd.Series(), df_genes=pd.DataFrame(), df_sequences=pd.DataFrame(), gene_name=str()):
+    '''Annotates data with nucleotide, codone and aminoacid
+
+    data : Series()
+
+    df_genes : DataFrame()
+      DataFrame() containig gene_details
+    gene_name : str()
+
+    df_sequences : DataFrame()
+        sequences
+
+    Returns
+    -------
+    DataFrame()'''
+
+    codontable = {
+        'ATA': 'I', 'ATC': 'I', 'ATT': 'I', 'ATG': 'M',
+        'ACA': 'T', 'ACC': 'T', 'ACG': 'T', 'ACT': 'T',
+        'AAC': 'N', 'AAT': 'N', 'AAA': 'K', 'AAG': 'K',
+        'AGC': 'S', 'AGT': 'S', 'AGA': 'R', 'AGG': 'R',
+        'CTA': 'L', 'CTC': 'L', 'CTG': 'L', 'CTT': 'L',
+        'CCA': 'P', 'CCC': 'P', 'CCG': 'P', 'CCT': 'P',
+        'CAC': 'H', 'CAT': 'H', 'CAA': 'Q', 'CAG': 'Q',
+        'CGA': 'R', 'CGC': 'R', 'CGG': 'R', 'CGT': 'R',
+        'GTA': 'V', 'GTC': 'V', 'GTG': 'V', 'GTT': 'V',
+        'GCA': 'A', 'GCC': 'A', 'GCG': 'A', 'GCT': 'A',
+        'GAC': 'D', 'GAT': 'D', 'GAA': 'E', 'GAG': 'E',
+        'GGA': 'G', 'GGC': 'G', 'GGG': 'G', 'GGT': 'G',
+        'TCA': 'S', 'TCC': 'S', 'TCG': 'S', 'TCT': 'S',
+        'TTC': 'F', 'TTT': 'F', 'TTA': 'L', 'TTG': 'L',
+        'TAC': 'Y', 'TAT': 'Y', 'TAA': '_', 'TAG': '_',
+        'TGC': 'C', 'TGT': 'C', 'TGA': '_', 'TGG': 'W'}
+
+    def triple_codons(sequence):
+        output_list = list()
+        for i in range(0, len(sequence), 3):
+            output_list.append(sequence[i:i + 3])
+            output_list.append(sequence[i:i + 3])
+            output_list.append(sequence[i:i + 3])
+        return output_list
+
+    sequence = df_sequences[df_sequences.index == gene_name]['sequence'][0]  # sequence
+    details = df_genes[df_genes.index == gene_name]  # details for the given gene
+
+    output_df = pd.DataFrame()
+    output_df['CDS'] = data[int(details['5UTR']):int(details['5UTR']) + int(details['CDS'])]
+    sequence = sequence[int(details['5UTR']):int(details['5UTR']) + int(details['CDS'])]  # +3 includes stop codone
+    output_df['sequence'] = list(sequence)
+    if len(output_df) % 3 != 0: warnings.warn("Sequence length do not divided by 3", Warning)
+    codons = [sequence[i:i + 3] for i in range(0, len(sequence), 3)]  # codons generator
+    output_df['codon'] = triple_codons(sequence)  # codons generator x3
+    output_df['aminoacid'] = output_df['codon'].replace(codontable)  # codon to aminoacid
+    return output_df
