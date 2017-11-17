@@ -500,7 +500,7 @@ stdin   -   read from standard input instead current directory</td>
 <dl class="function">
 <dt id="gwide.BigWigTools.BigWigPileup">
 <code class="descclassname">gwide.BigWigTools.</code><code class="descname">BigWigPileup</code><span class="sig-paren">(</span><em>datasets={}</em>, <em>gene_name=''</em>, <em>transcript_length=0</em>, <em>normalization='ntotal'</em>, <em>window=1</em>, <em>median_only=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/BigWigTools.html#BigWigPileup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.BigWigTools.BigWigPileup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns pd.DataFrame() for multiple experiments with calculated</p>
+<dd><p>Returns pd.DataFrame() for multiple experiments with calculated median or all statistic</p>
 <dl class="docutils">
 <dt>datasets <span class="classifier-delimiter">:</span> <span class="classifier">dict()</span></dt>
 <dd>Dictionary with exp name as a key and pyBigWig object</dd>
@@ -519,6 +519,30 @@ stdin   -   read from standard input instead current directory</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">pd.DataFrame() or pd.Series()</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwide.BigWigTools.codons">
+<code class="descclassname">gwide.BigWigTools.</code><code class="descname">codons</code><span class="sig-paren">(</span><em>data=Series([]</em>, <em>dtype: float64)</em>, <em>df_genes=Empty DataFrame Columns: [] Index: []</em>, <em>df_sequences=Empty DataFrame Columns: [] Index: []</em>, <em>gene_name=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/BigWigTools.html#codons"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.BigWigTools.codons" title="Permalink to this definition">¶</a></dt>
+<dd><p>Annotates data with nucleotide, codone and aminoacid</p>
+<p>data : Series()</p>
+<dl class="docutils">
+<dt>df_genes <span class="classifier-delimiter">:</span> <span class="classifier">DataFrame()</span></dt>
+<dd>DataFrame() containig gene_details</dd>
+</dl>
+<p>gene_name : str()</p>
+<dl class="docutils">
+<dt>df_sequences <span class="classifier-delimiter">:</span> <span class="classifier">DataFrame()</span></dt>
+<dd>sequences</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">DataFrame()</td>
 </tr>
 </tbody>
 </table>
