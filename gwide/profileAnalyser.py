@@ -39,8 +39,7 @@ def save_csv(data_ref=pd.DataFrame(), datasets=pd.DataFrame(), path=None):
     return reference
 
 def plot_as_box_plot(df=pd.DataFrame(),title=None, start=None, stop=None,figsize=(15,6),ylim=(None,0.01), dpi=150, color='green', h_lines=list(), lc='red'):
-    '''plots figure similar to box plot: median, 2 and 3 quartiles and min-max range
-    
+    '''Plots figure similar to box plot: median, 2 and 3 quartiles and min-max range
 
     df : DataFrame
         Dataframe containing following columns:```['position'] ['nucleotide'] ['mean'] ['median'] ['std']```
@@ -189,7 +188,6 @@ def plot_to_compare(df=pd.DataFrame(), df2=None, color1='black', color2='darkred
 
     for i in [i for i in h_lines if i in range(start, stop)]: ax1.axvline(i, color='red')
     ax1.legend()
-
 
 
 def compare1toRef(dataset=pd.Series(), ranges='mm', heatmap=False, relative=False,

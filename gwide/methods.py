@@ -159,7 +159,6 @@ def filterExp(datasets, let_in=[''], let_out=['wont_find_this_string']):
 
 def calculateFDR(data=pd.Series(), iterations=100, target_FDR=0.05):
     '''calculates False Discovery Rate (FDR) for a given dataset.
-
     data : pd.Series()
 
     iterations : int()

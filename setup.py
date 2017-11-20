@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='gwide',
-    version='0.5.16',
+    version='0.5.17',
     # py_modules=['gwide'],
     packages=find_packages(),
     install_requires=[
