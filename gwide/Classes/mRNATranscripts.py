@@ -302,8 +302,6 @@ class mRNATranscripts():
 
         data : Series()
 
-        df_genes : DataFrame()
-          DataFrame() containig gene_details
         gene_name : str()
 
         df_sequences : DataFrame()
@@ -352,6 +350,24 @@ class mRNATranscripts():
         output_df['aminoacid'] = output_df['codon'].replace(codontable)  # codon to aminoacid
         return output_df
 
+    def sequence(self, s1=pd.Series(), gene_name=str()):
+        """Annotates data with nucleotides
+
+        data : Series()
+
+        gene_name : str()
+
+        df_sequences : DataFrame()
+            sequences
+
+        Returns
+        -------
+        DataFrame()"""
+        sequence = self.df_sequences[self.df_sequences.index == gene_name]['sequence'][0]  # sequence
+        output_df = pd.DataFrame()
+        output_df[s1.name] = s1
+        output_df['sequence'] = list(sequence)
+        return output_df
 
     def mRNAelementCount(self, data=pd.Series(), gene_name=str(), len_normalized=True, warn=False):
         '''Calculates coverage districution for mRNA elements (UTRs and CDS)
@@ -390,3 +406,26 @@ class mRNATranscripts():
             output['3UTR'] = normalized_data[int(details['5UTR']) + int(details['CDS']):].sum() / int(details['3UTR'])
             output_df = pd.Series(output) / pd.Series(output).sum()
             return output_df.replace(np.inf, np.nan)
+
+    def filterPeaks(self, peaks=[], feature='all', gene_name=str()):
+        """Filters peaks according to the feature i.e. only for 3UTS or CDS
+
+        peaks : list()
+
+        feature : str()
+            on of features: '"all" "5UTR" "CDS" "3UTR"' Default = '"all"'
+        gene_name : str()
+
+        Returns
+        ----------
+        list() of filtered peaks """
+        details = self.df_transcripts_details[
+            self.df_transcripts_details.index == gene_name]  # details for the given gene
+        # dictionary containing features
+        fd = {"all": (0, int(details['len'])),
+              "5UTR": (0, int(details['5UTR'])),
+              "CDS": (int(details['5UTR']), int(details['5UTR']) + int(details['CDS'])),
+              "3UTR": (int(details['5UTR']) + int(details['CDS']), int(details['len']))}
+        f = fd[feature]  # feature range
+        output = [peak for peak in peaks if peak in range(f[0], f[1])]
+        return output

@@ -1,6 +1,7 @@
 import os, yaml, sys, re
 import numpy as np, numpy.random
 import pandas as pd
+from scipy.signal import argrelextrema
 
 def getRefFile(file_from_options, file_type):
     """
@@ -182,3 +183,22 @@ def calculateFDR(data=pd.Series(), iterations=100, target_FDR=0.05):
     FDR = DR <= target_FDR
     return data * FDR
 
+
+def findPeaks(s1=pd.Series(), window=1, order=20):
+    """Find local extrema using SciPy argrelextrema function
+    s1 : Series()
+        data to localize peaks
+    window : int()
+        To smooth data before peak-calling. Default = 1 (no smoothed)
+    order : int()
+        argrelextrema order parameter. Detault = 20
+
+    Returns
+    ---------
+    list() of peaks
+    """
+    # smoothing
+    if window > 1:
+        s1 = s1.rolling(window, win_type='blackman', center=True).mean()
+    output = argrelextrema(data=s1.as_matrix(), comparator=np.greater, order=order)[0]
+    return list(output)
