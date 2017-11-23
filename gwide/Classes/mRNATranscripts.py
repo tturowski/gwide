@@ -73,8 +73,7 @@ class mRNATranscripts():
             output_df = output_df.append(s1)
         return output_df.T
 
-    def BigWigPileup(self, datasets=dict(), gene_name=str(), transcript_length=int(), normalization='ntotal', window=1,
-                     median_only=False):
+    def BigWigPileup(self, datasets=dict(), gene_name=str(), normalization='ntotal', window=1, median_only=False):
         '''Calculates median for multiple experiments and other statistic
 
         datasets : dict()
@@ -100,11 +99,11 @@ class mRNATranscripts():
 
         data_df = pd.DataFrame()
         # looping through experiments and extracting puleups
-        for name, exp in datasets.iteritems():
+        for name, exp_bw in datasets.iteritems():
             normalizator = {'raw': 1,
-                            'pM': (datasets[name].header()['sumData'] / 1000000),  # per Million
-                            'ntotal': sum(datasets[name].values(gene_name, 0, transcript_length))}
-            s1 = pd.Series(datasets[name].values(gene_name, 0, transcript_length)) / normalizator[normalization]
+                            'pM': (exp_bw.header()['sumData'] / 1000000),  # per Million
+                            'ntotal': sum(exp_bw.values(gene_name, 0, transcript_length))}
+            s1 = pd.Series(exp_bw.values(gene_name, 0, transcript_length)) / normalizator[normalization]
             data_df[name] = s1
 
         # smoothing
@@ -149,6 +148,22 @@ class mRNATranscripts():
         -------
         dict() containing {"name" : ( DataFrame(), int() )}
         '''
+        def checkLen(datasets, length,gene_name):
+            """Function checks lengths to bypass wrong annotations etc."""
+            for name, exp_bw in datasets.iteritems():
+                data_len = exp_bw.chroms(gene_name)
+                # print '------'
+                # print gene_name
+                # print length
+                # print data_len
+                # print '------'
+                if not isinstance(length,int) or not data_len:
+                    return False
+                elif int(data_len) == length:
+                    break
+                else:
+                    return False
+
         df_genes = self.selectTranscriptDetails(genes)
         # constants to subtract
         for_5end = df_genes.max()['5UTR']
@@ -165,12 +180,17 @@ class mRNATranscripts():
         df_5end = pd.DataFrame()
         df_3end = pd.DataFrame()
         df_pA = pd.DataFrame()
+
+        print "Skipped genes:"
         for gene_name in df_genes.index.values:
-            if verbose == True: print gene_name
             aligner = df_genes[df_genes.index == gene_name]  # details for the gene_name
             aligner = aligner.astype(int)
-            s1_pileup = self.BigWigPileup(datasets, gene_name, int(aligner['len'] + self.noncoded), normalization, window,
-                                     median_only=True)
+            if checkLen(datasets, int(aligner['len'][0] + self.noncoded), gene_name) == False:
+                if verbose == True:
+                    print gene_name
+                continue
+
+            s1_pileup = self.BigWigPileup(datasets, gene_name, normalization, window, median_only=True)
             # very 5' end
             df_very5end[gene_name] = s1_pileup
             # 5' end
