@@ -230,7 +230,7 @@ param smooth: apply 10nt smootheninig window
 <dl class="function">
 <dt id="gwide.profileAnalyser.plot_as_box_plot">
 <code class="descclassname">gwide.profileAnalyser.</code><code class="descname">plot_as_box_plot</code><span class="sig-paren">(</span><em>df=Empty DataFrame Columns: [] Index: []</em>, <em>title=None</em>, <em>start=None</em>, <em>stop=None</em>, <em>figsize=(15</em>, <em>6)</em>, <em>ylim=(None</em>, <em>0.01)</em>, <em>dpi=150</em>, <em>color='green'</em>, <em>h_lines=[]</em>, <em>lc='red'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/profileAnalyser.html#plot_as_box_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.profileAnalyser.plot_as_box_plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>plots figure similar to box plot: median, 2 and 3 quartiles and min-max range</p>
+<dd><p>Plots figure similar to box plot: median, 2 and 3 quartiles and min-max range</p>
 <dl class="docutils">
 <dt>df <span class="classifier-delimiter">:</span> <span class="classifier">DataFrame</span></dt>
 <dd>Dataframe containing following columns:<code class="docutils literal"><span class="pre">`['position']</span> <span class="pre">['nucleotide']</span> <span class="pre">['mean']</span> <span class="pre">['median']</span> <span class="pre">['std']`</span></code>
@@ -370,8 +370,8 @@ optionally <code class="docutils literal"><span class="pre">`['q1']</span> <span
 <dl class="function">
 <dt id="gwide.methods.calculateFDR">
 <code class="descclassname">gwide.methods.</code><code class="descname">calculateFDR</code><span class="sig-paren">(</span><em>data=Series([]</em>, <em>dtype: float64)</em>, <em>iterations=100</em>, <em>target_FDR=0.05</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/methods.html#calculateFDR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.methods.calculateFDR" title="Permalink to this definition">¶</a></dt>
-<dd><p>calculates False Discovery Rate (FDR) for a given dataset.</p>
-<p>data : pd.Series()</p>
+<dd><p>calculates False Discovery Rate (FDR) for a given dataset.
+data : pd.Series()</p>
 <dl class="docutils">
 <dt>iterations <span class="classifier-delimiter">:</span> <span class="classifier">int()</span></dt>
 <dd>number of iterations. Default = 100</dd>
@@ -429,6 +429,29 @@ optionally <code class="docutils literal"><span class="pre">`['q1']</span> <span
 </dd></dl>
 
 <dl class="function">
+<dt id="gwide.methods.findPeaks">
+<code class="descclassname">gwide.methods.</code><code class="descname">findPeaks</code><span class="sig-paren">(</span><em>s1=Series([]</em>, <em>dtype: float64)</em>, <em>window=1</em>, <em>order=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/methods.html#findPeaks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.methods.findPeaks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find local extrema using SciPy argrelextrema function
+s1 : Series()</p>
+<blockquote>
+<div>data to localize peaks</div></blockquote>
+<dl class="docutils">
+<dt>window <span class="classifier-delimiter">:</span> <span class="classifier">int()</span></dt>
+<dd>To smooth data before peak-calling. Default = 1 (no smoothed)</dd>
+<dt>order <span class="classifier-delimiter">:</span> <span class="classifier">int()</span></dt>
+<dd>argrelextrema order parameter. Detault = 20</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list() of peaks</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="gwide.methods.getRefFile">
 <code class="descclassname">gwide.methods.</code><code class="descname">getRefFile</code><span class="sig-paren">(</span><em>file_from_options</em>, <em>file_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/methods.html#getRefFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.methods.getRefFile" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
@@ -475,152 +498,6 @@ stdin   -   read from standard input instead current directory</td>
 <div class="section" id="bigwigtools">
 <h2>BigWigTools<a class="headerlink" href="#bigwigtools" title="Permalink to this headline">¶</a></h2>
 <p>Tools to analyse BigWig files</p>
-<span class="target" id="module-gwide.BigWigTools"></span><dl class="function">
-<dt id="gwide.BigWigTools.BigWigCount">
-<code class="descclassname">gwide.BigWigTools.</code><code class="descname">BigWigCount</code><span class="sig-paren">(</span><em>datasets={}</em>, <em>genes={}</em>, <em>normalization='pM'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/BigWigTools.html#BigWigCount"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.BigWigTools.BigWigCount" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates coverage for individual genes for given experiments</p>
-<dl class="docutils">
-<dt>datasets <span class="classifier-delimiter">:</span> <span class="classifier">dict()</span></dt>
-<dd>Dictionary with exp name as key and pyBigWig object</dd>
-<dt>genes <span class="classifier-delimiter">:</span> <span class="classifier">dict()</span></dt>
-<dd>Dictionary with pyBigWig.chroms() dictionary</dd>
-<dt>normalization <span class="classifier-delimiter">:</span> <span class="classifier">str()</span></dt>
-<dd>Normalization option&#8221; &#8216;&#8220;pM&#8221;, &#8220;pMK&#8221;, None&#8217;. Default: &#8216;&#8220;pM&#8221;&#8217;</dd>
-</dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">pd.DataFrame()</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="gwide.BigWigTools.BigWigPileup">
-<code class="descclassname">gwide.BigWigTools.</code><code class="descname">BigWigPileup</code><span class="sig-paren">(</span><em>datasets={}</em>, <em>gene_name=''</em>, <em>transcript_length=0</em>, <em>normalization='ntotal'</em>, <em>window=1</em>, <em>median_only=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/BigWigTools.html#BigWigPileup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.BigWigTools.BigWigPileup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns pd.DataFrame() for multiple experiments with calculated median or all statistic</p>
-<dl class="docutils">
-<dt>datasets <span class="classifier-delimiter">:</span> <span class="classifier">dict()</span></dt>
-<dd>Dictionary with exp name as a key and pyBigWig object</dd>
-</dl>
-<p>gene_name : str()</p>
-<dl class="docutils">
-<dt>normalization <span class="classifier-delimiter">:</span> <span class="classifier">str()</span></dt>
-<dd>Normalization option&#8221; &#8216;&#8220;pM&#8221;, &#8220;ntotal&#8221;, &#8220;raw&#8221;&#8217;. Default: &#8216;&#8220;ntotal&#8221;&#8217;</dd>
-<dt>median_only <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd>Default = &#8216;&#8220;False&#8221;&#8217; .If &#8216;&#8220;True&#8221;&#8217; retruns only pd.Series() for median</dd>
-<dt>window <span class="classifier-delimiter">:</span> <span class="classifier">int()</span></dt>
-<dd>Default = 1. Window size for rolling average to smooth data</dd>
-</dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">pd.DataFrame() or pd.Series()</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="gwide.BigWigTools.codons">
-<code class="descclassname">gwide.BigWigTools.</code><code class="descname">codons</code><span class="sig-paren">(</span><em>data=Series([]</em>, <em>dtype: float64)</em>, <em>df_genes=Empty DataFrame Columns: [] Index: []</em>, <em>df_sequences=Empty DataFrame Columns: [] Index: []</em>, <em>gene_name=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/BigWigTools.html#codons"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.BigWigTools.codons" title="Permalink to this definition">¶</a></dt>
-<dd><p>Annotates data with nucleotide, codone and aminoacid</p>
-<p>data : Series()</p>
-<dl class="docutils">
-<dt>df_genes <span class="classifier-delimiter">:</span> <span class="classifier">DataFrame()</span></dt>
-<dd>DataFrame() containig gene_details</dd>
-</dl>
-<p>gene_name : str()</p>
-<dl class="docutils">
-<dt>df_sequences <span class="classifier-delimiter">:</span> <span class="classifier">DataFrame()</span></dt>
-<dd>sequences</dd>
-</dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">DataFrame()</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="gwide.BigWigTools.featureBinCollect">
-<code class="descclassname">gwide.BigWigTools.</code><code class="descname">featureBinCollect</code><span class="sig-paren">(</span><em>data=Series([], dtype: float64), df_genes=Empty DataFrame Columns: [] Index: [], gene_name='', bins=[1, 10, 1], warn=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/BigWigTools.html#featureBinCollect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.BigWigTools.featureBinCollect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates coverage districution for mRNA elements (UTRs and CDS)</p>
-<p>data : Series()</p>
-<dl class="docutils">
-<dt>df_genes <span class="classifier-delimiter">:</span> <span class="classifier">DataFrame()</span></dt>
-<dd>DataFrame() containig gene_details</dd>
-</dl>
-<p>gene_name : str()</p>
-<dl class="docutils">
-<dt>bins <span class="classifier-delimiter">:</span> <span class="classifier">list()</span></dt>
-<dd>Number of bins for each feature [5UTR, CDS, 3UTR]. Default = &#8216;[1,10,1]&#8217;</dd>
-</dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Series()</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="gwide.BigWigTools.mRNAalign">
-<code class="descclassname">gwide.BigWigTools.</code><code class="descname">mRNAalign</code><span class="sig-paren">(</span><em>df_genes=Empty DataFrame Columns: [] Index: []</em>, <em>datasets={}</em>, <em>normalization='ntotal'</em>, <em>window=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/BigWigTools.html#mRNAalign"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.BigWigTools.mRNAalign" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns DataFrame() for multiple experiments with calculated median and etc.</p>
-<dl class="docutils">
-<dt>df_genes <span class="classifier-delimiter">:</span> <span class="classifier">DataFrame()</span></dt>
-<dd>DataFrame() containing genes to align</dd>
-<dt>datasets <span class="classifier-delimiter">:</span> <span class="classifier">dict()</span></dt>
-<dd>Dictionary with exp name as a key and pyBigWig object</dd>
-<dt>normalization <span class="classifier-delimiter">:</span> <span class="classifier">str()</span></dt>
-<dd>Normalization option&#8221; &#8216;&#8220;pM&#8221;, &#8220;ntotal&#8221;, &#8220;raw&#8221;&#8217;. Default: &#8216;&#8220;ntotal&#8221;&#8217;</dd>
-<dt>window <span class="classifier-delimiter">:</span> <span class="classifier">int()</span></dt>
-<dd>Default = 1. Window size for rolling average to smooth data</dd>
-</dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dict() containing DataFrames for different aligners</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="gwide.BigWigTools.metaplot">
-<code class="descclassname">gwide.BigWigTools.</code><code class="descname">metaplot</code><span class="sig-paren">(</span><em>df</em>, <em>df2=Empty DataFrame Columns: [] Index: []</em>, <em>h_line=0</em>, <em>title=''</em>, <em>color='black'</em>, <em>lc='red'</em>, <em>figsize=(10</em>, <em>6)</em>, <em>dpi=200</em>, <em>center=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gwide/BigWigTools.html#metaplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwide.BigWigTools.metaplot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates metaplot</p>
-<p>df : DataFrame()</p>
-<dl class="docutils">
-<dt>df2 <span class="classifier-delimiter">:</span> <span class="classifier">DataFrame()</span></dt>
-<dd>Dataframe with GC%</dd>
-<dt>h_line <span class="classifier-delimiter">:</span> <span class="classifier">int()</span></dt>
-<dd>Line visualazing aligning position</dd>
-</dl>
-<p>title : str()</p>
-<p>color : str()</p>
-<dl class="docutils">
-<dt>lc <span class="classifier-delimiter">:</span> <span class="classifier">str()</span></dt>
-<dd>horozontal line color</dd>
-</dl>
-<p>figsize : touple()</p>
-<p>dpi  : int()</p>
-<dl class="docutils">
-<dt>center <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
-<dd>detault = True; center plot 1000 bp arount aligning site</dd>
-</dl>
-</dd></dl>
-
 </div>
 </div>
 
