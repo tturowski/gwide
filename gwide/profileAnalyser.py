@@ -42,8 +42,8 @@ def plot_as_box_plot(df=pd.DataFrame(),title=None, start=None, stop=None,figsize
     '''Plots figure similar to box plot: median, 2 and 3 quartiles and min-max range
 
     df : DataFrame
-        Dataframe containing following columns:```['position'] ['nucleotide'] ['mean'] ['median'] ['std']```
-        optionally ```['q1'] ['q3'] ['max'] ['min']```
+        Dataframe containing following columns:```['position'] ['mean'] ['median'] ['std']```
+        optionally ```['nucleotide'] ['q1'] ['q3'] ['max'] ['min']```
     title : str
 
     start : int
