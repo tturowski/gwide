@@ -95,7 +95,7 @@ class mRNATranscripts():
         DataFrame() or Series()
         '''
         details = self.df_transcripts_details[self.df_transcripts_details.index == gene_name]
-        transcript_length = int(details['len'] + self.noncoded)
+        transcript_length = int(details['len'][0] + self.noncoded)
 
         data_df = pd.DataFrame()
         # looping through experiments and extracting puleups
@@ -293,8 +293,8 @@ class mRNATranscripts():
         Series()'''
 
         details = self.df_transcripts_details[self.df_transcripts_details.index == gene_name]  # details for the given gene
-        if len(data) != int(details['len']):
-            len_difference = len(data) - int(details['len'])
+        if len(data) != int(details['len'][0]):
+            len_difference = len(data) - int(details['len'][0])
             data = data[:-len_difference]  # removing polyA when applicable
             if warn == True: warnings.warn("Data " + str(len_difference) + " nt longer than expected from given details.",
                                            UserWarning)
@@ -406,8 +406,8 @@ class mRNATranscripts():
         Series()'''
 
         details = self.df_transcripts_details[self.df_transcripts_details.index == gene_name]  # details for the given gene
-        if len(data) != int(details['len']):
-            len_difference = len(data) - int(details['len'])
+        if len(data) != int(details['len'][0]):
+            len_difference = len(data) - int(details['len'][0])
             data = data[:-len_difference]  # removing polyA when applicable
             if warn == True: warnings.warn("Data " + str(len_difference) + " nt longer than expected from given details.",
                                            UserWarning)
