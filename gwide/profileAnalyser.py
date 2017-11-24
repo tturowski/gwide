@@ -61,7 +61,7 @@ def plot_as_box_plot(df=pd.DataFrame(),title=None, start=None, stop=None,figsize
     lc : str
         optional: color of horizontal lines
     '''
-    if 'nucleotide' in df.collumns.values:
+    if 'nucleotide' in df.columns.values:
         df = df.drop('nucleotide', 1)
     s2 = df[start:stop]
     #plotting reference dataset
