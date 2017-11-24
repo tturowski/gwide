@@ -61,8 +61,9 @@ def plot_as_box_plot(df=pd.DataFrame(),title=None, start=None, stop=None,figsize
     lc : str
         optional: color of horizontal lines
     '''
-    reference = df.drop('nucleotide', 1)
-    s2 = reference[start:stop]
+    if 'nucleotide' in df.collumns.values:
+        df = df.drop('nucleotide', 1)
+    s2 = df[start:stop]
     #plotting reference dataset
     fig, ax1 = plt.subplots(figsize=figsize, dpi=dpi)
     plt.title(title)

@@ -202,3 +202,19 @@ def findPeaks(s1=pd.Series(), window=1, order=20):
         s1 = s1.rolling(window, win_type='blackman', center=True).mean()
     output = argrelextrema(data=s1.as_matrix(), comparator=np.greater, order=order)[0]
     return list(output)
+
+
+def quantileCategory(s1=pd.Series(), q=4):
+    """Quantile-based discretization function based on pandas.qcut function.
+    Returns quantile based annotations for series of data
+    s1 : pd.Series()
+
+    q  : int()
+        Number of quantiles. 10 for deciles, 4 for quartiles, etc. Default=4"""
+    temp_df = pd.DataFrame()
+    temp_df['data'] = s1
+    temp_df['quantiles'] = 200
+    quantiles = pd.qcut(s1, q, retbins=True)
+    for i in range(0, len(quantiles[1]) - 1):
+        temp_df['quantiles'][temp_df.data >= quantiles[1][i]] = i
+    return temp_df['quantiles']
