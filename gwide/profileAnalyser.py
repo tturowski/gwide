@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import gffutils
 
-def save_csv(data_ref=pd.DataFrame(), datasets=pd.DataFrame(), path=None):
+def save_csv(data_ref=pd.DataFrame(), datasets=pd.DataFrame(), path=str()):
 
     '''Takes reference and data DataFrame's
 
@@ -31,10 +31,9 @@ def save_csv(data_ref=pd.DataFrame(), datasets=pd.DataFrame(), path=None):
     reference['q1'], reference['q3'] = datasets.quantile(q=0.25,axis=1), datasets.quantile(q=0.75, axis=1)
     reference['min'], reference['max'] = datasets.min(axis=1), datasets.max(axis=1)
 
-    if path and type(path) == str():
+    if path:
         reference.to_csv(path)  ## reference plot
-    elif path and type(path) != str():
-        exit('Path should be str()')
+
 
     return reference
 

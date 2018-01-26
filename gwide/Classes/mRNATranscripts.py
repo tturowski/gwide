@@ -29,7 +29,7 @@ class mRNATranscripts():
             output_df = output_df.append(self.df_transcripts_details[self.df_transcripts_details.index == gene_name])
         return output_df
 
-    def BigWigCount(self, datasets=dict(), normalization="pM"):
+    def BigWigCount(self, datasets=dict(), normalization="pM", verbose=False):
         '''Calculates coverage for individual genes for given experiments
 
         datasets : dict()
@@ -52,6 +52,8 @@ class mRNATranscripts():
         output_df = pd.DataFrame()
 
         for name, exp in datasets.iteritems():
+            if verbose==True:
+                print name
             scaling_factor = datasets[name].header()['sumData'] / 1000000.0  # for pM
             exp_dict = dict()
 
