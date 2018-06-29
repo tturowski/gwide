@@ -203,7 +203,6 @@ def compare1toRef(dataset=pd.Series(), ranges='mm', heatmap=False, relative=Fals
     param reference: path to reference plot
     :return: Dataframe (heatmap=False) or Series (heatmap=True)
     '''
-
     ranges_dict = {'mm': ['min', 'max'], 'qq': ['q1', 'q3']}
 
     # preparing dataframe and reference

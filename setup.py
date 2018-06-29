@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='gwide',
-    version='0.5.24',
+    version='0.5.25',
     # py_modules=['gwide'],
     packages=find_packages(),
     install_requires=[
@@ -36,6 +36,7 @@ setup(
         getNameFromId4Tab=gwide.parserTools:getNameFromId4Tab
     ''',
     scripts=[
+        'gwide/scripts/sam2deletions.py',
         'gwide/scripts/novo2concat.py',
         'gwide/scripts/defineTerminator.py',
         'gwide/scripts/geneUsage.py',
