@@ -3,7 +3,6 @@ import sys, re
 import pandas as pd
 
 filepath = sys.argv[1]
-print filepath
 df1_temp = pd.read_csv(filepath, sep="\t", names=['QNAME','FLAG','RNAME','POS','MAPQ','CIGAR','RNEXT','PNEXT','TLEN','SEQ','QUAL'])
 df2_comments = df1_temp[df1_temp['QNAME'].str.contains('^@')] #header line start with @
 df3_deletions = df1_temp[~df1_temp['QNAME'].str.contains('^@') & df1_temp['CIGAR'].str.contains('D')] #selecting only reads with deletions
