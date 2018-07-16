@@ -6,8 +6,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import gwide.profileAnalyser as pa
 
-sns.boxplot()
-
 class mRNATranscripts():
     '''Class mRNATranscripts do not store datasets, but only gene details'''
     def __init__(self, transcripts_details=str(), transcrips_sequences=str(), noncoded_elem=10, dpi=200, figsize=(10,6)):
