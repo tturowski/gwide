@@ -2,7 +2,7 @@
 IMPORTANT NOTICE
 ================
 
-gwide is obsolete. Most of its functionalities have been replaced by TTools(https://github.com/TurowskiLab/TTools).
+gwide is obsolete. Most of its functionalities have been replaced by trxtools(https://github.com/TurowskiLab/trxtools).
 
 =====
 gwide
