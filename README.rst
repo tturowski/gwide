@@ -4,9 +4,9 @@ IMPORTANT NOTICE
 
 gwide is obsolete. Most of its functionalities have been replaced by trxtools(https://github.com/TurowskiLab/trxtools).
 
-=====
-gwide
-=====
+======================
+OBSOLETE PACKAGE gwide
+======================
 Python package for downstream analysis of CRAC data. Package developed for analysis of RNA polymerase III data published in
 Global analysis of transcriptionally engaged yeast RNA polymerase III reveals extended tRNA transcripts.
 Turowski TW, Leśniewska E, Delan-Forino C, Sayou C, Boguta M, Tollervey D.
